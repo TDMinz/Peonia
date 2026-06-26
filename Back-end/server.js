@@ -15,15 +15,25 @@ const adminRoutes = require('./routes/admin.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://peoniastudio.vn",
+  "https://www.peoniastudio.vn",
+  process.env.FRONTEND_URL
+];
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://peoniastudio.vn",
-      "https://www.peoniastudio.vn"
-    ],
-    credentials: true
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
   })
 );
 app.use(express.json());
