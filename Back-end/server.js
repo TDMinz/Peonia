@@ -16,7 +16,16 @@ const dashboardRoutes = require('./routes/dashboard.routes');
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://peoniastudio.vn",
+      "https://www.peoniastudio.vn"
+    ],
+    credentials: true
+  })
+);
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -35,7 +44,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/flower_shop_db';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/flower_shop_db';
 
 mongoose
   .connect(MONGO_URI)
