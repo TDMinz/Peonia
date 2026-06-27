@@ -182,11 +182,11 @@ export default function OrderHistoryPage() {
                             Ngày giao
                           </p>
 
-                          <p className="mt-1">
-                            {new Date(
-                              item.delivery_date
-                            ).toLocaleDateString('vi-VN')}
-                          </p>
+                            <p className="mt-1">
+    {item.delivery_date
+      ? new Date(item.delivery_date).toLocaleDateString('vi-VN')
+      : ''}
+  </p>
                         </div>
 
                         <div className="text-right">

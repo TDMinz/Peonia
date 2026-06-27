@@ -12,14 +12,19 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(options.headers || {}),
       Authorization: `Bearer ${getAuthToken()}`,
     },
   });
 
-  const data = await response.json();
-  if (!response.ok) throw new Error(data?.message || 'Request failed');
+  const data = (await response.json()) as T;
+
+  if (!response.ok) {
+    const error = data as { message?: string };
+    throw new Error(error.message || "Request failed");
+  }
+
   return data;
 }
 
@@ -46,8 +51,19 @@ export type CustomerOrderItem = {
     id: string;
     quantity: number;
     price: number;
-    variant?: { variant_name?: string; sku?: string; product_id?: string | { name?: string } };
-  }>;
+
+    product_name?: string;
+    image_url?: string;
+    product_id?: string;
+
+    variant?: {
+        variant_name?: string;
+        sku?: string;
+        product_id?: string | {
+            name?: string;
+        };
+    };
+}>;
 };
 export type CustomerWorkshopBooking = {
   id: string;
@@ -85,5 +101,5 @@ export const customerOrdersApi = {
     ),
   detail: (code: string) => request<{ order: CustomerOrderItem }>(`/api/orders/${code}`),
   getMyBookings: () =>
-    request('/api/bookings/my-bookings')
+    request<{ bookings: CustomerWorkshopBooking[] }>('/api/bookings/my-bookings')
 };

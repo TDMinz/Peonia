@@ -64,7 +64,7 @@ export default function AdminOrdersPage() {
     setMessage('');
     try {
       const data = await adminOrdersApi.updateStatus(selected.order_code, { status });
-      const updated = data.order || { ...selected, status };
+      const updated = data.data || { ...selected, status };
       setSelected(updated);
       setItems((prev) => prev.map((item) => (item.order_code === updated.order_code ? { ...item, ...updated } : item)));
       setMessage('Cập nhật trạng thái đơn hàng thành công.');

@@ -147,11 +147,7 @@ export default function StaffShopOrdersPage() {
 
             <div className="grid gap-6 p-6 lg:grid-cols-[1fr_0.9fr]">
               <div className="space-y-4">
-                <InfoCard title="Người mua" content={`${selected.buyer_name} | ${selected.buyer_phone || ''}`} />
-                <InfoCard title="Người nhận" content={`${selected.recipient_name} | ${selected.recipient_phone || ''}`} />
-                <InfoCard title="Địa chỉ giao" content={selected.recipient_address} />
-                <InfoCard title="Lịch giao" content={`${selected.delivery_date || ''} - ${selected.delivery_time_slot || ''}`} />
-                <InfoCard title="Ghi chú" content={selected.card_message || 'Không có'} />
+              
               </div>
 
               <div className="space-y-4 rounded-[1.5rem] bg-[#f6f7fb] p-5">

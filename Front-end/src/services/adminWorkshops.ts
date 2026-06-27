@@ -13,9 +13,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   });
 
-  const data = await response.json();
-  if (!response.ok) throw new Error(data?.message || 'Request failed');
-  return data;
+  const data = (await response.json()) as T;
+
+if (!response.ok) {
+  const error = data as { message?: string };
+  throw new Error(error.message || "Request failed");
+}
+
+return data;
 }
 
 export type AdminWorkshopItem = {
@@ -50,12 +55,12 @@ export type WorkshopBookingItem = {
 
 export const adminWorkshopsApi = {
   list: () => request<{ data: AdminWorkshopItem[] }>('/api/admin/workshops?limit=100'),
-  create: (formData: FormData) => request('/api/admin/workshops', { method: 'POST', body: formData }),
-  update: (id: string, formData: FormData) => request(`/api/admin/workshops/${id}`, { method: 'PATCH', body: formData }),
-  remove: (id: string) => request(`/api/admin/workshops/${id}`, { method: 'DELETE' }),
+  create: (formData: FormData) => request<{ data: AdminWorkshopItem }>('/api/admin/workshops', { method: 'POST', body: formData }),
+  update: (id: string, formData: FormData) => request<{ data: AdminWorkshopItem }>(`/api/admin/workshops/${id}`, { method: 'PATCH', body: formData }),
+  remove: (id: string) => request<{ message: string }>(`/api/admin/workshops/${id}`, { method: 'DELETE' }),
   workshopBookings: () => request<{ data: WorkshopBookingItem[] }>('/api/admin/workshop-bookings'),
   updateWorkshopBookingStatus: (code: string, status: string) =>
-    request(`/api/admin/workshop-bookings/${code}/status`, {
+    request<{ data: WorkshopBookingItem }>(`/api/admin/workshop-bookings/${code}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),

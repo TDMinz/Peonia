@@ -13,9 +13,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   });
 
-  const data = await response.json();
-  if (!response.ok) throw new Error(data?.message || 'Request failed');
-  return data;
+  const data = (await response.json()) as T;
+
+if (!response.ok) {
+  const error = data as { message?: string };
+  throw new Error(error.message || 'Request failed');
+}
+
+return data;
 }
 
 export type AdminOrderItem = {
@@ -49,10 +54,10 @@ export const adminOrdersApi = {
   list: () => request<{ orders: AdminOrderItem[] }>('/api/orders'),
   detail: (code: string) => request<{ order: AdminOrderItem }>(`/api/orders/${code}`),
   updateStatus: (code: string, payload: { status?: string; payment_status?: string }) =>
-    request(`/api/orders/${code}/status`, {
+    request<{ data: AdminOrderItem }>(`/api/orders/${code}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     }),
-  remove: (code: string) => request(`/api/orders/${code}`, { method: 'DELETE' }),
+  remove: (code: string) => request<{ message: string }>(`/api/orders/${code}`, { method: 'DELETE' }),
 };

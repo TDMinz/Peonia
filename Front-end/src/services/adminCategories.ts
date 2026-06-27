@@ -13,9 +13,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   });
 
-  const data = await response.json();
-  if (!response.ok) throw new Error(data?.message || 'Request failed');
-  return data;
+  const data = (await response.json()) as T;
+
+if (!response.ok) {
+  const error = data as { message?: string };
+  throw new Error(error.message || 'Request failed');
+}
+
+return data;
 }
 
 export type AdminCategoryItem = {
@@ -36,19 +41,19 @@ export type AdminCategoryItem = {
 export const adminCategoriesApi = {
   list: () => request<{ data: AdminCategoryItem[] }>('/api/admin/categories?limit=100'),
   create: (payload: Partial<AdminCategoryItem>) =>
-    request('/api/admin/categories', {
+    request<{ data: AdminCategoryItem }>('/api/admin/categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     }),
   update: (id: string, payload: Partial<AdminCategoryItem>) =>
-    request(`/api/admin/categories/${id}`, {
+    request<{ data: AdminCategoryItem }>(`/api/admin/categories/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     }),
   remove: (id: string) =>
-    request(`/api/admin/categories/${id}`, {
+    request<{ message: string }>(`/api/admin/categories/${id}`, {
       method: 'DELETE',
     }),
 };

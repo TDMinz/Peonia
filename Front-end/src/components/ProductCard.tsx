@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { flyToCart } from "../utils/flyToCart";
 
 type ProductCardProps = {
-  id: number;
+  id: string;
   slug?: string;
   name: string;
   price: string;
@@ -50,12 +50,13 @@ export default function ProductCard({ id, slug, name, price, image, originalPric
             <button
               type="button"
              onClick={() => {
-    addToCart({
-        id: String(id),
-        name,
-        price,
-        image,
-    });
+              addToCart({
+                id,
+                product_id: id,
+                name,
+                price,
+                image,
+            });
 
     if (imageRef.current) {
         const cart =

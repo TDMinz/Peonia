@@ -1,5 +1,5 @@
 import { Clock3, Users, X, UploadCloud } from 'lucide-react';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { api, type WorkshopDto } from '../services/api';
@@ -86,7 +86,7 @@ export default function WorkshopPage() {
   const [bookingStep, setBookingStep] = useState<BookingStep>('form');
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
-  const [uploadError, setUploadError] = useState('');
+  const [, setUploadError] = useState('');
   const [bookingCode, setBookingCode] = useState('');
   const [billFile, setBillFile] = useState<File | null>(null);
   const [billPreview, setBillPreview] = useState('');

@@ -172,8 +172,7 @@ export default function StaffWorkshopBookingsPage() {
                 <div className="flex flex-wrap gap-2">
                   <button onClick={() => handleAction(selected.booking_code, { status: 'confirmed' })} className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">Xác nhận</button>
                   <button onClick={() => handleAction(selected.booking_code, { status: 'cancelled' })} className="rounded-full border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">Huỷ</button>
-                  <button onClick={() => handleReviewBill(selected.booking_code, 'approve')} className="rounded-full border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">Duyệt bill</button>
-                  <button onClick={() => handleReviewBill(selected.booking_code, 'reject')} className="rounded-full border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">Từ chối bill</button>
+
                 </div>
                 <button onClick={() => handleDelete(selected.booking_code)} className="w-full rounded-full border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">Xoá booking</button>
               </div>

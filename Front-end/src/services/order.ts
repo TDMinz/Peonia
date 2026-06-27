@@ -20,10 +20,32 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (!response.ok) throw new Error(data?.message || 'Request failed');
   return data as T;
 }
+export type CreateOrderPayload = {
+  buyer_name: string;
+  buyer_phone: string;
+
+  recipient_name: string;
+  recipient_phone: string;
+  recipient_address: string;
+
+  delivery_date: string;
+  delivery_time_slot: string;
+
+  card_message?: string;
+
+  items: {
+    product_id: string;
+    quantity: number;
+  }[];
+};
 
 export const orderApi = {
-  createOrder: (payload: any) =>
-    request('/api/orders', {
+  createOrder: (payload: CreateOrderPayload) =>
+    request<{
+      order: {
+          order_code: string;
+      };
+  }>('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

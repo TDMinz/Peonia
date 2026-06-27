@@ -20,11 +20,21 @@ export type Category = {
 
 export type Product = {
   id: string;
-  name?: string;
-  slug?: string;
+  name: string;
+  slug: string;
+
   description?: string;
-  is_addon?: boolean;
+
   image_url?: string;
+  images?: string[];
+
+  price?: number;
+  sale_price?: number;
+
+  is_featured?: boolean;
+  is_best_seller?: boolean;
+  is_addon?: boolean;
+
   created_at?: string;
 };
 

@@ -13,14 +13,22 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   });
 
-  const data = await response.json();
-  if (!response.ok) throw new Error(data?.message || 'Request failed');
-  return data;
+  const data = (await response.json()) as T;
+
+if (!response.ok) {
+  const error = data as { message?: string };
+  throw new Error(error.message || 'Request failed');
+}
+
+return data;
 }
 
 export const bookingApi = {
   createBooking: (payload: { workshop_id: string; customer_name: string; customer_phone: string; seats_booked: number }) =>
-    request('/api/bookings', {
+    request<{
+      booking: CustomerWorkshopBooking;
+      booking_code: string;
+    }>('/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -28,10 +36,10 @@ export const bookingApi = {
   uploadBill: (code: string, file: File) => {
     const formData = new FormData();
     formData.append('bill', file);
-    return request(`/api/bookings/${code}/bill`, { method: 'POST', body: formData });
+    return request<{ message: string }>(`/api/bookings/${code}/bill`, { method: 'POST', body: formData });
   },
   reviewBill: (code: string, action: 'approve' | 'reject') =>
-    request(`/api/bookings/${code}/bill/review`, {
+    request<{ message: string }>(`/api/bookings/${code}/bill/review`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action }),

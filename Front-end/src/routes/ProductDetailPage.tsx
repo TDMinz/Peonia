@@ -13,7 +13,7 @@ function formatPrice(value?: number) {
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
   const [products, setProducts] = useState<ProductDto[]>([]);
-  const [categories, setCategories] = useState<CategoryDto[]>([]);
+  const [, setCategories] = useState<CategoryDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] =
@@ -44,13 +44,20 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
   const normalizedSlug = decodeURIComponent(slug).trim().toLowerCase();
   const product = useMemo(() => products.find((item) => String(item.slug || '').trim().toLowerCase() === normalizedSlug), [products, normalizedSlug]);
 
-  const images = useMemo(() => {
+  const images = useMemo<string[]>(() => {
     if (!product) return [];
-    return Array.from(new Set([product.image_url, ...(product.images || [])].filter(Boolean))).slice(0, 4);
+  
+    return Array.from(
+      new Set(
+        [product.image_url, ...(product.images || [])].filter(
+          (img): img is string => Boolean(img)
+        )
+      )
+    ).slice(0, 4);
   }, [product]);
   useEffect(() => {
     if (images.length > 0) {
-      setSelectedImage(images[0]);
+      setSelectedImage(images[0]!);
     }
   }, [images]);
 
@@ -58,12 +65,6 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
     if (!product) return [] as string[];
     return [product.categoryId, ...(product.category_ids || [])].filter(Boolean).map(String);
   }, [product]);
-
-  const categoryName = useMemo(() => {
-    if (!product) return '—';
-    const matchedCategory = categories.find((category) => categoryIds.includes(String(category.id)));
-    return matchedCategory?.name || 'Sản phẩm';
-  }, [product, categories, categoryIds]);
 
   const similarProducts = useMemo(() => {
     if (!product) return [];
@@ -223,6 +224,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
       addToCart(
         {
           id: String(product.id),
+          product_id: String(product.id),
           name: product.name,
           price,
           image:

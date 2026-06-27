@@ -13,7 +13,7 @@ type CategoryPageProps = {
   breadcrumbRoot: string;
   categories: CategoryDto[];
   products: Array<{
-    id: number;
+    id: string;
     slug?: string;
     name: string;
     price: string;

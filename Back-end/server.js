@@ -10,7 +10,7 @@ const workshopRoutes = require('./routes/workshop.routes');
 const orderRoutes = require('./routes/order.routes');
 const bookingRoutes = require('./routes/booking.routes');
 const paymentRoutes = require('./routes/payment.routes');
-const addressRoutes = require('./routes/address.routes');
+//const addressRoutes = require('./routes/address.routes');
 const adminRoutes = require('./routes/admin.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 
@@ -49,7 +49,7 @@ app.use('/api/workshops', workshopRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/address', addressRoutes);
+//app.use('/api/address', addressRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 

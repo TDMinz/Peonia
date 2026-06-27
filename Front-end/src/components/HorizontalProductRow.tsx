@@ -12,13 +12,22 @@ function formatPrice(value?: number) {
 function mapToCard(product: ProductDto) {
   const image = product.images?.[0] || product.image_url || '';
   return {
-    id={item.id},
+    id: product.id,
     slug: product.slug,
     name: product.name,
     price: formatPrice(product.sale_price ?? product.price),
-    originalPrice: product.sale_price && product.price && product.sale_price < product.price ? formatPrice(product.price) : undefined,
+    originalPrice:
+      product.sale_price &&
+      product.price &&
+      product.sale_price < product.price
+        ? formatPrice(product.price)
+        : undefined,
     image,
-    tag: product.is_featured ? 'HOT' : product.is_best_seller ? 'BEST' : undefined,
+    tag: product.is_featured
+      ? 'HOT'
+      : product.is_best_seller
+      ? 'BEST'
+      : undefined,
   };
 }
 

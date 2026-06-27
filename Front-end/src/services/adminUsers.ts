@@ -31,10 +31,21 @@ export type AdminUserItem = {
 
 export const adminUsersApi = {
   list: () => request<{ data: AdminUserItem[] }>('/api/admin/users?limit=100'),
-  update: (id: string, payload: Partial<Pick<AdminUserItem, 'full_name' | 'role' | 'is_active'>>) =>
-    request(`/api/admin/users/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    }),
+  update: (
+    id: string,
+    payload: {
+        full_name: string;
+        role: AdminUserItem["role"];
+        is_active: boolean;
+    }
+) =>
+request<{
+    user: AdminUserItem;
+}>(
+    `/api/admin/users/${id}`,
+    {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+    }
+),
 };

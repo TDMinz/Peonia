@@ -163,7 +163,7 @@ export default function Header({ cartCount }: HeaderProps) {
 
           <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">
             {navigation.map((item) => {
-              const submenu = 'slug' in item ? dropdownGroups[item.slug] || fallbackDropdowns[item.slug] || [] : [];
+              const submenu = 'slug' in item ? dropdownGroups[item.slug ?? ''] || fallbackDropdowns[item.slug ?? ''] || [] : [];
               const hasSubmenu = submenu.length > 0;
               const slug = 'slug' in item ? item.slug : '';
               return (

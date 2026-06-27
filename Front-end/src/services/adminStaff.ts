@@ -62,10 +62,17 @@ export const staffAdminApi = {
 
   shopOrders: () => request<{ data: ShopOrderItem[] }>('/api/admin/shop-orders'),
   shopOrderDetail: (code: string) => request<{ data: ShopOrderItem }>(`/api/admin/shop-orders/${code}`),
-  updateShopOrderStatus: (code: string, status: string) =>
-    request(`/api/admin/shop-orders/${code}/status`, {
+  updateShopOrderStatus: (
+    code: string,
+    status: string
+  ) =>
+    request<{
+      data: ShopOrderItem;
+    }>(`/api/admin/shop-orders/${code}/status`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ status }),
     }),
   deleteShopOrder: (code: string) => request(`/api/admin/shop-orders/${code}`, { method: 'DELETE' }),

@@ -32,7 +32,7 @@ function AuthIllustration({ imageUrl }: { imageUrl?: string }) {
   );
 }
 
-export default function AuthPage({ initialMode = 'login', imageUrl }: AuthPageProps) {
+export default function AuthPage({ initialMode = 'login' }: AuthPageProps) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -356,7 +356,7 @@ export default function AuthPage({ initialMode = 'login', imageUrl }: AuthPagePr
     onError={() => {
       setError('Đăng nhập Google thất bại');
     }}
-    theme="filled_white"
+    theme="outline"
     size="large"
     shape="pill"
   />

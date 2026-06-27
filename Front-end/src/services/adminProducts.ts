@@ -13,9 +13,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   });
 
-  const data = await response.json();
-  if (!response.ok) throw new Error(data?.message || 'Request failed');
-  return data;
+  const data = (await response.json()) as T;
+
+if (!response.ok) {
+  const error = data as { message?: string };
+  throw new Error(error.message || 'Request failed');
+}
+
+return data;
 }
 
 export type AdminProductItem = {
@@ -41,8 +46,8 @@ export type AdminCategoryOption = {
 
 export const adminProductsApi = {
   list: () => request<{ data: AdminProductItem[] }>('/api/admin/products?limit=100'),
-  create: (formData: FormData) => request('/api/admin/products', { method: 'POST', body: formData }),
-  update: (id: string, formData: FormData) => request(`/api/admin/products/${id}`, { method: 'PATCH', body: formData }),
-  remove: (id: string) => request(`/api/admin/products/${id}`, { method: 'DELETE' }),
+  create: (formData: FormData) => request<{ data: AdminProductItem }>('/api/admin/products', { method: 'POST', body: formData }),
+  update: (id: string, formData: FormData) => request<{ data: AdminProductItem }>(`/api/admin/products/${id}`, { method: 'PATCH', body: formData }),
+  remove: (id: string) => request<{ message: string }>(`/api/admin/products/${id}`, { method: 'DELETE' }),
   categories: () => request<{ data: AdminCategoryOption[] }>('/api/admin/categories?limit=100'),
 };

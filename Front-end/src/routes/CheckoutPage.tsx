@@ -1,11 +1,11 @@
 import { ArrowRight, Clock3, MapPin, Phone, UserRound, ShoppingBag } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import CheckoutSuccessDialog from '../components/CheckoutSuccessDialog';
 import { clearCart, getCartItems, type CartItem } from '../services/cart';
 import { orderApi } from '../services/order';
-import { fetchProvinces, type VnDistrict, type VnProvince, type VnWard } from '../services/vietnamAddress';
+
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(value);
@@ -43,9 +43,8 @@ function getCurrentUserName() {
 export default function CheckoutPage() {
   const [items] = useState<CartItem[]>(getCartItems());
   const [loading, setLoading] = useState(false);
-  const [addressLoading, setAddressLoading] = useState(true);
   const [successOpen, setSuccessOpen] = useState(false);
-  const [provinces, setProvinces] = useState<VnProvince[]>([]);
+  
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [orderCode, setOrderCode] = useState('');
@@ -65,28 +64,6 @@ export default function CheckoutPage() {
     card_message: '',
   });
 
-  useEffect(() => {
-    let alive = true;
-    fetchProvinces()
-      .then((data) => {
-        if (alive) setProvinces(data || []);
-      })
-      .catch(() => {
-        if (alive) setProvinces([]);
-      })
-      .finally(() => {
-        if (alive) setAddressLoading(false);
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const selectedProvince = useMemo(() => provinces.find((p) => p.name === form.province), [provinces, form.province]);
-  const selectedDistrict = useMemo(() => selectedProvince?.districts.find((d) => d.name === form.district), [selectedProvince, form.district]);
-  const selectedWard = useMemo(() => selectedDistrict?.wards.find((w) => w.name === form.ward), [selectedDistrict, form.ward]);
-  const districtOptions = selectedProvince?.districts || [];
-  const wardOptions = selectedDistrict?.wards || [];
 
   const subtotal = useMemo(() => items.reduce((sum, item) => sum + (Number(String(item.price).replace(/[^0-9]/g, '')) || 0) * item.quantity, 0), [items]);
 
@@ -131,6 +108,7 @@ export default function CheckoutPage() {
         recipient_address: recipientAddress,
         delivery_date: form.delivery_date,
         delivery_time_slot: form.delivery_time_slot,
+       
         card_message: form.card_message,
         items: items.map((item) => ({ product_id: item.id, quantity: item.quantity })),
       };
@@ -138,7 +116,7 @@ export default function CheckoutPage() {
         JSON.stringify(payload, null, 2)
       );
       const data = await orderApi.createOrder(payload);
-      setOrderCode(data.order?.order_code || data.order_code || '');
+      setOrderCode(data.order?.order_code ?? '');
       clearCart();
       setSuccessOpen(true);
     } catch (err) {
@@ -211,7 +189,7 @@ export default function CheckoutPage() {
                     <MapPin className="h-5 w-5 text-[#8f877d]" />
                     <input required value={form.street_address} onChange={(e) => setForm((prev) => ({ ...prev, street_address: e.target.value }))} className="w-full bg-transparent outline-none" placeholder="Nhập số nhà, tên đường" />
                   </div>
-                  {selectedWard ? <p className="mt-2 text-xs text-[#8f877d]">Đã chọn: {form.ward}, {form.district}, {form.province}</p> : null}
+                  
                 </label>
 
                 <div className="grid gap-4 md:grid-cols-2">
@@ -259,7 +237,7 @@ export default function CheckoutPage() {
           )}
         </section>
       </main>
-      <CheckoutSuccessDialog open={successOpen} orderCode={orderCode} onClose={() => setSuccessOpen(false)} />
+      <CheckoutSuccessDialog open={successOpen} onClose={() => setSuccessOpen(false)} />
       <Footer />
     </>
   );

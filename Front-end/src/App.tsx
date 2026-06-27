@@ -8,7 +8,7 @@ import CheckoutPage from './routes/CheckoutPage';
 import CategoryRoutePage from './routes/CategoryRoutePage';
 import EventsPage from './routes/EventsPage';
 import AdminRoutePage, { isAdminPath } from './routes/AdminRoutePage';
-import StaffRoutePage, { isStaffPath } from './routes/StaffRoutePage';
+//import StaffRoutePage, { isStaffPath } from './routes/StaffRoutePage';
 import OrderHistoryPage from './routes/OrderHistoryPage';
 import ChangePasswordPage from './routes/ChangePasswordPage';
 import ProductDetailPage from './routes/ProductDetailPage';
@@ -41,7 +41,7 @@ function getRouteFromLocation(): Route {
   if (path === '/doi-mat-khau') return 'change-password';
   if (path.startsWith('/san-pham/')) return 'product-detail';
   if (isAdminPath(path)) return 'admin';
-  if (isStaffPath(path)) return 'staff';
+ // if (isStaffPath(path)) return 'staff';
   if (path === '/dang-nhap') return 'auth-login';
   if (path === '/dang-ky') return 'auth-register';
   if (path === '/quen-mat-khau') return 'auth-forgot';
@@ -97,7 +97,7 @@ export default function App() {
       {route === 'change-password' && <CustomerArea><ChangePasswordPage /></CustomerArea>}
       {route === 'product-detail' && <ProductDetailPage slug={window.location.pathname.split('/').filter(Boolean).slice(1).join('/') || ''} />}
       {route === 'admin' && <GuardedArea role="super_admin"><AdminRoutePage path={window.location.pathname} /></GuardedArea>}
-      {route === 'staff' && <GuardedArea role="staff"><StaffRoutePage path={window.location.pathname} /></GuardedArea>}
+  {/* {route === 'staff' && <GuardedArea role="staff"><StaffRoutePage path={window.location.pathname} /></GuardedArea>} */}
       {route === 'auth-login' && <AuthPage initialMode="login" />}
       {route === 'auth-register' && <AuthPage initialMode="register" />}
       {route === 'auth-forgot' && <AuthPage initialMode="forgot" />}
