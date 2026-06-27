@@ -19,6 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://peoniastudio.vn",
   "https://www.peoniastudio.vn",
+  "https://peonia-phi.vercel.app",
   process.env.FRONTEND_URL
 ];
 
