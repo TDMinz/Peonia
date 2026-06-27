@@ -37,7 +37,7 @@ function TiktokMark({ className }: { className?: string }) {
 
 const contacts: ContactItem[] = [
   { label: 'Zalo', href: 'https://zalo.me/0352363833', icon: MessageCircleMore, bgClass: 'bg-[#0068ff]' },
-  { label: 'Facebook', href: 'https://facebook.com', icon: FacebookMark, bgClass: 'bg-[#1877f2]' },
+  { label: 'Facebook', href: 'https://www.facebook.com/PeoniaWorkshop', icon: FacebookMark, bgClass: 'bg-[#1877f2]' },
   { label: 'Điện thoại', href: 'tel:0352363833', icon: Phone, bgClass: 'bg-emerald-950'},
   { label: 'Instagram', href: 'https://www.instagram.com/peoniastudio.hn?igsh=cjEwaWM0eXpvNXIy&utm_source=qr', icon: InstagramMark, bgClass: 'bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@peonia.workshop?_r=1&_t=ZS-97Cf2um7Qiw', icon: TiktokMark, bgClass: 'bg-[#111111]' },
