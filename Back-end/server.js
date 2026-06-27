@@ -28,7 +28,12 @@ app.use(
     origin(origin, callback) {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      if (
+        origin === "http://localhost:5173" ||
+        origin.endsWith(".vercel.app") ||
+        origin === "https://peoniastudio.vn" ||
+        origin === "https://www.peoniastudio.vn"
+      ) {
         return callback(null, true);
       }
 
