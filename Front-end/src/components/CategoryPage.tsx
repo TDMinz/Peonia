@@ -32,20 +32,17 @@ export default function CategoryPage({
 }: CategoryPageProps) {
   const [showSort, setShowSort] = useState(false);
   const [sortBy, setSortBy] = useState('newest');
-  const childCategories = categories
-    .filter((item) => item.parentId)
-    .map((item) => {
-      const parent = categories.find(
-        (c) => c.id === item.parentId
-      );
+  const parentSlug =
+  window.location.pathname.split("/")[1];
 
-      return {
-        id: item.id,
-        name: item.name,
-        slug: item.slug,
-        parentSlug: parent?.slug || '',
-      };
-    });
+  const sidebarCategories = categories.map((item) => ({
+    id: item.id,
+    name: item.name,
+    slug: item.slug,
+    parentSlug,
+  }));
+  
+ 
   const sortedProducts = useMemo(() => {
     const list = [...products];
 
@@ -104,10 +101,10 @@ export default function CategoryPage({
           <div className="grid items-start gap-8 lg:grid-cols-[280px_1fr] xl:grid-cols-[320px_1fr]">
             {/* Sidebar */}
             <aside>
-              <CategorySidebar
-                categories={childCategories}
-                activeSlug={window.location.pathname.split('/').pop()}
-              />
+            <CategorySidebar
+  categories={sidebarCategories}
+  activeSlug={window.location.pathname.split('/').pop()}
+/>
             </aside>
 
             {/* Content */}

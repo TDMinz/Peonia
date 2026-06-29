@@ -125,11 +125,10 @@ export default function AboutPage() {
                     text-foreground
                   "
                 >
-                  Một bó hoa
+                  Hoa Lụa Peonia –  Giữ 
                   <br />
-                  không chỉ để ngắm nhìn,
+                  Trọn Nét Đẹp Thời Gian.
                   <br />
-                  mà để cảm nhận.
                 </h2>
 
                 <div
@@ -142,31 +141,17 @@ export default function AboutPage() {
                   "
                 >
                   <p>
-                    Peonia được tạo nên từ tình yêu dành cho thiên nhiên,
-                    nơi mỗi đóa hoa đều được tuyển chọn cẩn thận
-                    và kết hợp bằng sự tinh tế của những người yêu cái đẹp.
+                  Một bình hoa không chỉ để ngắm nhìn, mà là để cảm nhận và khơi gợi cảm hứng cho không gian sống.
                   </p>
 
                   <p>
-                    Chúng tôi tin rằng,
-                    hoa không chỉ đơn thuần là một món quà,
-                    mà còn là ngôn ngữ của cảm xúc.
-                    Một bó hoa có thể thay lời cảm ơn,
-                    lời xin lỗi,
-                    lời chúc mừng
-                    hay đơn giản là mang đến một nụ cười.
+                  Được tuyển chọn tỉ mỉ và tạo tác bằng cả tâm hồn, hoa lụa tại Peonia mang vẻ đẹp chân thực, sống động như hoa tươi nhưng sở hữu "đặc quyền" vĩnh cửu với thời gian. Không cần chăm sóc cầu kỳ, mỗi dáng hoa vẫn luôn rực rỡ, mềm mại và bền bỉ như ngày đầu tiên.
                   </p>
 
                   <p>
-                    Với Peonia,
-                    mỗi sản phẩm đều được chăm chút từ chất lượng hoa,
-                    màu sắc,
-                    bố cục
-                    cho đến từng chiếc nơ,
-                    để khi đến tay khách hàng,
-                    đó không chỉ là một bó hoa đẹp,
-                    mà còn là một kỷ niệm đáng nhớ.
+                  Mỗi sản phẩm tại Peonia là một bản phối độc bản, hài hòa từ sắc hoa đến dáng bình. Đó không chỉ là điểm nhấn sang trọng cho ngôi nhà của bạn, mà còn là một tác phẩm nghệ thuật tĩnh lặng, thay bạn lưu giữ kỷ niệm và thổi hồn thiên nhiên vào không gian sống.
                   </p>
+                
                 </div>
 
               </div>
@@ -199,11 +184,11 @@ export default function AboutPage() {
             text-foreground
           "
         >
-          Vẻ đẹp thực sự
+          Peonia – Tinh Tế
           <br />
-          đến từ những
+          Từ Sự Nguyên Bản
           <br />
-          điều giản dị.
+         
         </h2>
 
         <div
@@ -216,23 +201,14 @@ export default function AboutPage() {
           "
         >
           <p>
-            Chúng tôi tin rằng một bó hoa đẹp không cần phải quá
-            cầu kỳ. Chính sự hài hòa giữa màu sắc, hình dáng và
-            cảm xúc mới tạo nên giá trị bền vững.
+          Vẻ đẹp thực sự vốn đến từ những điều giản dị và sự cân bằng trong tâm hồn. Tại Peonia, chúng tôi khước từ những chi tiết rườm rà, tôn trọng nét đẹp tự nhiên của từng nhành hoa, chiếc lá để tạo nên những khoảng lặng thanh tịnh, giúp dòng chảy năng lượng trong không gian được khai thông và nhẹ nhàng lan tỏa.
           </p>
 
           <p>
-            Mỗi thiết kế tại Peonia đều hướng đến sự tối giản,
-            thanh lịch và tự nhiên. Chúng tôi luôn tôn trọng vẻ
-            đẹp nguyên bản của từng loài hoa thay vì che lấp nó
-            bằng những chi tiết rườm rà.
+          Hướng đến sự tối giản và thanh lịch tuyệt đối, mỗi thiết kế là một câu chuyện tĩnh lặng được kết hợp khéo léo giữa màu sắc và phom dáng, mang lại năng lượng bình an cho ngôi nhà. Đó không đơn thuần là một sản phẩm decor, mà là liệu pháp tinh thần giúp nuôi dưỡng tổ ấm, mang đến sự hòa thuận và thư thái cho tâm trí bạn.
           </p>
 
-          <p>
-            Với Peonia, mỗi bó hoa không chỉ là một sản phẩm,
-            mà còn là một câu chuyện được kể bằng màu sắc,
-            hương thơm và những cảm xúc chân thành.
-          </p>
+        
         </div>
 
       </div>

@@ -25,18 +25,24 @@ export default function CategoryRoutePage({ slug }: { slug: string }) {
       setLoading(true);
   
       try {
-        const [productData, categoryData] =
-          await Promise.all([
-            api.products(),
-            api.categories(),
-          ]);
+        
+  
+        const parentSlug =
+  window.location.pathname.split("/")[1];
+
+const [productData, categoryData] =
+  await Promise.all([
+    api.products(),
+    api.categories({
+      parentSlug,
+      is_active: true,
+    }),
+  ]);
   
         if (!mounted) return;
   
         setProducts(productData.products || []);
-        setCategories(
-          categoryData.categories || []
-        );
+        setCategories(categoryData.categories || []);
       } catch {
         if (mounted) {
           setProducts([]);

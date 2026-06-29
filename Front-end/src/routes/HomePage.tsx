@@ -14,7 +14,7 @@ import ProductSlide from "../components/ProductSlide";
 const banners = [
   {
     id: 1,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781431550/z7935468161539_da0f5053c8580ac80a4219fe0621eadb_pybuod.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782655521/%E1%BA%A2nh_b%C3%ACa_azysp5.png',
     title: 'Hoa Tươi Sang Trọng',
     subtitle: 'Biểu lộ tình cảm của bạn qua những bó hoa độc đáo',
   },
@@ -23,16 +23,17 @@ const banners = [
     image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781431550/z7935468161539_da0f5053c8580ac80a4219fe0621eadb_pybuod.jpg',
     title: 'Bộ Sưu Tập Mới',
     subtitle: 'Khám phá những sáng tạo hoa tươi nhất của mùa',
+    
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1549927537-b46e30f19eac?w=1200&h=500&fit=crop',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782558828/ca0221645318362a214ae8f7db05e848_eltng5.jpg',
     title: 'Dịch Vụ Events',
     subtitle: 'Trang trí sự kiện đặc biệt của bạn với hoa tươi',
   },
   {
     id: 4,
-    image: 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=1200&h=500&fit=crop',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782558920/85d108980ca46f31672e2a5a5023499a_wj0ewx.jpg',
     title: 'Workshop Cắm Hoa',
     subtitle: 'Học cách tạo những bó hoa đẹp từ các chuyên gia',
   },
@@ -698,25 +699,24 @@ export function HomePage() {
 
           <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#d8cfc4] bg-white/70 px-5 py-2 text-sm text-[#8f877d] backdrop-blur">
-              ✿ Peonia Floral Studio ✿
+              ✿ Peonia Studio ✿
             </div>
 
             <h2 className="mt-8 font-serif text-6xl font-light leading-tight text-foreground">
-              Bạn Đang Tìm Một
+            Bạn Đang Đi Tìm Một
               <br />
               <span className="italic">
-                Bó Hoa Độc Nhất?
+               Bản Phối Nghệ Thuật Độc Nhất?
               </span>
             </h2>
 
             <p className="mt-6 text-2xl font-light text-[#5c5248]">
-              🌸 Hay một workshop riêng cho nhóm của mình?
+            🌸 Nơi mỗi cánh hoa kể một câu chuyện riêng, và mỗi buổi workshop là một hành trình chạm vào bình yên của tâm hồn.
+
             </p>
 
             <p className="mx-auto mt-8 max-w-2xl text-lg leading-9 text-[#4f463f]">
-              Từ bó hoa sinh nhật, hoa cưới, quà tặng doanh nghiệp đến
-              workshop riêng tư cho gia đình, bạn bè hoặc công ty —
-              Peonia luôn sẵn sàng tạo nên một trải nghiệm mang dấu ấn riêng.
+            Dù là một nhành hoa gửi trao tâm tình, món quà sang trọng gửi đối tác, hay một không gian workshop gắn kết thiết kế riêng… Hãy để chúng mình biến ý tưởng của bạn thành tác phẩm nghệ thuật mang đậm dấu ấn cá nhân.
             </p>
             <div className="absolute left-20 top-24 text-3xl opacity-40 transition-all duration-700 group-hover:-translate-y-3 group-hover:rotate-12">
               🌸

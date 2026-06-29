@@ -49,6 +49,25 @@ export default function AdminUsersPage() {
   useEffect(() => {
     setPage(1);
   }, [search]);
+  useEffect(() => {
+    if (!message) return;
+  
+    const timer = setTimeout(() => {
+      setMessage('');
+    }, 5000);
+  
+    return () => clearTimeout(timer);
+  }, [message]);
+  
+  useEffect(() => {
+    if (!error) return;
+  
+    const timer = setTimeout(() => {
+      setError('');
+    }, 5000);
+  
+    return () => clearTimeout(timer);
+  }, [error]);
 
   function openEdit(item: AdminUserItem) {
     setEditing(item);

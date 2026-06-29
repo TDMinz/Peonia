@@ -4,19 +4,41 @@ function getAuthToken() {
   return localStorage.getItem('peonia_token') || '';
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      ...(options.headers || {}),
-      Authorization: `Bearer ${getAuthToken()}`,
-    },
-  });
+async function request<T>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const response = await fetch(
+    `${API_BASE_URL}${path}`,
+    {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    }
+  );
 
-  const contentType = response.headers.get('content-type') || '';
-  const raw = await response.text();
-  const data = contentType.includes('application/json') ? JSON.parse(raw) : { message: raw || `Request failed: ${response.status}` };
-  if (!response.ok) throw new Error(data?.message || 'Request failed');
+  const contentType =
+    response.headers.get('content-type') || '';
+
+  const data = contentType.includes(
+    'application/json'
+  )
+    ? await response.json()
+    : {
+        message:
+          (await response.text()) ||
+          `Request failed: ${response.status}`,
+      };
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message || 'Request failed'
+    );
+  }
+
   return data;
 }
 
@@ -30,22 +52,23 @@ export type AdminUserItem = {
 };
 
 export const adminUsersApi = {
-  list: () => request<{ data: AdminUserItem[] }>('/api/admin/users?limit=100'),
+  list: () =>
+    request<{ data: AdminUserItem[] }>(
+      '/api/admin/users?limit=100'
+    ),
+
   update: (
     id: string,
     payload: {
-        full_name: string;
-        role: AdminUserItem["role"];
-        is_active: boolean;
+      full_name: string;
+      role: AdminUserItem['role'];
+      is_active: boolean;
     }
-) =>
-request<{
-    user: AdminUserItem;
-}>(
-    `/api/admin/users/${id}`,
-    {
-        method: "PATCH",
-        body: JSON.stringify(payload),
-    }
-),
+  ) =>
+    request<{
+      user: AdminUserItem;
+    }>(`/api/admin/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
 };

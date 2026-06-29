@@ -1,7 +1,9 @@
-import { CheckCircle2, Eye, RefreshCw, Search, ShieldAlert, Trash2, XCircle } from 'lucide-react';
+import { CheckCircle2, RefreshCw, Search, Trash2, XCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { adminBookingsApi, type AdminBookingItem } from '../services/adminBookings';
+import ConfirmDialog from '../components/ConfirmDialog';
+import useSelection from '../hook/useSelection';
 
 export default function AdminWorkshopBookingsPage() {
   const [items, setItems] = useState<AdminBookingItem[]>([]);
@@ -11,6 +13,22 @@ export default function AdminWorkshopBookingsPage() {
   const [error, setError] = useState('');
   const [selected, setSelected] = useState<AdminBookingItem | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [deleteCode, setDeleteCode] = useState('');
+
+const {
+  selected: selectedBookings,
+  toggle: toggleBooking,
+  toggleAll,
+  clear,
+  isSelected,
+} = useSelection<string>();
+  
+
+const [showDeleteDialog, setShowDeleteDialog] =
+  useState(false);
+
+const [deleting, setDeleting] =
+  useState(false);
 
   async function loadData() {
     setLoading(true);
@@ -27,6 +45,25 @@ export default function AdminWorkshopBookingsPage() {
   }
 
   useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    if (!message) return;
+  
+    const timer = setTimeout(() => {
+      setMessage('');
+    }, 5000);
+  
+    return () => clearTimeout(timer);
+  }, [message]);
+  
+  useEffect(() => {
+    if (!error) return;
+  
+    const timer = setTimeout(() => {
+      setError('');
+    }, 5000);
+  
+    return () => clearTimeout(timer);
+  }, [error]);
 
   const filtered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -44,18 +81,76 @@ export default function AdminWorkshopBookingsPage() {
     }
   }
 
-  async function handleDelete(code: string) {
-    if (!confirm('Bạn chắc chắn muốn xoá booking này?')) return;
-    try {
-      await adminBookingsApi.remove(code);
-      setMessage('Xoá booking thành công.');
-      await loadData();
-      if (selected?.booking_code === code) setSelected(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Xoá booking thất bại');
-    }
+  function handleDelete(code: string) {
+    setDeleteCode(code);
+    setShowDeleteDialog(true);
   }
 
+  async function confirmDelete() {
+    try {
+      setDeleting(true);
+  
+      await adminBookingsApi.remove(deleteCode);
+  
+      setMessage('Xóa booking thành công.');
+  
+      await loadData();
+  
+      if (
+        selected?.booking_code === deleteCode
+      ) {
+        setSelected(null);
+      }
+  
+      setShowDeleteDialog(false);
+  
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Xóa booking thất bại'
+      );
+    } finally {
+      setDeleting(false);
+    }
+  }
+  async function confirmDeleteSelected() {
+    try {
+  
+      setDeleting(true);
+  
+      await Promise.all(
+  
+        selectedBookings.map((code) =>
+          adminBookingsApi.remove(code)
+        )
+  
+      );
+  
+      clear();
+  
+      await loadData();
+  
+      setMessage(
+        `Đã xóa ${selectedBookings.length} booking.`
+      );
+  
+      setShowDeleteDialog(false);
+  
+    } catch (err) {
+  
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Xóa thất bại'
+      );
+  
+    } finally {
+  
+      setDeleting(false);
+  
+    }
+  }
   
 
   async function handleReviewBill(
@@ -107,15 +202,59 @@ export default function AdminWorkshopBookingsPage() {
 
         {message ? <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{message}</div> : null}
         {error ? <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+        {selectedBookings.length > 0 && (
+  <div className="mb-5 flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
 
+    <div>
+      <p className="font-medium text-red-700">
+        Đã chọn {selectedBookings.length} booking
+      </p>
+
+      <p className="text-xs text-red-500">
+        Bạn có thể xóa nhiều booking cùng lúc.
+      </p>
+    </div>
+
+    <button
+      onClick={() => setShowDeleteDialog(true)}
+      className="rounded-full bg-red-600 px-5 py-3 text-white transition hover:bg-red-700"
+    >
+      Xóa đã chọn
+    </button>
+
+  </div>
+)}
         {loading ? (
           <div className="rounded-2xl border border-[#e8edf3] bg-[#f6f7fb] p-6 text-sm text-[#6f7b8b]">Đang tải...</div>
         ) : (
           <div className="overflow-hidden rounded-[1.5rem] border border-[#e8edf3]">
             <table className="w-full text-left text-sm">
               <thead className="bg-[#f6f7fb] text-[#8f9bb3]">
-                <tr>
-                  <th className="px-4 py-3">Workshop</th>
+              <tr>
+
+<th className="w-14 px-4 py-3">
+
+  <input
+    type="checkbox"
+    checked={
+      filtered.length > 0 &&
+      selectedBookings.length === filtered.length
+    }
+    onChange={() =>
+      toggleAll(
+        filtered.map(
+          item => item.booking_code
+        )
+      )
+    }
+    className="h-4 w-4 accent-emerald-700"
+  />
+
+</th>
+
+<th className="px-4 py-3">
+  Workshop
+</th>
                   <th className="px-4 py-3">Khách hàng</th>
                   <th className="px-4 py-3">SĐT</th>
                   <th className="px-4 py-3">Bill</th>
@@ -125,7 +264,33 @@ export default function AdminWorkshopBookingsPage() {
               </thead>
               <tbody>
                 {filtered.map((item) => (
-                  <tr key={item.id} className="border-t border-[#eef2f7] align-top">
+                  <tr
+                  key={item.id}
+                  className={`
+                    border-t
+                    border-[#eef2f7]
+                    align-top
+                    transition
+                    hover:bg-[#faf9f7]
+                    ${
+                      isSelected(item.booking_code)
+                        ? 'bg-emerald-50'
+                        : ''
+                    }
+                  `}
+                >
+                  <td className="px-4 py-4">
+
+<input
+  type="checkbox"
+  checked={isSelected(item.booking_code)}
+  onChange={() =>
+    toggleBooking(item.booking_code)
+  }
+  className="h-4 w-4 accent-emerald-700"
+/>
+
+</td>
                     <td className="px-4 py-4 text-[#6f7b8b]">
                       <div className="font-medium text-foreground">{item.workshop?.title || '—'}</div>
                       <div className="text-xs text-[#9aa4b2]">{item.workshop?.event_date ? new Date(item.workshop.event_date).toLocaleString('vi-VN') : ''}</div>
@@ -293,6 +458,41 @@ export default function AdminWorkshopBookingsPage() {
     </div>
   </div>
 )}
+<ConfirmDialog
+  open={showDeleteDialog}
+  type="delete"
+  title="Xóa booking"
+
+  description={
+    selectedBookings.length
+      ? `Bạn có chắc muốn xóa ${selectedBookings.length} booking đã chọn?`
+      : 'Bạn có chắc chắn muốn xóa booking này?'
+  }
+
+  confirmText="Xóa"
+
+  cancelText="Hủy"
+
+  loading={deleting}
+
+  onClose={() =>
+    setShowDeleteDialog(false)
+  }
+
+  onConfirm={() => {
+
+    if (selectedBookings.length > 0) {
+
+      confirmDeleteSelected();
+
+    } else {
+
+      confirmDelete();
+
+    }
+
+  }}
+/>
     </AdminLayout>
   );
 }

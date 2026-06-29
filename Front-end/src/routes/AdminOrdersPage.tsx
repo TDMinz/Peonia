@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import AdminPagination from '../components/AdminPagination';
 import { adminOrdersApi, type AdminOrderItem } from '../services/adminOrders';
+import ConfirmDialog from '../components/ConfirmDialog';
+import useSelection from '../hook/useSelection';
 
 const PAGE_SIZE = 8;
 const statusOptions = ['pending', 'confirmed', 'processing', 'completed', 'cancelled'] as const;
@@ -24,6 +26,21 @@ export default function AdminOrdersPage() {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState('pending');
   const [page, setPage] = useState(1);
+  const [deleteCode, setDeleteCode] = useState('');
+
+const [showDeleteDialog, setShowDeleteDialog] =
+  useState(false);
+
+const [deleting, setDeleting] =
+  useState(false);
+
+const {
+  selected: selectedOrders,
+  toggle: toggleOrder,
+  toggleAll,
+  clear,
+  isSelected,
+} = useSelection<string>();
 
   async function loadData() {
     setLoading(true);
@@ -40,6 +57,25 @@ export default function AdminOrdersPage() {
   }
 
   useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    if (!message) return;
+  
+    const timer = setTimeout(() => {
+      setMessage('');
+    }, 5000);
+  
+    return () => clearTimeout(timer);
+  }, [message]);
+  
+  useEffect(() => {
+    if (!error) return;
+  
+    const timer = setTimeout(() => {
+      setError('');
+    }, 5000);
+  
+    return () => clearTimeout(timer);
+  }, [error]);
 
   const filtered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -59,32 +95,131 @@ export default function AdminOrdersPage() {
 
   async function handleSaveStatus() {
     if (!selected) return;
+  
     setSaving(true);
     setError('');
     setMessage('');
+  
     try {
-      const data = await adminOrdersApi.updateStatus(selected.order_code, { status });
-      const updated = data.data || { ...selected, status };
-      setSelected(updated);
-      setItems((prev) => prev.map((item) => (item.order_code === updated.order_code ? { ...item, ...updated } : item)));
-      setMessage('Cập nhật trạng thái đơn hàng thành công.');
+      const data = await adminOrdersApi.updateStatus(
+        selected.order_code,
+        { status }
+      );
+  
+      const updated = data.data || {
+        ...selected,
+        status,
+      };
+  
+      setItems((prev) =>
+        prev.map((item) =>
+          item.order_code === updated.order_code
+            ? { ...item, ...updated }
+            : item
+        )
+      );
+  
+      // ⭐ Đóng popup
+      setSelected(null);
+  
+      // ⭐ Hiện thông báo
+      setMessage(
+        'Cập nhật trạng thái đơn hàng thành công.'
+      );
+  
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Cập nhật trạng thái thất bại');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Cập nhật trạng thái thất bại'
+      );
     } finally {
       setSaving(false);
     }
   }
 
-  async function handleDelete(code: string) {
-    if (!confirm('Bạn chắc chắn muốn xoá đơn hàng này?')) return;
+  function handleDelete(code: string) {
+
+    setDeleteCode(code);
+  
+    setShowDeleteDialog(true);
+  
+  }
+  async function confirmDelete() {
+
     try {
-      await adminOrdersApi.remove(code);
-      setMessage('Xoá đơn hàng thành công.');
+  
+      setDeleting(true);
+  
+      await adminOrdersApi.remove(deleteCode);
+  
+      setMessage(
+        'Xóa đơn hàng thành công.'
+      );
+  
       await loadData();
-      if (selected?.order_code === code) setSelected(null);
+  
+      if (
+        selected?.order_code === deleteCode
+      ) {
+        setSelected(null);
+      }
+  
+      setShowDeleteDialog(false);
+  
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Xoá đơn hàng thất bại');
+  
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Xóa thất bại'
+      );
+  
+    } finally {
+  
+      setDeleting(false);
+  
     }
+  
+  }
+  async function confirmDeleteSelected() {
+
+    try {
+  
+      setDeleting(true);
+  
+      await Promise.all(
+  
+        selectedOrders.map((code) =>
+          adminOrdersApi.remove(code)
+        )
+  
+      );
+  
+      clear();
+  
+      await loadData();
+      clear();
+      setMessage(
+        `Đã xóa ${selectedOrders.length} đơn hàng.`
+      );
+  
+      setShowDeleteDialog(false);
+  
+    } catch (err) {
+  
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Xóa thất bại'
+      );
+  
+    } finally {
+  
+      setDeleting(false);
+  
+    }
+  
   }
 
   return (
@@ -108,17 +243,108 @@ export default function AdminOrdersPage() {
 
         {message ? <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{message}</div> : null}
         {error ? <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+        {selectedOrders.length > 0 && (
 
+<div className="mb-5 flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
+
+  <div>
+
+    <p className="font-medium text-red-700">
+      Đã chọn {selectedOrders.length} đơn hàng
+    </p>
+
+    <p className="text-xs text-red-500">
+      Bạn có thể xóa nhiều đơn cùng lúc.
+    </p>
+
+  </div>
+
+  <button
+    onClick={() =>
+      setShowDeleteDialog(true)
+    }
+    className="rounded-full bg-red-600 px-5 py-3 text-white hover:bg-red-700"
+  >
+    Xóa đã chọn
+  </button>
+
+</div>
+
+)}
         {loading ? (
           <div className="rounded-2xl border border-[#e8edf3] bg-[#f6f7fb] p-6 text-sm text-[#6f7b8b]">Đang tải...</div>
         ) : (
           <>
             <div className="overflow-hidden rounded-[1.5rem] border border-[#e8edf3]">
               <table className="w-full text-left text-sm">
-                <thead className="bg-[#f6f7fb] text-[#8f9bb3]"><tr><th className="px-4 py-3">Mã đơn</th><th className="px-4 py-3">Người mua</th><th className="px-4 py-3">Trạng thái</th><th className="px-4 py-3 text-right">Thao tác</th></tr></thead>
+                <thead className="bg-[#f6f7fb] text-[#8f9bb3]">
+                <tr>
+
+<th className="w-14 px-4 py-3">
+
+<input
+
+type="checkbox"
+
+checked={
+paged.length > 0 &&
+selectedOrders.length === paged.length
+}
+
+onChange={()=>
+
+toggleAll(
+paged.map(
+item=>item.order_code
+)
+)
+
+}
+
+className="h-4 w-4 accent-emerald-700"
+
+/>
+
+</th>
+                    <th className="px-4 py-3">Mã đơn</th>
+                    <th className="px-4 py-3">Người mua</th>
+                    <th className="px-4 py-3">Trạng thái</th>
+                    <th className="px-4 py-3 text-right">Thao tác</th>
+                    </tr>
+                    </thead>
                 <tbody>
                   {paged.map((item) => (
-                    <tr key={item.id} className="border-t border-[#eef2f7]">
+                    <tr
+                    key={item.order_code}
+                    className={`
+                      border-t
+                      border-[#eef2f7]
+                      transition
+                      hover:bg-[#faf9f7]
+                      ${
+                        isSelected(item.order_code)
+                          ? 'bg-emerald-50'
+                          : ''
+                      }
+                    `}
+                  >
+                      <td className="px-4 py-4">
+
+<input
+
+type="checkbox"
+
+checked={isSelected(item.order_code)}
+
+onChange={()=>
+toggleOrder(item.order_code)
+}
+
+className="h-4 w-4 accent-emerald-700"
+
+/>
+
+</td>
                       <td className="px-4 py-4 font-medium text-foreground">{item.order_code}</td>
                       <td className="px-4 py-4 text-[#6f7b8b]">{item.buyer_name}</td>
                       <td className="px-4 py-4">
@@ -167,6 +393,33 @@ export default function AdminOrdersPage() {
           </div>
         </div>
       ) : null}
+      <ConfirmDialog
+  open={showDeleteDialog}
+  type="delete"
+  title="Xóa đơn hàng"
+  description={
+    selectedOrders.length
+      ? `Bạn có chắc muốn xóa ${selectedOrders.length} đơn hàng?`
+      : 'Bạn có chắc chắn muốn xóa đơn hàng này?'
+  }
+  confirmText="Xóa"
+  cancelText="Hủy"
+  loading={deleting}
+  onClose={() => setShowDeleteDialog(false)}
+  onConfirm={() => {
+
+    if (selectedOrders.length) {
+
+      confirmDeleteSelected();
+
+    } else {
+
+      confirmDelete();
+
+    }
+
+  }}
+/>
     </AdminLayout>
   );
 }

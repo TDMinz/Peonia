@@ -113,7 +113,7 @@ export default function Header({ cartCount }: HeaderProps) {
     'hoa-qua-tang': [
       { id: '1', name: 'Hoa bó', slug: 'hoa-bo', icon: 'bouquet' },
       { id: '2', name: 'Hoa giỏ', slug: 'hoa-gio', icon: 'basket' },
-      { id: '3', name: 'Hoa Mica', slug: 'hoa-mica', icon: 'mica' },
+      { id: '3', name: 'Box Mica', slug: 'box-mica', icon: 'mica' },
       { id: '4', name: 'Sinh nhật', slug: 'sinh-nhat', icon: 'birthday' },
       { id: '5', name: 'Ngày Lễ', slug: 'ngay-le', icon: 'holiday' },
       { id: '6', name: 'Tốt Nghiệp', slug: 'tot-nghiep', icon: 'graduation' },
@@ -155,9 +155,9 @@ export default function Header({ cartCount }: HeaderProps) {
         <div className="relative flex h-20 items-center justify-between gap-6">
         <a href="/" className="flex-shrink-0">
   <img
-    src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1781178365/Ngang_5cm_1_jcyq7h.png"
+    src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1782630659/1_c%C3%A1i_-_ngang_9cm_2_e7ugfo.png"
     alt="Peonia Studio"
-    className="h-26 w-auto"
+    className="h-28 w-auto"
   />
 </a>
 

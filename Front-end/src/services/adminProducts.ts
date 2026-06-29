@@ -36,7 +36,10 @@ export type AdminProductItem = {
   sale_price?: number;
   category_ids?: string[];
   created_at?: string;
+  is_featured?: boolean;
+  is_best_seller?: boolean;
 };
+
 
 export type AdminCategoryOption = {
   id: string;

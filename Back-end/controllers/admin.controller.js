@@ -43,6 +43,8 @@ function toProductResponse(product) {
     image_url: product.image_url || '',
     is_active: product.is_active,
     is_addon: product.is_addon,
+    is_featured: product.is_featured,
+    is_best_seller: product.is_best_seller,
   };
 }
 function toVariantResponse(variant) {
@@ -236,6 +238,8 @@ async function createProduct(req, res) {
       slug,
       description,
       is_addon,
+      is_featured,
+      is_best_seller,
       price,
       sale_price,
       categoryId,
@@ -291,6 +295,11 @@ async function createProduct(req, res) {
 
       is_addon:
         String(is_addon) === 'true',
+        is_featured:
+    String(is_featured) === 'true',
+
+  is_best_seller:
+    String(is_best_seller) === 'true',
 
       price: Number(price || 0),
 

@@ -109,7 +109,7 @@ export default function Footer() {
 
               <li>
                 <a href="/hoa-qua-tang/hoa-mica" className="hover:text-[#C49A6C]">
-                  • Hoa Mica
+                  • Box Mica
                 </a>
               </li>
 
