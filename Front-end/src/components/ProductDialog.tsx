@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Loader2, UploadCloud, X } from "lucide-react";
+import RichTextEditor from "../components/RichTextEditor";
 
 import type {
     AdminCategoryOption,
@@ -375,7 +376,7 @@ export default function ProductDialog({
 
                             {/* Mô tả */}
 
-                            
+
                         </div>
 
                         <div className="space-y-5">
@@ -451,74 +452,78 @@ export default function ProductDialog({
 
                             {/* Checkbox */}
 
-                            
-                            
+
+
                         </div>
-                        
-                        
+
+
                     </div>
                     {/* Phân loại */}
 
-<div className="rounded-2xl border border-[#eef2f7] bg-white p-5">
-  <h3 className="mb-4 text-sm font-semibold text-slate-700">
-    Phân loại
-  </h3>
+                    <div className="rounded-2xl border border-[#eef2f7] bg-white p-5">
+                        <h3 className="mb-4 text-sm font-semibold text-slate-700">
+                            Phân loại
+                        </h3>
 
-  <div className="grid grid-cols-2 gap-6">
-    <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#eef2f7] p-4 transition hover:border-emerald-300 hover:bg-emerald-50">
-      <input
-        type="checkbox"
-        checked={form.is_featured}
-        onChange={(e) =>
-          setForm((prev: ProductForm) => ({
-            ...prev,
-            is_featured: e.target.checked,
-          }))
-        }
-        className="h-4 w-4"
-      />
-
-      <span className="font-medium text-slate-700">
-        ⭐ Sản phẩm nổi bật
-      </span>
-    </label>
-
-    <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#eef2f7] p-4 transition hover:border-rose-300 hover:bg-rose-50">
-      <input
-        type="checkbox"
-        checked={form.is_best_seller}
-        onChange={(e) =>
-          setForm((prev: ProductForm) => ({
-            ...prev,
-            is_best_seller: e.target.checked,
-          }))
-        }
-        className="h-4 w-4"
-      />
-
-      <span className="font-medium text-slate-700">
-        🔥 Sản phẩm bán chạy
-      </span>
-    </label>
-  </div>
-</div>
-                    <label className="block">
-                                <span className="mb-2 block text-sm font-medium">
-                                    Mô tả
-                                </span>
-
-                                <textarea
-                                    rows={12}
-                                    value={form.description}
+                        <div className="grid grid-cols-2 gap-6">
+                            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#eef2f7] p-4 transition hover:border-emerald-300 hover:bg-emerald-50">
+                                <input
+                                    type="checkbox"
+                                    checked={form.is_featured}
                                     onChange={(e) =>
                                         setForm((prev: ProductForm) => ({
                                             ...prev,
-                                            description: e.target.value,
+                                            is_featured: e.target.checked,
                                         }))
                                     }
-                                    className="w-full resize-y rounded-2xl border border-[#e8edf3] bg-[#f6f7fb] px-4 py-3 outline-none"
+                                    className="h-4 w-4"
                                 />
+
+                                <span className="font-medium text-slate-700">
+                                    ⭐ Sản phẩm nổi bật
+                                </span>
                             </label>
+
+                            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#eef2f7] p-4 transition hover:border-rose-300 hover:bg-rose-50">
+                                <input
+                                    type="checkbox"
+                                    checked={form.is_best_seller}
+                                    onChange={(e) =>
+                                        setForm((prev: ProductForm) => ({
+                                            ...prev,
+                                            is_best_seller: e.target.checked,
+                                        }))
+                                    }
+                                    className="h-4 w-4"
+                                />
+
+                                <span className="font-medium text-slate-700">
+                                    🔥 Sản phẩm bán chạy
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <label className="block">
+                        
+
+                        <label className="block">
+
+                            <span className="mb-2 block text-sm font-medium">
+                                Mô tả
+                            </span>
+
+                            <RichTextEditor
+                                value={form.description}
+                                onChange={(value) =>
+                                    setForm(prev => ({
+                                        ...prev,
+                                        description: value
+                                    }))
+                                }
+                            />
+
+                        </label>
+                    </label>
                     {/* ===========================
             DANH MỤC
     =========================== */}
@@ -571,7 +576,7 @@ export default function ProductDialog({
                             Hình ảnh sản phẩm
                         </h3>
 
-                        
+
 
                         {/* Thumbnail */}
 
@@ -670,7 +675,7 @@ export default function ProductDialog({
 
                         {/* Nút chọn nhanh */}
 
-                        
+
                     </div>
 
 

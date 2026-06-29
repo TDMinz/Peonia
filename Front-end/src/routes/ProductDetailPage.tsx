@@ -1,10 +1,16 @@
-import { ArrowLeft, CheckCircle2, Minus, Plus, ShoppingCart,Phone,MessageCircle  } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Minus, Plus, ShoppingCart, Phone, MessageCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import ProductCard from '../components/ProductCard';
+import { useNavigate } from "react-router-dom";
 import { api, type CategoryDto, type ProductDto } from '../services/api';
 import { addToCart } from '../services/cart';
+import {
+  PhotoProvider,
+  PhotoView,
+} from "react-photo-view";
+
+import "react-photo-view/dist/react-photo-view.css";
 
 function formatPrice(value?: number) {
   if (typeof value !== 'number') return 'Liên hệ';
@@ -12,13 +18,15 @@ function formatPrice(value?: number) {
 }
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ProductDto[]>([]);
   const [, setCategories] = useState<CategoryDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] =
     useState('');
-  
+
+
   useEffect(() => {
     let mounted = true;
     Promise.all([api.products(), api.categories({ is_active: true })])
@@ -41,12 +49,13 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
     };
   }, []);
 
+
   const normalizedSlug = decodeURIComponent(slug).trim().toLowerCase();
   const product = useMemo(() => products.find((item) => String(item.slug || '').trim().toLowerCase() === normalizedSlug), [products, normalizedSlug]);
 
   const images = useMemo<string[]>(() => {
     if (!product) return [];
-  
+
     return Array.from(
       new Set(
         [product.image_url, ...(product.images || [])].filter(
@@ -123,24 +132,72 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
       <Header cartCount={0} />
       <main className="bg-[#fbf7f1] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <div className="mx-auto max-w-7xl">
-          <a href="/" className="mb-6 inline-flex items-center gap-2 text-sm text-[#6f7b8b] hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> Quay lại
-          </a>
+        <div className="mb-4">
+          <button
+  onClick={() => navigate(-1)}
+  className="
+    inline-flex
+    items-center
+    gap-2
+    rounded-full
+    border
+    border-[#d8e1ea]
+    bg-white
+    px-5
+    py-3
+    text-sm
+    font-medium
+    text-slate-700
+    shadow-sm
+    transition
+    hover:-translate-x-1
+    hover:border-emerald-900
+    hover:bg-emerald-950
+    hover:text-white
+  "
+>
+  <ArrowLeft size={18} />
+  Quay lại
+</button>
+        </div>
 
           <div className="overflow-hidden rounded-[2.5rem] border border-[#e8edf3] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
             <div className="grid lg:grid-cols-2">
               <div className="border-b border-[#e8edf3] bg-[#f6f7fb] p-4 lg:border-b-0 lg:border-r">
                 <div className="overflow-hidden rounded-[2rem] bg-white">
-                  <img
-                    src={
-                      selectedImage ||
-                      images[0] ||
-                      product.image_url ||
-                      ''
-                    }
-                    alt={product.name}
-                    className="aspect-[4/5] w-full object-cover"
-                  />
+                  <PhotoProvider
+                    maskOpacity={0.95}
+                    bannerVisible={false}
+                  >
+                    <PhotoView
+                      src={
+                        selectedImage ||
+                        images[0] ||
+                        product.image_url ||
+                        ""
+                      }
+                    >
+                      <img
+                        src={
+                          selectedImage ||
+                          images[0] ||
+                          product.image_url ||
+                          ""
+                        }
+                        alt={product.name}
+                        className="
+          h-[700px]
+          w-full
+          cursor-zoom-in
+          rounded-[2rem]
+          object-cover
+          transition
+          duration-300
+          hover:scale-[1.02]
+        "
+                      />
+                    </PhotoView>
+                  </PhotoProvider>
                 </div>
               </div>
 
@@ -154,49 +211,44 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                   {originalPrice ? <p className="text-lg text-[#8f9bb3] line-through">{originalPrice}</p> : null}
                 </div>
 
-                <div className="mt-6 rounded-[1.5rem] border border-[#e8edf3] bg-[#f6f7fb] p-5">
-                  <p className="text-xs uppercase tracking-[0.35em] text-[#8f9bb3]">Mô tả</p>
-                  <p className="mt-3 text-sm leading-8 text-[#6f7b8b]">{product.description || 'Sản phẩm được tuyển chọn với phong cách premium, tinh tế và phù hợp cho nhiều dịp tặng quà.'}</p>
-                </div>
-                {images.length > 1 && (
-  <div className="mt-5">
-    <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#8f9bb3]">
-      Hình ảnh sản phẩm
-    </p>
 
-    <div className="flex gap-3 overflow-x-auto pb-2">
-      {images.map((src, index) => (
-        <button
-          key={`${src}-${index}`}
-          type="button"
-          onClick={() =>
-            setSelectedImage(src)
-          }
-          className={`
+                {images.length > 1 && (
+                  <div className="mt-5">
+                    <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#8f9bb3]">
+                      Hình ảnh sản phẩm
+                    </p>
+
+                    <div className="flex gap-3 overflow-x-auto pb-2">
+                      {images.map((src, index) => (
+                        <button
+                          key={`${src}-${index}`}
+                          type="button"
+                          onClick={() =>
+                            setSelectedImage(src)
+                          }
+                          className={`
             overflow-hidden
             rounded-2xl
             border-2
             transition-all
             shrink-0
-            ${
-              selectedImage === src
-                ? 'border-emerald-700'
-                : 'border-[#e8edf3]'
-            }
+            ${selectedImage === src
+                              ? 'border-emerald-700'
+                              : 'border-[#e8edf3]'
+                            }
           `}
-        >
-          <img
-            src={src}
-            alt={`${product.name} ${
-              index + 1
-            }`}
-            className="h-24 w-24 object-cover"
-          />
-        </button>
-      ))}
-    </div>
-  </div>
-)}
+                        >
+                          <img
+                            src={src}
+                            alt={`${product.name} ${index + 1
+                              }`}
+                            className="h-24 w-24 object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
 
 
@@ -218,34 +270,34 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                   </div>
 
                   <div className="mt-5 space-y-3">
-  <button
-    type="button"
-    onClick={() =>
-      addToCart(
-        {
-          id: String(product.id),
-          product_id: String(product.id),
-          name: product.name,
-          price,
-          image:
-            selectedImage ||
-            images[0] ||
-            product.image_url ||
-            '',
-        },
-        quantity
-      )
-    }
-    className="w-full rounded-full bg-emerald-950 px-5 py-4 text-sm font-medium text-white transition hover:bg-emerald-900"
-  >
-    <ShoppingCart className="mr-2 inline h-4 w-4" />
-    Thêm vào giỏ
-  </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addToCart(
+                          {
+                            id: String(product.id),
+                            product_id: String(product.id),
+                            name: product.name,
+                            price,
+                            image:
+                              selectedImage ||
+                              images[0] ||
+                              product.image_url ||
+                              '',
+                          },
+                          quantity
+                        )
+                      }
+                      className="w-full rounded-full bg-emerald-950 px-5 py-4 text-sm font-medium text-white transition hover:bg-emerald-900"
+                    >
+                      <ShoppingCart className="mr-2 inline h-4 w-4" />
+                      Thêm vào giỏ
+                    </button>
 
-  <div className="grid grid-cols-2 gap-3">
-    <a
-      href="tel:0963552971"
-      className="
+                    <div className="grid grid-cols-2 gap-3">
+                      <a
+                        href="tel:0963552971"
+                        className="
         flex items-center justify-center gap-2
         rounded-full
         bg-lime-600
@@ -255,15 +307,15 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
         transition
         hover:bg-lime-700
       "
-    >
-      <Phone className="h-4 w-4" /> 0352363833
-    </a>
+                      >
+                        <Phone className="h-4 w-4" /> 0352363833
+                      </a>
 
-    <a
-      href="https://zalo.me/0352363833"
-      target="_blank"
-      rel="noreferrer"
-      className="
+                      <a
+                        href="https://zalo.me/0352363833"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="
         flex items-center justify-center gap-2
         rounded-full
         bg-sky-500
@@ -273,12 +325,12 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
         transition
         hover:bg-sky-600
       "
-    >
-      <MessageCircle className="h-4 w-4" /> 
-      ZALO
-    </a>
-  </div>
-</div>
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        ZALO
+                      </a>
+                    </div>
+                  </div>
 
                   <div className="mt-4 flex items-center gap-2 text-sm text-emerald-700">
                     <CheckCircle2 className="h-4 w-4" /> Thanh toán an toàn, giao nhanh, đóng gói tinh tế.
@@ -287,43 +339,55 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
               </div>
             </div>
           </div>
+          {/* ================= MÔ TẢ SẢN PHẨM ================= */}
 
-          <section className="mt-20 ">
-            <div className="mb-6 flex justify-center">
-              <div className="text-center">
+          <section className="mt-16">
+
+            <div className="rounded-[2.5rem] bg-white px-16 lg:px-24 py-14 shadow-[0_20px_60px_rgba(15,23,42,.05)]">
+
+              <div className="mb-10 text-center">
+
                 <p className="text-sm uppercase tracking-[0.35em] text-[#8f9bb3]">
-                  Gợi ý
+                  Thông tin
                 </p>
-                <h2 className="mt-2 font-serif text-3xl font-light text-foreground">
-                  Sản Phẩm Tương Tự
+
+                <h2 className="mt-2 font-serif text-4xl font-light text-foreground">
+                  Mô Tả Sản Phẩm
                 </h2>
+
               </div>
+
+              <article
+                className="
+        prose
+    prose-lg
+    max-w-none
+
+    prose-headings:font-serif
+    prose-headings:font-light
+
+    prose-p:leading-9
+    prose-li:leading-9
+
+    prose-ul:marker:text-slate-700
+    prose-ol:marker:text-slate-700
+
+    prose-img:rounded-3xl
+    prose-img:mx-auto
+    prose-img:w-full
+      "
+                dangerouslySetInnerHTML={{
+                  __html: product.description || "",
+                }}
+              />
+
             </div>
 
-            {similarProducts.length === 0 ? (
-              <div className="rounded-[2rem] border border-dashed border-[#d8e1ea] bg-white p-10 text-center text-sm text-[#6f7b8b]">
-                Chưa có sản phẩm tương tự trong danh mục này.
-              </div>
-            ) : (
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 mx-auto max-w-6xl">
-                {similarProducts.map((item) => (
-                  <ProductCard
-                    key={item.id}
-                    id={item.id}
-                    slug={item.slug}
-                    name={item.name}
-                    price={formatPrice(item.sale_price ?? item.price)}
-                    image={item.image_url || item.images?.[0] || ''}
-                    originalPrice={item.sale_price && item.price && item.sale_price < item.price ? formatPrice(item.price) : undefined}
-                    tag={item.is_featured ? 'HOT' : item.is_best_seller ? 'BEST' : undefined}
-                    variant="default"
-                  />
-                ))}
-              </div>
-            )}
           </section>
+
         </div>
       </main>
+
       <Footer />
     </>
   );
