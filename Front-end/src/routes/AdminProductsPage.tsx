@@ -53,6 +53,17 @@ export default function AdminProductsPage() {
 
   const [categoryFilter, setCategoryFilter] =
     useState("");
+  const [typeFilter, setTypeFilter] =
+    useState<
+      "all" |
+      "featured" |
+      "bestSeller" |
+      "both" |
+      "normal"
+    >("all");
+
+  const [showTypeFilter, setShowTypeFilter] =
+    useState(false);
 
   const [showCategoryFilter, setShowCategoryFilter] =
     useState(false);
@@ -121,7 +132,11 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [search, categoryFilter]);
+  }, [
+    search,
+    categoryFilter,
+    typeFilter,
+  ]);
 
   const filtered = useMemo(() => {
     const keyword =
@@ -146,15 +161,30 @@ export default function AdminProductsPage() {
           categoryFilter
         );
 
+      const matchType =
+        typeFilter === "all"
+          ? true
+          : typeFilter === "featured"
+            ? item.is_featured
+            : typeFilter === "bestSeller"
+              ? item.is_best_seller
+              : typeFilter === "both"
+                ? item.is_featured &&
+                item.is_best_seller
+                : !item.is_featured &&
+                !item.is_best_seller;
+
       return (
         matchSearch &&
-        matchCategory
+        matchCategory &&
+        matchType
       );
     });
   }, [
     items,
     search,
     categoryFilter,
+    typeFilter,
   ]);
 
   const paged = useMemo(
@@ -393,19 +423,19 @@ export default function AdminProductsPage() {
                 <RefreshCw className="h-4 w-4" />
               </button>
             </div>
-            
+
 
           </div>
           {selectedIds.length > 0 && (
-              <div className="mb-5 flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
-                <span className="font-medium text-red-700">
-                  Đã chọn {selectedIds.length} sản phẩm
-                </span>
+            <div className="mb-5 flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
+              <span className="font-medium text-red-700">
+                Đã chọn {selectedIds.length} sản phẩm
+              </span>
 
-                <button
-                  type="button"
-                  onClick={() => openDeleteDialog()}
-                                    className="
+              <button
+                type="button"
+                onClick={() => openDeleteDialog()}
+                className="
                           inline-flex
                           items-center
                           gap-2
@@ -419,101 +449,264 @@ export default function AdminProductsPage() {
                           transition
                            hover:bg-red-700
                                              "
-                >
-                  <Trash2 className="h-4 w-4" />
+              >
+                <Trash2 className="h-4 w-4" />
 
-                  Xóa đã chọn
-                </button>
-              </div>
-            )}
-          <div className="relative mb-6 mt-4">
+                Xóa đã chọn
+              </button>
+            </div>
+          )}
+          <div className="mb-6 mt-4 flex flex-wrap gap-4">
+
+{/* ================= DANH MỤC ================= */}
+
+<div className="relative">
+
+  <button
+    type="button"
+    onClick={() => {
+      setShowCategoryFilter((prev) => !prev);
+      setShowTypeFilter(false);
+    }}
+    className="
+      flex
+      min-w-[230px]
+      items-center
+      justify-between
+      rounded-2xl
+      border
+      border-[#e8edf3]
+      bg-white
+      px-5
+      py-3
+      text-sm
+      shadow-sm
+      transition
+      hover:border-emerald-300
+    "
+  >
+    <span>
+      Danh mục:&nbsp;
+
+      <span className="font-medium">
+        {categoryFilter
+          ? categories.find(
+              (c) => c.id === categoryFilter
+            )?.name
+          : "Tất cả"}
+      </span>
+    </span>
+
+    <ChevronDown
+      className={`h-4 w-4 transition ${
+        showCategoryFilter
+          ? "rotate-180"
+          : ""
+      }`}
+    />
+  </button>
+
+  {showCategoryFilter && (
+
+    <div
+      className="
+        absolute
+        left-0
+        top-[calc(100%+12px)]
+        z-50
+        w-[360px]
+        rounded-2xl
+        border
+        border-[#e8edf3]
+        bg-white
+        p-4
+        shadow-xl
+      "
+    >
+
+      <div className="flex flex-wrap gap-2">
+
+        <button
+          type="button"
+          onClick={() => {
+            setCategoryFilter("");
+            setShowCategoryFilter(false);
+          }}
+          className={`rounded-full px-4 py-2 text-sm ${
+            categoryFilter === ""
+              ? "bg-emerald-950 text-white"
+              : "bg-[#f6f7fb]"
+          }`}
+        >
+          Tất cả
+        </button>
+
+        {categories
+          .filter(
+            (c) =>
+              c.slug !== "hoa-qua-tang" &&
+              c.slug !== "hoa-trang-tri"
+          )
+          .map((category) => (
+
             <button
+              key={category.id}
               type="button"
-              onClick={() =>
-                setShowCategoryFilter(
-                  !showCategoryFilter
-                )
-              }
-              className="
-    flex items-center gap-2
-    rounded-2xl
-    border border-[#e8edf3]
-    bg-white
-    px-4 py-3
-    text-sm
-    shadow-sm
-  "
-            >
-              Lọc theo danh mục
+              onClick={() => {
+                setCategoryFilter(
+                  category.id
+                );
 
-              <ChevronDown
-                className={`h-4 w-4 transition-transform duration-300 ${showCategoryFilter
-                  ? 'rotate-180'
-                  : ''
-                  }`}
-              />
+                setShowCategoryFilter(false);
+              }}
+              className={`rounded-full px-4 py-2 text-sm ${
+                categoryFilter ===
+                category.id
+                  ? "bg-emerald-950 text-white"
+                  : "bg-[#f6f7fb]"
+              }`}
+            >
+              {category.name}
             </button>
 
-            {showCategoryFilter && (
-              <div
-                className="
-    absolute
-    left-0
-    top-full
-    z-50
-    mt-3
-    rounded-2xl
-    border border-[#e8edf3]
-    bg-white
-    p-4
-    shadow-xl
-    min-w-[500px]
-  "
-              >
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCategoryFilter('');
-                      setShowCategoryFilter(false);
-                    }}
-                    className={`rounded-full px-4 py-2 text-sm ${categoryFilter === ''
-                      ? 'bg-emerald-950 text-white'
-                      : 'bg-[#f6f7fb]'
-                      }`}
-                  >
-                    Tất cả
-                  </button>
+          ))}
 
-                  {categories
-                    .filter(
-                      (c) =>
-                        c.slug !== 'hoa-qua-tang' &&
-                        c.slug !== 'hoa-trang-tri'
-                    )
-                    .map((category) => (
-                      <button
-                        key={category.id}
-                        type="button"
-                        onClick={() => {
-                          setCategoryFilter(
-                            category.id
-                          );
-                          setShowCategoryFilter(false);
-                        }}
-                        className={`rounded-full px-4 py-2 text-sm ${categoryFilter ===
-                          category.id
-                          ? 'bg-emerald-950 text-white'
-                          : 'bg-[#f6f7fb]'
-                          }`}
-                      >
-                        {category.name}
-                      </button>
-                    ))}
-                </div>
-              </div>
-            )}
-          </div>
+      </div>
+
+    </div>
+
+  )}
+
+</div>
+
+{/* ================= PHÂN LOẠI ================= */}
+
+<div className="relative">
+
+  <button
+    type="button"
+    onClick={() => {
+      setShowTypeFilter((prev) => !prev);
+      setShowCategoryFilter(false);
+    }}
+    className="
+      flex
+      min-w-[230px]
+      items-center
+      justify-between
+      rounded-2xl
+      border
+      border-[#e8edf3]
+      bg-white
+      px-5
+      py-3
+      text-sm
+      shadow-sm
+      transition
+      hover:border-emerald-300
+    "
+  >
+    <span>
+      Phân loại:&nbsp;
+
+      <span className="font-medium">
+
+        {{
+          all: "Tất cả",
+          featured: "⭐ Nổi bật",
+          bestSeller: "🔥 Bán chạy",
+          both: "⭐🔥 Nổi bật & bán chạy",
+          normal: "Thông thường",
+        }[typeFilter]}
+
+      </span>
+    </span>
+
+    <ChevronDown
+      className={`h-4 w-4 transition ${
+        showTypeFilter
+          ? "rotate-180"
+          : ""
+      }`}
+    />
+  </button>
+
+  {showTypeFilter && (
+
+    <div
+      className="
+        absolute
+        left-0
+        top-[calc(100%+12px)]
+        z-50
+        w-[280px]
+        rounded-2xl
+        border
+        border-[#e8edf3]
+        bg-white
+        p-3
+        shadow-xl
+      "
+    >
+
+      {[
+        {
+          value: "all",
+          label: "Tất cả",
+        },
+        {
+          value: "featured",
+          label: "⭐ Nổi bật",
+        },
+        {
+          value: "bestSeller",
+          label: "🔥 Bán chạy",
+        },
+        {
+          value: "both",
+          label:
+            "⭐🔥 Nổi bật & bán chạy",
+        },
+        {
+          value: "normal",
+          label: "Thông thường",
+        },
+      ].map((option) => (
+
+        <button
+          key={option.value}
+          type="button"
+          onClick={() => {
+            setTypeFilter(
+              option.value as
+                | "all"
+                | "featured"
+                | "bestSeller"
+                | "both"
+                | "normal"
+            );
+
+            setShowTypeFilter(false);
+          }}
+          className={`mb-2 block w-full rounded-xl px-4 py-3 text-left transition ${
+            typeFilter === option.value
+              ? "bg-emerald-950 text-white"
+              : "hover:bg-[#f6f7fb]"
+          }`}
+        >
+          {option.label}
+        </button>
+
+      ))}
+
+    </div>
+
+  )}
+
+</div>
+
+</div>
+          
           {loading ? (
             <div className="rounded-2xl border border-[#e8edf3] bg-[#f6f7fb] p-6 text-sm text-[#6f7b8b]">Đang tải...</div>
           ) : (
@@ -697,7 +890,7 @@ export default function AdminProductsPage() {
         title={
           deleteId
             ? "Xóa sản phẩm"
-            :""
+            : `Xóa ${selectedIds.length} sản phẩm`
         }
         description={
           deleteId
