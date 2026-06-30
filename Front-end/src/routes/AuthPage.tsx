@@ -214,7 +214,7 @@ export default function AuthPage({ initialMode = 'login' }: AuthPageProps) {
 
               <div className="mb-6">
                 <p className="text-xs uppercase tracking-[0.35em] text-[#8f877d]">{title}</p>
-                <h1 className="mt-3 font-serif text-4xl font-light text-foreground md:text-5xl">{mode === 'login' ? 'Chào mừng trở lại' : mode === 'register' ? '' : mode === 'forgot' ? 'Khôi phục mật khẩu' : mode === 'verify' ? 'Nhập mã đã gửi' : 'Tạo mật khẩu mới'}</h1>
+                <h1 className="mt-3 font-serif text-4xl font-light text-foreground md:text-5xl">{mode === 'login' ? '' : mode === 'register' ? '' : mode === 'forgot' ? 'Khôi Phục Mật Khẩu' : mode === 'verify' ? 'Nhập mã đã gửi' : 'Tạo mật khẩu mới'}</h1>
               </div>
 
               {message ? <div className="mb-4 rounded-2xl border border-[#d9cabb] bg-[#fbf7f1] px-4 py-3 text-sm text-[#6f665d]">{message}</div> : null}

@@ -37,11 +37,15 @@ export default function AdminProductsPage() {
   const [search, setSearch] =
     useState("");
 
-  const [message, setMessage] =
-    useState("");
-
-  const [, setError] =
-    useState("");
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+    
+    const [showResultDialog, setShowResultDialog] =
+      useState(false);
+    
+    const [resultType, setResultType] = useState<
+      "success" | "warning"
+    >("success");
 
   const [showProductDialog, setShowProductDialog] =
     useState(false);
@@ -273,17 +277,19 @@ export default function AdminProductsPage() {
           formData
         );
 
-        setMessage(
-          "Cập nhật sản phẩm thành công."
-        );
+        
+
+setResultType("success");
+setShowResultDialog(true);
       } else {
         await adminProductsApi.create(
           formData
         );
 
-        setMessage(
-          "Tạo sản phẩm thành công."
-        );
+        
+
+        setResultType("success");
+        setShowResultDialog(true);
       }
 
       await loadData();
@@ -295,11 +301,15 @@ export default function AdminProductsPage() {
         behavior: "smooth",
       });
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Lưu sản phẩm thất bại"
-      );
+      const msg =
+  err instanceof Error
+    ? err.message
+    : "Lưu sản phẩm thất bại";
+
+setError(msg);
+
+setResultType("warning");
+setShowResultDialog(true);
     } finally {
       setSaving(false);
     }
@@ -337,6 +347,8 @@ export default function AdminProductsPage() {
         setMessage(
           "Xóa sản phẩm thành công."
         );
+        setResultType("success");
+setShowResultDialog(true);
       } else {
         await Promise.all(
           selectedIds.map((id) =>
@@ -356,11 +368,15 @@ export default function AdminProductsPage() {
       setPage(1);
       closeDeleteDialog();
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Xóa sản phẩm thất bại"
-      );
+      const msg =
+  err instanceof Error
+    ? err.message
+    : "Xóa sản phẩm thất bại";
+
+setError(msg);
+
+setResultType("warning");
+setShowResultDialog(true);
     } finally {
       setDeleting(false);
     }
@@ -900,6 +916,23 @@ export default function AdminProductsPage() {
         confirmText="Xóa"
         cancelText="Hủy"
       />
+      <ConfirmDialog
+  open={showResultDialog}
+  type={resultType}
+  title={
+    resultType === "success"
+      ? "Thành công"
+      : "Có lỗi xảy ra"
+  }
+  description={
+    resultType === "success"
+      ? message
+      : error
+  }
+  confirmText="Đóng"
+  onClose={() => setShowResultDialog(false)}
+  onConfirm={() => setShowResultDialog(false)}
+/>
     </AdminLayout>
   );
 }
