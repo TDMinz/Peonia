@@ -15,27 +15,27 @@ const banners = [
   {
     id: 1,
     image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782655521/%E1%BA%A2nh_b%C3%ACa_azysp5.png',
-    title: 'Hoa Tươi Sang Trọng',
-    subtitle: 'Biểu lộ tình cảm của bạn qua những bó hoa độc đáo',
+    title: '',
+    subtitle: '',
   },
   {
     id: 2,
     image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781431550/z7935468161539_da0f5053c8580ac80a4219fe0621eadb_pybuod.jpg',
-    title: 'Bộ Sưu Tập Mới',
-    subtitle: 'Khám phá những sáng tạo hoa tươi nhất của mùa',
+    title: '',
+    subtitle: '',
     
   },
   {
     id: 3,
     image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782558828/ca0221645318362a214ae8f7db05e848_eltng5.jpg',
-    title: 'Dịch Vụ Events',
-    subtitle: 'Trang trí sự kiện đặc biệt của bạn với hoa tươi',
+    title: '',
+    subtitle: '',
   },
   {
     id: 4,
     image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782558920/85d108980ca46f31672e2a5a5023499a_wj0ewx.jpg',
-    title: 'Workshop Cắm Hoa',
-    subtitle: 'Học cách tạo những bó hoa đẹp từ các chuyên gia',
+    title: '',
+    subtitle: '',
   },
 ];
 
