@@ -20,7 +20,7 @@ export default function Footer() {
             </h3>
 
             <p className="mb-4 leading-8 text-[#6f6258]">
-              Chuyên hoa tươi, hoa nội thất, workshop cắm hoa
+              Chuyên hoa sáp, hoa nội thất, workshop cắm hoa
               <br />
               và trang trí sự kiện với phong cách tinh tế, sang trọng.
               <br />
@@ -40,7 +40,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <Phone className="mt-1 h-5 w-5 text-[#C49A6C]" />
                 <span className="text-[#6f6258]">
-                  0352 363 833
+                  0352 363 833/ 0327 082 507/ 0399 389 933
                 </span>
               </li>
 

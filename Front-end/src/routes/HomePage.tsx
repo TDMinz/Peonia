@@ -14,26 +14,26 @@ import ProductSlide from "../components/ProductSlide";
 const banners = [
   {
     id: 1,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782655521/%E1%BA%A2nh_b%C3%ACa_azysp5.png',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912395/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_a0bssp.jpg',
     title: '',
     subtitle: '',
   },
   {
     id: 2,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781431550/z7935468161539_da0f5053c8580ac80a4219fe0621eadb_pybuod.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912405/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_1_uaahhw.jpg',
     title: '',
     subtitle: '',
     
   },
   {
     id: 3,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782558828/ca0221645318362a214ae8f7db05e848_eltng5.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912428/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_2_gogjms.jpg',
     title: '',
     subtitle: '',
   },
   {
     id: 4,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1782558920/85d108980ca46f31672e2a5a5023499a_wj0ewx.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912451/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_3_fwnhaq.jpg',
     title: '',
     subtitle: '',
   },
@@ -656,29 +656,7 @@ export function HomePage() {
           />
         </section>
 
-        <section className="bg-white py-20">
-
-          {/* Tiêu đề vẫn giới hạn chiều rộng */}
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-12 text-center">
-
-
-              <h2 className="font-serif text-3xl font-light text-foreground">
-                SẢN PHẨM MỚI
-              </h2>
-
-              <p className="mt-4 text-muted-foreground">
-                Những mẫu sản phẩm mới, độc đáo và đầy cá tính
-              </p>
-            </div>
-          </div>
-
-          {/* Danh sách sản phẩm full width */}
-          <ProductSlide
-            products={hotProducts}
-            mapToCard={mapToCard}
-          />
-        </section>
+        
 
 
 
@@ -687,8 +665,8 @@ export function HomePage() {
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[6000ms] ease-out group-hover:scale-110"
             style={{
-              backgroundImage: `url("https://res.cloudinary.com/di4qsw8gl/image/upload/v1781688747/t%E1%BA%A3i_xu%E1%BB%91ng_9_pwv0sw.jpg")`,
-            }}
+    backgroundImage: `url("https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912471/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_5_da9pev.jpg")`,
+  }}
           />
 
           <div className="absolute inset-0 bg-black/10 bg-white/45" />
