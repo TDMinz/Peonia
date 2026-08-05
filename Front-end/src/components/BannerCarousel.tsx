@@ -114,7 +114,7 @@ export default function BannerCarousel({
           absolute
           right-6
           top-1/2
-          z-20
+          z-[999]
           -translate-y-1/2
           rounded-full
           bg-white/20

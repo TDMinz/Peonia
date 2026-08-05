@@ -14,8 +14,12 @@ import ChangePasswordPage from './routes/ChangePasswordPage';
 import ProductDetailPage from './routes/ProductDetailPage';
 import FloatingContactButton from './components/FloatingContactButton';
 import AboutPage from './routes/AboutPage';
+import PrivacyPolicyPage from './routes/PrivacyPolicy';
+import OrderWarrantyPage from './routes/OrderWarrantyPolicyPage';
+import ShippingPolicyPage from './routes/ShippingPolicyPage';
+import PaymentPolicyPage from './routes/PaymentPolicyPage';
 
-type Route = 'home' | 'about' |'gift-bouquets' | 'workshop' | 'events' | 'cart' | 'checkout' | 'category' | 'admin' | 'staff' | 'auth-login' | 'auth-register' | 'auth-forgot' | 'order-history' | 'change-password' | 'product-detail';
+type Route = 'home' | 'about' | 'privacy-policy' | 'order-warranty' | 'shipping-policy' | 'payment-policy' | 'gift-bouquets' | 'workshop' | 'events' | 'cart' | 'checkout' | 'category' | 'admin' | 'staff' | 'auth-login' | 'auth-register' | 'auth-forgot' | 'order-history' | 'change-password' | 'product-detail';
 
 function getStoredUser() {
   const raw = localStorage.getItem('peonia_user');
@@ -35,6 +39,10 @@ function getRouteFromLocation(): Route {
   if (path === '/workshop') return 'workshop';
   if (path === '/events') return 'events';
   if (path === '/gioi-thieu') return 'about';
+  if (path === '/chinh-sach-bao-mat') return 'privacy-policy';
+  if (path === '/chinh-sach-doi-tra') return 'order-warranty'; 
+  if (path === '/chinh-sach-van-chuyen') return 'shipping-policy';
+  if (path === '/chinh-sach-thanh-toan') return 'payment-policy';
   if (path === '/gio-hang') return 'cart';
   if (path === '/checkout') return 'checkout';
   if (path === '/lich-su-don-hang') return 'order-history';
@@ -102,7 +110,11 @@ export default function App() {
       {route === 'auth-register' && <AuthPage initialMode="register" />}
       {route === 'auth-forgot' && <AuthPage initialMode="forgot" />}
       {route === 'home' && <HomePage />}
-      
+      {route === 'privacy-policy' && <PrivacyPolicyPage />}
+      {route === 'order-warranty' && <OrderWarrantyPage />}
+      {route === 'shipping-policy' && <ShippingPolicyPage />}
+      {route === 'payment-policy' && <PaymentPolicyPage />}
+
     </>
   );
 

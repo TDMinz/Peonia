@@ -20,10 +20,10 @@ export default function Footer() {
             </h3>
 
             <p className="mb-4 leading-8 text-[#6f6258]">
-              Chuyên hoa sáp, hoa nội thất, workshop cắm hoa
-              <br />
+              Chuyên hoa lụa cao cấp, hoa sáp, hoa nội thất, workshop cắm hoa
+              
               và trang trí sự kiện với phong cách tinh tế, sang trọng.
-              <br />
+              
             </p>
 
 
@@ -97,31 +97,31 @@ export default function Footer() {
           {/* CỘT 3 */}
           <div>
             <h3 className="mb-6 font-serif text-3xl text-[#7b5e45]">
-              Danh Mục Sản Phẩm 
+              Chính Sách
             </h3>
 
             <ul className="space-y-4 text-[#6f6258]">
               <li>
-                <a href="/hoa-qua-tang/hoa-bo" className="hover:text-[#C49A6C]">
-                  • Hoa Bó
+                <a href="/chinh-sach-bao-mat" className="hover:text-[#C49A6C]">
+                  • Chính Sách Bảo Mật
                 </a>
               </li>
 
               <li>
-                <a href="/hoa-qua-tang/hoa-mica" className="hover:text-[#C49A6C]">
-                  • Box Mica
+                <a href="/chinh-sach-doi-tra" className="hover:text-[#C49A6C]">
+                  • Chính Sách Đổi Trả
                 </a>
               </li>
 
               <li>
-                <a href="/hoa-trang-tri/trang-tri-nha-o" className="hover:text-[#C49A6C]">
-                  • Trang Trí Nhà Ở
+                <a href="/chinh-sach-van-chuyen" className="hover:text-[#C49A6C]">
+                  • Chính Sách Giao Nhận & Vận Chuyển
                 </a>
               </li>
 
               <li>
-                <a href="/hoa-trang-tri/tieu-canh" className="hover:text-[#C49A6C]">
-                  • Tiểu Cảnh
+                <a href="/chinh-sach-thanh-toan" className="hover:text-[#C49A6C]">
+                  • Chính Sách Thanh Toán
                 </a>
               </li>
             </ul>

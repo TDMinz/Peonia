@@ -146,7 +146,7 @@ export default function FloatingContactButton() {
 
             <div className="mt-4 rounded-2xl border border-[#e8edf3] bg-[#fbf7f1] px-4 py-4">
               <p className="text-xs uppercase tracking-[0.28em] text-[#8f877d]">Số điện thoại</p>
-              <p className="mt-2 text-2xl font-semibold tracking-wide text-foreground">0352363833</p>
+              <p className="mt-2 text-2xl font-semibold tracking-wide text-foreground">0327 082 507</p>
             </div>
 
             <div className="mt-5 flex gap-3">
