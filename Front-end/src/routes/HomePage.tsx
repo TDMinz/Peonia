@@ -14,26 +14,26 @@ import ProductSlide from "../components/ProductSlide";
 const banners = [
   {
     id: 1,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912395/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_a0bssp.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001854/Gemini_Generated_Image_jltmxtjltmxtjltm_ivr1fc.png',
     title: '',
     subtitle: '',
   },
   {
     id: 2,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912405/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_1_uaahhw.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001602/Gemini_Generated_Image_sxyri3sxyri3sxyr_c0pp0v.png',
     title: '',
     subtitle: '',
     
   },
   {
     id: 3,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912428/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_2_gogjms.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001045/Gemini_Generated_Image_v5lpzzv5lpzzv5lp_hrgazh.png',
     title: '',
     subtitle: '',
   },
   {
     id: 4,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912451/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_3_fwnhaq.jpg',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001704/Gemini_Generated_Image_3sx6zs3sx6zs3sx6_o1bpbz.png',
     title: '',
     subtitle: '',
   },
@@ -96,39 +96,39 @@ export function HomePage() {
       title: 'Hoa Giỏ',
       subtitle: 'Biểu lộ tình cảm của bạn',
       href: '/hoa-qua-tang/hoa-gio',
-      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781521826/z7905554251089_d25cb20ea2eeeac6ec013ad3d8d2945a_gvdovu.jpg',
+      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785922878/1785921556703_7750340579882786894_7750340579882786894_692fc012c0e83edea4cd29e16500ed46_fxkjph.jpg',
       count: giftProducts.length,
     },
     {
       title: 'Trang Trí Nhà Ở',
       subtitle: 'Trang trí không gian sống',
       href: '/hoa-trang-tri/trang-tri-nha-o',
-      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781521894/z7905554241206_ca5c06b0315ac0fbe08b82aafc9ef5fe_pnzytm.jpg',
+      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785921107/1785921082445_7750340579882786894_7750340579882786894_ce8ecfc2ed886e6d0cd27e38186dee87_ywsbjj.jpg',
       count: interiorProducts.length,
     },
     {
       title: 'Workshop',
       subtitle: 'Học cách cắm hoa từ chuyên gia',
       href: '/workshop',
-      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1780831589/z7905554232472_b0595644981027c31fb1b89e9ec42ee1_e0ypko.jpg',
+      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785920180/1785916900869_7750340579882786894_7750340579882786894_c057b798a128b037e7a8cce82c7bc864_sblxpu.jpg',
     },
     {
       title: 'Events',
       subtitle: 'Trang trí sự kiện đặc biệt',
       href: '/events',
-      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781522015/z7905554239105_6ce25010469fa39e6d29eb743cb5a0a0_whycql.jpg',
+      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785920174/1785916750526_7750340579882786894_7750340579882786894_c82212f115e74c975c38c0bf70fec389_zi7o8s.jpg',
     },
     {
       title: 'Trang Trí Văn Phòng',
       subtitle: 'Trang trí sự kiện đặc biệt',
       href: '/hoa-trang-tri/trang-tri-van-phong',
-      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781522345/z7935621144414_6b8d405f1ec215e73f025c90670177fc_gmdito.jpg',
+      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785922811/1785921547802_7750340579882786894_7750340579882786894_0b7422f30b8b82c01b3df01469d582d4_k5exkw.jpg',
     },
     {
       title: 'Tiểu Cảnh',
       subtitle: 'Trang trí sự kiện đặc biệt',
       href: '/hoa-trang-tri/tieu-canh',
-      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1781522271/Cute_Farms_Terrarium_Kit_-_Website_Cover_82aed1c5-d734-4828-a2fa-41f7969ad414_ghmibm.jpg',
+      image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785920942/1785920868272_7750340579882786894_7750340579882786894_0fcfb7876d7ffdc7babaa3cad124b7bf_tsb9ul.jpg',
     },
   ];
 
@@ -665,7 +665,7 @@ export function HomePage() {
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[6000ms] ease-out group-hover:scale-110"
             style={{
-    backgroundImage: `url("https://res.cloudinary.com/di4qsw8gl/image/upload/v1785912471/%E1%BA%A2nh_b%C3%ACa_%E1%BA%A2nh_b%C3%ACa_Facebook_5_da9pev.jpg")`,
+    backgroundImage: `url("https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001777/Gemini_Generated_Image_b0gy41b0gy41b0gy_r954o5.png")`,
   }}
           />
 

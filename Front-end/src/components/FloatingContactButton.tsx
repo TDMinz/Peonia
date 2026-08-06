@@ -34,6 +34,89 @@ function TiktokMark({ className }: { className?: string }) {
     </svg>
   );
 }
+function ExpandableSocialButton({
+  open,
+  toggle,
+  icon,
+  bgClass,
+  label,
+  links,
+}: {
+  open: boolean;
+  toggle: () => void;
+  icon: React.ReactNode;
+  bgClass: string;
+  label: string;
+  links: {
+  label: string;
+  
+  href: string;
+}[];
+}) {
+  return (
+    <div className="relative overflow-visible">
+
+      {/* Nút chính */}
+      <button
+        onClick={toggle}
+        className="group flex w-full items-center gap-3 rounded-2xl px-3 py-2 transition hover:bg-[#fbf7f1]"
+      >
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-full text-white shadow-sm ${bgClass}`}
+        >
+          {icon}
+        </span>
+
+        <span className="text-sm font-medium text-foreground">
+          {label}
+        </span>
+      </button>
+
+      {/* Icon con */}
+      <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 overflow-visible">
+  {links.map((item, index) => (
+    <a
+  key={item.href}
+  href={item.href}
+  target="_blank"
+  rel="noreferrer"
+  title={item.label}
+  className={`
+    absolute
+    right-1.5
+    flex
+    h-10
+    w-10
+    items-center
+    justify-center
+    rounded-full
+    text-white
+    font-bold
+    text-sm
+    shadow-lg
+    ${bgClass}
+    transition-all
+    duration-300
+    hover:scale-110
+    ${
+      open
+        ? "opacity-100 scale-100"
+        : "opacity-0 scale-50 pointer-events-none"
+    }
+  `}
+  style={{
+    top: `${index * -52}px`,
+    transitionDelay: open ? `${index * 70}ms` : "0ms",
+  }}
+>
+  {icon}
+</a>
+  ))}
+</div>
+    </div>
+  );
+}
+
 
 const contacts: ContactItem[] = [
   { label: 'Zalo', href: 'https://zalo.me/0352363833', icon: MessageCircleMore, bgClass: 'bg-[#0068ff]' },
@@ -42,11 +125,38 @@ const contacts: ContactItem[] = [
   { label: 'Instagram', href: 'https://www.instagram.com/peoniastudio.hn?igsh=cjEwaWM0eXpvNXIy&utm_source=qr', icon: InstagramMark, bgClass: 'bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@peonia.workshop?_r=1&_t=ZS-97Cf2um7Qiw', icon: TiktokMark, bgClass: 'bg-[#111111]' },
 ];
+const instagramLinks = [
+  {
+    label: "Peonia Dercor",
+    
+    href: "https://www.instagram.com/peoniadecor.hanoi?igsh=NXVndnFhZHp1NHJs&utm_source=qr",
+  },
+  {
+    label: "Peonia Workshop",
+    
+    href: "https://www.instagram.com/peoniastudio.hn?igsh=cjEwaWM0eXpvNXIy&utm_source=qr",
+  },
+];
+
+const tiktokLinks = [
+  {
+    label: "Peonia Dercor",
+    
+    href: "https://www.tiktok.com/@peoniadecor?_r=1&_t=ZS-98cnC0sdceO",
+  },
+  {
+    label: "Peonia Workshop",
+    
+    href: "https://www.tiktok.com/@peonia.workshop?_r=1&_t=ZS-98eU2FSnmIU",
+  },
+];
 
 export default function FloatingContactButton() {
   const [open, setOpen] = useState(false);
   const [showTop, setShowTop] = useState(false);
   const [phonePopupOpen, setPhonePopupOpen] = useState(false);
+  const [instagramOpen, setInstagramOpen] = useState(false);
+const [tiktokOpen, setTiktokOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 240);
@@ -67,7 +177,19 @@ export default function FloatingContactButton() {
       <div
         className={`origin-bottom-right transition-all duration-200 ${open ? 'pointer-events-auto translate-y-0 opacity-100 scale-100' : 'pointer-events-none translate-y-2 opacity-0 scale-95'}`}
       >
-        <div className="mb-2 rounded-[1.4rem] border border-white/60 bg-white/95 p-3 shadow-[0_20px_60px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+        <div
+  className="
+    mb-2
+    overflow-visible
+    rounded-[1.4rem]
+    border
+    border-white/60
+    bg-white/95
+    p-3
+    shadow-[0_20px_60px_rgba(0,0,0,0.18)]
+    backdrop-blur-xl
+  "
+>
           <div className="mb-3 flex items-center justify-between gap-4 border-b border-[#eee4d8] pb-3">
             <div>
               <p className="text-[10px] uppercase tracking-[0.4em] text-[#8f877d]">Peonia</p>
@@ -87,6 +209,39 @@ export default function FloatingContactButton() {
             {contacts.map((item) => {
               const Icon = item.icon;
               const isPhone = item.label === 'Điện thoại';
+              if (item.label === "Instagram") {
+  return (
+    <ExpandableSocialButton
+      key={item.label}
+      open={instagramOpen}
+      toggle={() => {
+        setInstagramOpen(!instagramOpen);
+        setTiktokOpen(false);
+      }}
+      icon={<InstagramMark className="h-5 w-5" />}
+      bgClass={item.bgClass}
+      label={item.label}
+      links={instagramLinks}
+    />
+  );
+}
+
+if (item.label === "TikTok") {
+  return (
+    <ExpandableSocialButton
+      key={item.label}
+      open={tiktokOpen}
+      toggle={() => {
+        setTiktokOpen(!tiktokOpen);
+        setInstagramOpen(false);
+      }}
+      icon={<TiktokMark className="h-5 w-5" />}
+      bgClass={item.bgClass}
+      label={item.label}
+      links={tiktokLinks}
+    />
+  );
+}
               return isPhone ? (
                 <button
                   key={item.label}

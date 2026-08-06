@@ -129,7 +129,7 @@ export default function Footer() {
             {/* Facebook */}
             <div className="mt-5 ">
               <a
-                href="https://www.facebook.com/PeoniaWorkshop"
+                href="https://www.facebook.com/share/14niD6onL78/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noreferrer"
                 className="
