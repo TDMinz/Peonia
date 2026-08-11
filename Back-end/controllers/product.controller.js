@@ -27,21 +27,44 @@ function toProductResponse(product) {
 
 async function getProducts(req, res) {
   try {
-    const { categoryId, is_featured, is_best_seller, search = '' } = req.query;
+    const { categoryId, is_featured, is_best_seller, search = "" } = req.query;
+
     const query = { is_active: true };
 
     if (categoryId) query.categoryId = categoryId;
-    if (typeof is_featured !== 'undefined') query.is_featured = is_featured === 'true';
-    if (typeof is_best_seller !== 'undefined') query.is_best_seller = is_best_seller === 'true';
-    if (search) query.$or = [{ name: { $regex: search, $options: 'i' } }, { slug: { $regex: search, $options: 'i' } }];
+    if (typeof is_featured !== "undefined")
+      query.is_featured = is_featured === "true";
+    if (typeof is_best_seller !== "undefined")
+      query.is_best_seller = is_best_seller === "true";
 
-    const products = await Product.find(query).sort({ created_at: -1 });
-    return res.json({ products: products.map(toProductResponse) });
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { slug: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const start = Date.now();
+
+    const products = await Product.find(query)
+      .select(
+        "name slug categoryId category_ids description price sale_price images image_url is_featured is_best_seller is_active is_addon created_at"
+      )
+      .sort({ created_at: -1 })
+      .lean();
+
+    console.log("Mongo Query:", Date.now() - start, "ms");
+
+    return res.json({
+      products: products.map(toProductResponse),
+    });
   } catch (error) {
-    return res.status(500).json({ message: 'Lỗi lấy danh sách sản phẩm.', error: error.message });
+    return res.status(500).json({
+      message: "Lỗi lấy danh sách sản phẩm.",
+      error: error.message,
+    });
   }
 }
-
 async function getProductBySlug(req, res) {
   try {
     const product = await Product.findOne({ slug: req.params.slug, is_active: true });

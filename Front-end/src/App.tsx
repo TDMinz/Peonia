@@ -19,7 +19,7 @@ import OrderWarrantyPage from './routes/OrderWarrantyPolicyPage';
 import ShippingPolicyPage from './routes/ShippingPolicyPage';
 import PaymentPolicyPage from './routes/PaymentPolicyPage';
 
-type Route = 'home' | 'about' | 'privacy-policy' | 'order-warranty' | 'shipping-policy' | 'payment-policy' | 'gift-bouquets' | 'workshop' | 'events' | 'cart' | 'checkout' | 'category' | 'admin' | 'staff' | 'auth-login' | 'auth-register' | 'auth-forgot' | 'order-history' | 'change-password' | 'product-detail';
+type Route = 'home' | 'about' | 'privacy-policy' | 'order-warranty' | 'shipping-policy' | 'payment-policy' | 'gift-bouquets' | 'workshop' | 'khoa-hoc' | 'cart' | 'checkout' | 'category' | 'admin' | 'staff' | 'auth-login' | 'auth-register' | 'auth-forgot' | 'order-history' | 'change-password' | 'product-detail';
 
 function getStoredUser() {
   const raw = localStorage.getItem('peonia_user');
@@ -33,11 +33,11 @@ function getStoredUser() {
 
 function getRouteFromLocation(): Route {
   const path = window.location.pathname;
-  if (path === '/hoa-qua-tang/hoa-bo') return 'gift-bouquets';
-  if (path.startsWith('/hoa-qua-tang/') || path.startsWith('/hoa-trang-tri/')) return 'category';
+  if (path === '/hoa-sap-qua-tang/hoa-bo') return 'gift-bouquets';
+  if (path.startsWith('/hoa-sap-qua-tang/') || path.startsWith('/hoa-gia-hoa-lua/')) return 'category';
   
   if (path === '/workshop') return 'workshop';
-  if (path === '/events') return 'events';
+  if (path === '/khoa-hoc') return 'khoa-hoc';
   if (path === '/gioi-thieu') return 'about';
   if (path === '/chinh-sach-bao-mat') return 'privacy-policy';
   if (path === '/chinh-sach-doi-tra') return 'order-warranty'; 
@@ -78,14 +78,23 @@ function CustomerArea({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const [route, setRoute] = useState<Route>('home');
+  const [pathname, setPathname] = useState(window.location.pathname);
   const user = useMemo(() => getStoredUser(), []);
 
   useEffect(() => {
-    const syncRoute = () => setRoute(getRouteFromLocation());
-    syncRoute();
-    window.addEventListener('popstate', syncRoute);
-    return () => window.removeEventListener('popstate', syncRoute);
-  }, []);
+  const syncRoute = () => {
+    setPathname(window.location.pathname);
+    setRoute(getRouteFromLocation());
+  };
+
+  syncRoute();
+
+  window.addEventListener('popstate', syncRoute);
+
+  return () => {
+    window.removeEventListener('popstate', syncRoute);
+  };
+}, []);
 
   useEffect(() => {
     if (route === 'auth-login' && user?.role === 'super_admin') window.location.href = '/admin';
@@ -95,10 +104,15 @@ export default function App() {
   const page = (
     <>
       {route === 'gift-bouquets' && <GiftBouquetsPage />}
-      {route === 'category' && <CategoryRoutePage slug={window.location.pathname.split('/').filter(Boolean)[1] || ''} />}
+      {route === 'category' && (
+  <CategoryRoutePage
+    key={pathname}
+    slug={pathname.split('/').filter(Boolean)[1] || ''}
+  />
+)}
       {route === 'workshop' && <WorkshopPage />}
       {route === 'about' && <AboutPage />}
-      {route === 'events' && <EventsPage />}
+      {route === 'khoa-hoc' && <EventsPage />}
       {route === 'cart' && <CartPage />}
       {route === 'checkout' && <CheckoutPage />}
       {route === 'order-history' && <CustomerArea><OrderHistoryPage /></CustomerArea>}

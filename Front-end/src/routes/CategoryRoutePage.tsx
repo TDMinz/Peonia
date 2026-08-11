@@ -8,6 +8,9 @@ import {
   type ProductDto,
   type CategoryDto,
 } from '../services/api';
+let productsCache: ProductDto[] | null = null;
+
+const categoriesCache = new Map<string, CategoryDto[]>();
 
 export default function CategoryRoutePage({ slug }: { slug: string }) {
   const config = categoryCatalog[slug];
@@ -30,14 +33,35 @@ export default function CategoryRoutePage({ slug }: { slug: string }) {
         const parentSlug =
   window.location.pathname.split("/")[1];
 
-const [productData, categoryData] =
-  await Promise.all([
-    api.products(),
-    api.categories({
-      parentSlug,
-      is_active: true,
-    }),
-  ]);
+let productData;
+let categoryData;
+
+if (productsCache) {
+  productData = {
+    products: productsCache,
+  };
+} else {
+  productData = await api.products();
+  productsCache = productData.products;
+}
+
+const cacheKey = parentSlug;
+
+if (categoriesCache.has(cacheKey)) {
+  categoryData = {
+    categories: categoriesCache.get(cacheKey)!,
+  };
+} else {
+  categoryData = await api.categories({
+    parentSlug,
+    is_active: true,
+  });
+
+  categoriesCache.set(
+    cacheKey,
+    categoryData.categories
+  );
+}
   
         if (!mounted) return;
   

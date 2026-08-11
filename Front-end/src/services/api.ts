@@ -1,4 +1,17 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+// ===== Cache =====
+let productsCache: ProductDto[] | null = null;
+let productsCacheTime = 0;
+
+const categoriesCache = new Map<
+  string,
+  {
+    data: CategoryDto[];
+    time: number;
+  }
+>();
+
+const CACHE_TIME = 5 * 60 * 1000; // 5 phút
 
 async function request<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`);
@@ -55,25 +68,134 @@ export type ProductDto = {
 };
 
 export const api = {
-  categories: (params?: { parentSlug?: string; parentId?: string | null; is_active?: boolean }) => {
-    const searchParams = new URLSearchParams();
-    if (params?.parentSlug) searchParams.set('parentSlug', params.parentSlug);
-    if (params?.parentId !== undefined && params?.parentId !== null) searchParams.set('parentId', params.parentId);
-    if (typeof params?.is_active === 'boolean') searchParams.set('is_active', String(params.is_active));
-    const query = searchParams.toString();
-    return request<{ categories: CategoryDto[] }>(`/api/categories${query ? `?${query}` : ''}`);
-  },
+ categories: async (params?: {
+  parentSlug?: string;
+  parentId?: string | null;
+  is_active?: boolean;
+}) => {
+
+  const key = JSON.stringify(params || {});
+
+  const cache = categoriesCache.get(key);
+
+  if (cache && Date.now() - cache.time < CACHE_TIME) {
+    return {
+      categories: cache.data,
+    };
+  }
+
+  const searchParams = new URLSearchParams();
+
+  if (params?.parentSlug)
+    searchParams.set("parentSlug", params.parentSlug);
+
+  if (
+    params?.parentId !== undefined &&
+    params.parentId !== null
+  ) {
+    searchParams.set("parentId", params.parentId);
+  }
+
+  if (typeof params?.is_active === "boolean") {
+    searchParams.set(
+      "is_active",
+      String(params.is_active)
+    );
+  }
+
+  const query = searchParams.toString();
+
+  const data = await request<{
+    categories: CategoryDto[];
+  }>(
+    `/api/categories${query ? `?${query}` : ""}`
+  );
+
+  categoriesCache.set(key, {
+    data: data.categories,
+    time: Date.now(),
+  });
+
+  return data;
+},
   workshops: () => request<{ workshops: WorkshopDto[] }>('/api/workshops'),
-  products: (params?: { categoryId?: string; is_featured?: boolean; is_best_seller?: boolean; search?: string }) => {
-    const searchParams = new URLSearchParams();
-    if (params?.categoryId) searchParams.set('categoryId', params.categoryId);
-    if (typeof params?.is_featured === 'boolean') searchParams.set('is_featured', String(params.is_featured));
-    if (typeof params?.is_best_seller === 'boolean') searchParams.set('is_best_seller', String(params.is_best_seller));
-    if (params?.search) searchParams.set('search', params.search);
-    const query = searchParams.toString();
-    return request<{ products: ProductDto[] }>(`/api/products${query ? `?${query}` : ''}`);
-  },
+  products: async (params?: {
+  categoryId?: string;
+  is_featured?: boolean;
+  is_best_seller?: boolean;
+  search?: string;
+}) => {
+
+  const canUseCache =
+    !params ||
+    Object.keys(params).length === 0;
+
+  if (
+    canUseCache &&
+    productsCache &&
+    Date.now() - productsCacheTime <
+      CACHE_TIME
+  ) {
+    return {
+      products: productsCache,
+    };
+  }
+
+  const searchParams = new URLSearchParams();
+
+  if (params?.categoryId)
+    searchParams.set(
+      "categoryId",
+      params.categoryId
+    );
+
+  if (
+    typeof params?.is_featured === "boolean"
+  ) {
+    searchParams.set(
+      "is_featured",
+      String(params.is_featured)
+    );
+  }
+
+  if (
+    typeof params?.is_best_seller === "boolean"
+  ) {
+    searchParams.set(
+      "is_best_seller",
+      String(params.is_best_seller)
+    );
+  }
+
+  if (params?.search) {
+    searchParams.set(
+      "search",
+      params.search
+    );
+  }
+
+  const query = searchParams.toString();
+
+  const data = await request<{
+    products: ProductDto[];
+  }>(
+    `/api/products${query ? `?${query}` : ""}`
+  );
+
+  if (canUseCache) {
+    productsCache = data.products;
+    productsCacheTime = Date.now();
+  }
+
+  return data;
+},
   addons: () => request<any>('/api/addons'),
+  clearCache() {
+  productsCache = null;
+  productsCacheTime = 0;
+
+  categoriesCache.clear();
+},
 };
 
 export { API_BASE_URL };

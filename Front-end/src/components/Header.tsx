@@ -29,6 +29,10 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   hall: Landmark,
   mini: Flower,
 };
+const navigate = (path: string) => {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+};
 
 export default function Header({ cartCount }: HeaderProps) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -84,24 +88,24 @@ export default function Header({ cartCount }: HeaderProps) {
   }, [categories]);
 
   const navigation = [
-    
+
     {
-      name: 'Hoa Quà Tặng',
-      href: '/hoa-qua-tang/hoa-bo',
-      slug: 'hoa-qua-tang',
+      name: 'Hoa Sáp - Quà Tặng',
+      href: '/hoa-sap-qua-tang/hoa-bo',
+      slug: 'hoa-sap-qua-tang',
     },
     {
-      name: 'Hoa Trang Trí',
-      href: '/hoa-trang-tri/trang-tri-nha-o',
-      slug: 'hoa-trang-tri',
+      name: 'Hoa Giả - Hoa Lụa',
+      href: '/hoa-gia-hoa-lua/binh-hoa-lua-hoa-gia-de-ban',
+      slug: 'hoa-gia-hoa-lua',
     },
     {
       name: 'Workshop',
       href: '/workshop',
     },
     {
-      name: 'Events',
-      href: '/events',
+      name: 'Khóa Học',
+      href: '/khoa-hoc',
     },
     {
       name: 'Giới Thiệu',
@@ -110,7 +114,7 @@ export default function Header({ cartCount }: HeaderProps) {
   ];
 
   const fallbackDropdowns: Record<string, CategoryDto[]> = {
-    'hoa-qua-tang': [
+    'hoa-sap-qua-tang': [
       { id: '1', name: 'Hoa bó', slug: 'hoa-bo', icon: 'bouquet' },
       { id: '2', name: 'Hoa giỏ', slug: 'hoa-gio', icon: 'basket' },
       { id: '3', name: 'Box Mica', slug: 'box-mica', icon: 'mica' },
@@ -118,11 +122,13 @@ export default function Header({ cartCount }: HeaderProps) {
       { id: '5', name: 'Ngày Lễ', slug: 'ngay-le', icon: 'holiday' },
       { id: '6', name: 'Tốt Nghiệp', slug: 'tot-nghiep', icon: 'graduation' },
     ],
-    'hoa-trang-tri': [ 
-      { id: '7', name: 'Trang Trí Nhà Ở', slug: 'trang-tri-nha-o', icon: 'orchid' },
-      { id: '8', name: 'Trang Trí Văn Phòng', slug: 'trang-tri-van-phong', icon: 'scenery' },
-      { id: '9', name: 'Hoa tại sảnh', slug: 'hoa-tai-sanh', icon: 'hall' },
-      { id: '10', name: 'Tiểu Cảnh', slug: 'tieu-canh', icon: 'mini' },
+    'hoa-gia-hoa-lua': [
+      { id: '7', name: 'Bình Hoa Lụa - Hoa Giả Để Bàn', slug: 'binh-hoa-lua-hoa-gia-de-ban', icon: 'orchid' },
+      { id: '8', name: 'Bình Hoa Lụa Trang Trí Kệ - Tủ', slug: 'binh-hoa-lua-trang-tri-ke-tu', icon: 'scenery' },
+      { id: '9', name: 'Bình Hoa Quầy Lễ Tân Văn Phòng', slug: 'binh-hoa-quay-le-tan-van-phong', icon: 'hall' },
+      { id: '10', name: 'Bình Hoa Lụa Đại Sảnh - Khách Sạn', slug: 'binh-hoa-lua-dai-sanh-khach-san', icon: 'mini' },
+      { id: '11', name: 'Tiểu Cảnh - Decor Không Gian', slug: 'tieu-canh-decor-khong-gian', icon: 'mini' },
+      { id: '12', name: 'Backdrop Hoa - Decor Sự Kiện', slug: 'backdrop-hoa-decor-su-kien', icon: 'mini' },
     ],
   };
 
@@ -153,13 +159,13 @@ export default function Header({ cartCount }: HeaderProps) {
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative flex h-20 items-center justify-between gap-6">
-        <a href="/" className="flex-shrink-0">
-  <img
-    src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1782630659/1_c%C3%A1i_-_ngang_9cm_2_e7ugfo.png"
-    alt="Peonia Studio"
-    className="h-28 w-auto"
-  />
-</a>
+          <a href="/" className="flex-shrink-0">
+            <img
+              src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1782630659/1_c%C3%A1i_-_ngang_9cm_2_e7ugfo.png"
+              alt="Peonia Studio"
+              className="h-28 w-auto"
+            />
+          </a>
 
           <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">
             {navigation.map((item) => {
@@ -173,19 +179,24 @@ export default function Header({ cartCount }: HeaderProps) {
                   onMouseEnter={() => hasSubmenu && setOpenMenu(item.name)}
                   onMouseLeave={() => hasSubmenu && setOpenMenu(null)}
                 >
-                  <a  href={
-    hasSubmenu
-      ? `/${slug}/${submenu[0].slug}`
-      : item.href
-  } className="whitespace-nowrap text-sm uppercase tracking-wide text-foreground transition-colors hover:text-primary">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate(
+                        hasSubmenu
+                          ? `/${slug}/${submenu[0].slug}`
+                          : item.href
+                      )
+                    }
+                    className="whitespace-nowrap text-sm uppercase tracking-wide text-foreground transition-colors hover:text-primary"
+                  >
                     {item.name}
-                  </a>
+                  </button>
 
                   {hasSubmenu && (
                     <div
-                      className={`absolute left-1/2 top-full z-50 mt-0 w-[460px] -translate-x-1/2 rounded-3xl border border-[#e6ddd3] bg-[#fbf7f1] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-200 ease-out ${
-                        openMenu === item.name ? 'opacity-100 translate-y-0 pointer-events-auto' : 'pointer-events-none translate-y-2 opacity-0'
-                      }`}
+                      className={`absolute left-1/2 top-full z-50 mt-0 w-[460px] -translate-x-1/2 rounded-3xl border border-[#e6ddd3] bg-[#fbf7f1] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-200 ease-out ${openMenu === item.name ? 'opacity-100 translate-y-0 pointer-events-auto' : 'pointer-events-none translate-y-2 opacity-0'
+                        }`}
                       onMouseEnter={() => setOpenMenu(item.name)}
                       onMouseLeave={() => setOpenMenu(null)}
                     >
@@ -193,16 +204,20 @@ export default function Header({ cartCount }: HeaderProps) {
                         {submenu.map((subItem) => {
                           const Icon = iconMap[subItem.icon || ''] || Flower2;
                           return (
-                            <a
+                            <button
                               key={subItem.slug}
-                              href={`/${slug}/${subItem.slug}`}
-                              className="group flex items-center gap-3 rounded-2xl px-3 py-3 text-foreground transition-colors hover:bg-white"
+                              type="button"
+                              onClick={() => {
+                                navigate(`/${slug}/${subItem.slug}`);
+                                setOpenMenu(null);
+                              }}
+                              className="group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-foreground transition-colors hover:bg-white"
                             >
                               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f3ece3] text-[#1c1c1c] transition-colors group-hover:bg-[#e8dccf]">
                                 <Icon className="h-5 w-5" />
                               </div>
                               <div className="min-w-0 text-sm uppercase tracking-[0.18em]">{subItem.name}</div>
-                            </a>
+                            </button>
                           );
                         })}
                       </div>
@@ -219,9 +234,9 @@ export default function Header({ cartCount }: HeaderProps) {
             </button>
 
             <a
-   id="cart-icon"          
-  href="/gio-hang"
-  className="
+              id="cart-icon"
+              href="/gio-hang"
+              className="
     relative
     rounded-xl
     p-2
@@ -230,12 +245,12 @@ export default function Header({ cartCount }: HeaderProps) {
     hover:bg-[#f5ede4]
     hover:scale-105
   "
-  aria-label="Giỏ hàng"
->
-  <ShoppingBasket size={22} className="text-[#6F4E37]" />
+              aria-label="Giỏ hàng"
+            >
+              <ShoppingBasket size={22} className="text-[#6F4E37]" />
 
-  <span
-    className="
+              <span
+                className="
       absolute
       -right-1
       -top-1
@@ -250,10 +265,10 @@ export default function Header({ cartCount }: HeaderProps) {
       font-semibold
       text-white
     "
-  >
-    {liveCartCount || cartCount}
-  </span>
-</a>
+              >
+                {liveCartCount || cartCount}
+              </span>
+            </a>
 
             {isCustomer && currentUser ? (
               <div className="relative">
@@ -268,9 +283,8 @@ export default function Header({ cartCount }: HeaderProps) {
                 </button>
 
                 <div
-                  className={`absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-[#e6ddd3] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-200 ${
-                    accountOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none -translate-y-1 opacity-0'
-                  }`}
+                  className={`absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-[#e6ddd3] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-200 ${accountOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none -translate-y-1 opacity-0'
+                    }`}
                 >
                   <a href="/lich-su-don-hang" className="flex items-center gap-3 px-4 py-3 text-sm text-foreground transition-colors hover:bg-[#fbf7f1]">
                     <History className="h-4 w-4" />

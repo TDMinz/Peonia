@@ -1,6 +1,5 @@
 const Category = require('../models/category.model');
 const Product = require('../models/product.model');
-const ProductVariant = require('../models/productVariant.model');
 const ProductCategory = require('../models/productCategory.model');
 
 function toCategoryResponse(category) {
@@ -35,10 +34,10 @@ function toProductResponse(product) {
     slug: product.slug,
     categoryId: product.categoryId,
     category_ids: product.category_ids || [],
-    description: product.description,
+    
     price: product.price,
     sale_price: product.sale_price,
-    images: product.images || [],
+    
     image_url: pickImage(product),
     is_featured: product.is_featured,
     is_best_seller: product.is_best_seller,
@@ -108,23 +107,19 @@ async function getProducts(req, res) {
 
     if (productIds) query._id = { $in: productIds };
 
-    const products = await Product.find(query).sort({ created_at: -1 });
+    const products = await Product.find(query)
+.select(
+"name slug categoryId category_ids description price sale_price images image_url is_featured is_best_seller is_active is_addon created_at"
+)
+.sort({ created_at: -1 })
+.lean();
     const productIdsForVariants = products.map((product) => product._id);
-    const variants = await ProductVariant.find({ product_id: { $in: productIdsForVariants } }).sort({ price: 1 });
+  
 
-    const variantMap = variants.reduce((acc, variant) => {
-      const key = String(variant.product_id);
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(toVariantResponse(variant));
-      return acc;
-    }, {});
 
     return res.json({
-      products: products.map((product) => ({
-        ...toProductResponse(product),
-        variants: variantMap[String(product._id)] || [],
-      })),
-    });
+    products: products.map(toProductResponse),
+});
   } catch (error) {
     return res.status(500).json({ message: 'Lỗi lấy sản phẩm.', error: error.message });
   }

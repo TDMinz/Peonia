@@ -22,7 +22,8 @@ export default function ProductCard({ id, slug, name, price, image, originalPric
   return (
     <div className="group" data-product-id={id}>
       <div className="relative mb-4 aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-muted">
-        <img ref={imageRef} src={image} alt={name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+        <img ref={imageRef} src={image} alt={name} loading="eager"
+  decoding="async" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
 
         {tag && (
           <div className="absolute left-4 top-4 z-20">

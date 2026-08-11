@@ -1,6 +1,7 @@
 import { Flower2 } from "lucide-react";
 
 
+
 type CategorySidebarProps = {
   categories: {
     id: string;
@@ -25,9 +26,18 @@ export default function CategorySidebar({
 
       <div className="space-y-1">
   {categories.map((item) => (
-    <a
+    <button
       key={item.id}
-      href={`/${item.parentSlug}/${item.slug}`}
+      type="button"
+      onClick={() => {
+    window.history.pushState(
+      {},
+      "",
+      `/${item.parentSlug}/${item.slug}`
+    );
+
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  }}
       className={`
         flex items-center gap-3
         rounded-xl
@@ -51,7 +61,7 @@ export default function CategorySidebar({
       <span className="text-sm font-medium">
         {item.name}
       </span>
-    </a>
+    </button>
   ))}
 </div>
 
