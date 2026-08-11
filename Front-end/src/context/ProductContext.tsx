@@ -3,14 +3,15 @@ import {
   useContext,
   useEffect,
   useState,
-  ReactNode,
-} from "react";
+  type ReactNode,
+} from 'react';
 
-import {
-  api,
+import { api } from '../services/api';
+
+import type {
   ProductDto,
   CategoryDto,
-} from "../services/api";
+} from '../services/api';
 
 type ProductContextType = {
   products: ProductDto[];
