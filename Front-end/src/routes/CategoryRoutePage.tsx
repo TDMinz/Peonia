@@ -8,8 +8,9 @@ import {
   type ProductDto,
   type CategoryDto,
 } from '../services/api';
-let productsCache: ProductDto[] | null = null;
 
+
+let productsCache: ProductDto[] | null = null;
 const categoriesCache = new Map<string, CategoryDto[]>();
 
 export default function CategoryRoutePage({ slug }: { slug: string }) {
@@ -36,6 +37,7 @@ export default function CategoryRoutePage({ slug }: { slug: string }) {
 let productData;
 let categoryData;
 
+// chỉ fetch toàn bộ products 1 lần duy nhất
 if (productsCache) {
   productData = {
     products: productsCache,
@@ -86,23 +88,44 @@ if (categoriesCache.has(cacheKey)) {
     };
   }, [config]);
   const normalizedProducts = useMemo(() => {
-    if (!config) return [];
+  if (!config) return [];
 
-    const matched = products.filter((product) => {
-      const ids = [product.categoryId, ...(product.category_ids || [])].filter(Boolean).map(String);
-      return ids.some((id) => config.categoryIds.includes(id));
-    });
+  const matched = products.filter((product) => {
+    const ids = [
+      product.categoryId,
+      ...(product.category_ids || []),
+    ]
+      .filter(Boolean)
+      .map(String);
 
-    return matched.map((product) => ({
-      id: product.id,
-      slug: product.slug,
-      name: product.name,
-      price: product.sale_price && product.sale_price > 0 ? `${product.sale_price.toLocaleString('vi-VN')}đ` : `${(product.price || 0).toLocaleString('vi-VN')}đ`,
-      originalPrice: product.sale_price && product.sale_price > 0 && product.price && product.sale_price < product.price ? `${product.price.toLocaleString('vi-VN')}đ` : undefined,
-      image: product.image_url || product.images?.[0] || '',
-      tag: product.is_featured ? 'HOT' : product.is_best_seller ? 'BEST' : undefined,
-    }));
-  }, [products, config]);
+    return ids.some((id) =>
+      config.categoryIds.includes(id)
+    );
+  });
+
+  return matched.map((product) => ({
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    price:
+      product.sale_price && product.sale_price > 0
+        ? `${product.sale_price.toLocaleString('vi-VN')}đ`
+        : `${(product.price || 0).toLocaleString('vi-VN')}đ`,
+    originalPrice:
+      product.sale_price &&
+      product.sale_price > 0 &&
+      product.price &&
+      product.sale_price < product.price
+        ? `${product.price.toLocaleString('vi-VN')}đ`
+        : undefined,
+    image: product.image_url || product.images?.[0] || '',
+    tag: product.is_featured
+      ? 'HOT'
+      : product.is_best_seller
+      ? 'BEST'
+      : undefined,
+  }));
+}, [products, config]);
 
   if (!config) {
     return (

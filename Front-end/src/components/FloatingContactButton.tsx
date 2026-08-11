@@ -73,44 +73,75 @@ function ExpandableSocialButton({
       </button>
 
       {/* Icon con */}
-      <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 overflow-visible">
+      {/* Icon con */}
+<div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 overflow-visible">
   {links.map((item, index) => (
-    <a
-  key={item.href}
-  href={item.href}
-  target="_blank"
-  rel="noreferrer"
-  title={item.label}
-  className={`
-    absolute
-    right-1.5
-    flex
-    h-10
-    w-10
-    items-center
-    justify-center
-    rounded-full
-    text-white
-    font-bold
-    text-sm
-    shadow-lg
-    ${bgClass}
-    transition-all
-    duration-300
-    hover:scale-110
-    ${
-      open
-        ? "opacity-100 scale-100"
-        : "opacity-0 scale-50 pointer-events-none"
-    }
-  `}
-  style={{
-    top: `${index * -52}px`,
-    transitionDelay: open ? `${index * 70}ms` : "0ms",
-  }}
->
-  {icon}
-</a>
+    <div
+      key={item.href}
+      className="absolute right-0 group/child flex items-center pr-2"
+      style={{
+        top: `${index * -52}px`,
+        transitionDelay: open ? `${index * 70}ms` : "0ms",
+      }}
+    >
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noreferrer"
+        className={`
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-full
+          text-white
+          font-bold
+          text-sm
+          shadow-lg
+          ${bgClass}
+          transition-all
+          duration-300
+          hover:scale-110
+          ${
+            open
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-50 pointer-events-none"
+          }
+        `}
+      >
+        {icon}
+      </a>
+
+      {/* Tooltip */}
+      {open && (
+  <div
+    className="
+      pointer-events-none
+      absolute
+      right-12
+      top-1/2
+      -translate-y-1/2
+      whitespace-nowrap
+      rounded-lg
+      bg-black/85
+      px-3 py-1.5
+      text-xs
+      font-medium
+      text-white
+      opacity-0
+      translate-x-2
+      transition-all
+      duration-200
+      group-hover/child:opacity-100
+      group-hover/child:translate-x-0
+    "
+  >
+    {item.label}
+  </div>
+)}
+      
+    </div>
   ))}
 </div>
     </div>

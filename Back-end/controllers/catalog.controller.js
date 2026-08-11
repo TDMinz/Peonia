@@ -91,7 +91,14 @@ async function getProducts(req, res) {
     if (typeof is_addon !== 'undefined') query.is_addon = is_addon === 'true';
     if (typeof is_featured !== 'undefined') query.is_featured = is_featured === 'true';
     if (typeof is_best_seller !== 'undefined') query.is_best_seller = is_best_seller === 'true';
-    if (typeof categoryId !== 'undefined' && categoryId !== '') query.$or = [{ categoryId }, { category_ids: categoryId }];
+    if (categoryId) {
+  const objectId = new mongoose.Types.ObjectId(categoryId);
+
+  query.$or = [
+    { categoryId: objectId },
+    { category_ids: objectId },
+  ];
+}
     if (search) query.$or = [...(query.$or || []), { name: { $regex: search, $options: 'i' } }, { slug: { $regex: search, $options: 'i' } }];
 
     let productIds = null;
