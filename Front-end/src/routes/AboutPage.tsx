@@ -320,7 +320,7 @@ export default function AboutPage() {
           </div>
           <div className="mt-20 flex flex-wrap items-center justify-center gap-5">
   <a
-    href="/hoa-qua-tang/hoa-bo"
+    href="/hoa-sap-qua-tang/hoa-bo"
     className="
       inline-flex
       items-center

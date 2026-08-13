@@ -14,13 +14,13 @@ import ProductSlide from "../components/ProductSlide";
 const banners = [
   {
     id: 1,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001854/Gemini_Generated_Image_jltmxtjltmxtjltm_ivr1fc.png',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786613306/ChatGPT_Image_Aug_13_2026_04_27_20_PM_h7ql9k.png',
     title: '',
     subtitle: '',
   },
   {
     id: 2,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001602/Gemini_Generated_Image_sxyri3sxyri3sxyr_c0pp0v.png',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786614607/ChatGPT_Image_Aug_13_2026_04_49_37_PM_egujhp.png',
     title: '',
     subtitle: '',
     
@@ -33,7 +33,7 @@ const banners = [
   },
   {
     id: 4,
-    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786001704/Gemini_Generated_Image_3sx6zs3sx6zs3sx6_o1bpbz.png',
+    image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1786614131/ChatGPT_Image_Aug_13_2026_04_41_57_PM_fdvmpj.png',
     title: '',
     subtitle: '',
   },
@@ -100,9 +100,9 @@ export function HomePage() {
       count: giftProducts.length,
     },
     {
-      title: 'Trang Trí Nhà Ở',
+      title: 'Hoa Lụa Để Bàn',
       subtitle: 'Trang trí không gian sống',
-      href: '/hoa-trang-tri/trang-tri-nha-o',
+      href: '/hoa-gia-hoa-lua/binh-hoa-lua-hoa-gia-de-ban',
       image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785921107/1785921082445_7750340579882786894_7750340579882786894_ce8ecfc2ed886e6d0cd27e38186dee87_ywsbjj.jpg',
       count: interiorProducts.length,
     },
@@ -115,19 +115,19 @@ export function HomePage() {
     {
       title: 'Events',
       subtitle: 'Trang trí sự kiện đặc biệt',
-      href: '/events',
+      href: '/khoa-hoc',
       image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785920174/1785916750526_7750340579882786894_7750340579882786894_c82212f115e74c975c38c0bf70fec389_zi7o8s.jpg',
     },
     {
-      title: 'Trang Trí Văn Phòng',
+      title: 'Hoa Lụa Đại Sảnh',
       subtitle: 'Trang trí sự kiện đặc biệt',
-      href: '/hoa-trang-tri/trang-tri-van-phong',
+      href: '/hoa-gia-hoa-lua/binh-hoa-lua-dai-sanh-khach-san',
       image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785922811/1785921547802_7750340579882786894_7750340579882786894_0b7422f30b8b82c01b3df01469d582d4_k5exkw.jpg',
     },
     {
       title: 'Tiểu Cảnh',
       subtitle: 'Trang trí sự kiện đặc biệt',
-      href: '/hoa-trang-tri/tieu-canh',
+      href: '/hoa-gia-hoa-lua/tieu-canh-decor-khong-gian',
       image: 'https://res.cloudinary.com/di4qsw8gl/image/upload/v1785920942/1785920868272_7750340579882786894_7750340579882786894_0fcfb7876d7ffdc7babaa3cad124b7bf_tsb9ul.jpg',
     },
   ];
