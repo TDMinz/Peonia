@@ -497,7 +497,7 @@ export default function App() {
 
       {route === 'khoa-hoc' && (
         <CourseDetailPage
-          slug={courseSlug}
+        
         />
       )}
       {route === 'course-hoa-sap-nang-cao' && (
