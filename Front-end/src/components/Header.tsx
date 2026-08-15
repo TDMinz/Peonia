@@ -113,6 +113,7 @@ export default function Header({ cartCount }: HeaderProps) {
     {
       name: 'Khóa Học',
       href: '/khoa-hoc',
+      slug: 'khoa-hoc',
     },
     {
       name: 'Giới Thiệu',
@@ -138,6 +139,32 @@ export default function Header({ cartCount }: HeaderProps) {
       { id: '12', name: 'Backdrop Hoa - Decor Sự Kiện', slug: 'backdrop-hoa-decor-su-kien', icon: 'panels' },
       { id: '13', name: 'Hoa Cưới', slug: 'hoa-cuoi', icon: 'heart' },
     ],
+    'khoa-hoc': [
+  {
+    id: 'course-1',
+    name: 'Khóa học hoa sáp cơ bản',
+    slug: 'hoa-sap-co-ban',
+    icon: 'flower',
+  },
+  {
+    id: 'course-2',
+    name: 'Khóa học hoa sáp nâng cao',
+    slug: 'hoa-sap-nang-cao',
+    icon: 'flower2',
+  },
+  {
+    id: 'course-3',
+    name: 'Khóa học lụa sáp cơ bản',
+    slug: 'hoa-lua-sap-co-ban',
+    icon: 'bouquet',
+  },
+  {
+    id: 'course-4',
+    name: 'Khóa học hoa lụa nâng cao',
+    slug: 'hoa-lua-nang-cao',
+    icon: 'sparkles',
+  },
+],
   };
 
   const [liveCartCount, setLiveCartCount] = useState(0);
@@ -216,9 +243,14 @@ export default function Header({ cartCount }: HeaderProps) {
                               key={subItem.slug}
                               type="button"
                               onClick={() => {
-                                navigate(`/${slug}/${subItem.slug}`);
-                                setOpenMenu(null);
-                              }}
+  const targetPath =
+    slug === 'khoa-hoc'
+      ? `/khoa-hoc/${subItem.slug}`
+      : `/${slug}/${subItem.slug}`;
+
+  navigate(targetPath);
+  setOpenMenu(null);
+}}
                               className="cursor-pointer group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-foreground transition-colors hover:bg-white"
                             >
                               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f3ece3] text-[#1c1c1c] transition-colors group-hover:bg-[#e8dccf]">
