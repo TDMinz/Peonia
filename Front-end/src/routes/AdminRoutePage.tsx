@@ -8,9 +8,9 @@ const AdminEventsPage = lazy(() => import('./AdminEventsPage'));
 const AdminBookingsPage = lazy(() => import('./AdminBookingsPage'));
 const AdminOrdersPage = lazy(() => import('./AdminOrdersPage'));
 const AdminUsersPage = lazy(() => import('./AdminUsersPage'));
-const AdminWorkshopBookingsPage = lazy(
-  () => import('./AdminWorkshopBookingsPage')
-);
+// const AdminWorkshopBookingsPage = lazy(
+//   () => import('./AdminWorkshopBookingsPage')
+// );
 
 export function isAdminPath(path: string) {
   return path === '/admin' || path.startsWith('/admin/');
@@ -39,9 +39,9 @@ export default function AdminRoutePage({ path }: Props) {
       {path === '/admin/workshops' && <AdminWorkshopsPage />}
       {path === '/admin/events' && <AdminEventsPage />}
       {path === '/admin/bookings' && <AdminBookingsPage />}
-      {path === '/admin/workshop-bookings' && (
+      {/* {path === '/admin/workshop-bookings' && (
         <AdminWorkshopBookingsPage />
-      )}
+      )} */}
       {path === '/admin/orders' && <AdminOrdersPage />}
       {path === '/admin/users' && <AdminUsersPage />}
 

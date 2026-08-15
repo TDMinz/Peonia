@@ -366,7 +366,7 @@ export default function AdminWorkshopsPage() {
   return (
     <AdminLayout
       title="Quản lý Workshop"
-      description="Tạo và cập nhật workshop sáng tạo hoa."
+      subtitle="Tạo và cập nhật workshop sáng tạo hoa."
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -574,7 +574,7 @@ export default function AdminWorkshopsPage() {
 
                         setFormData({
                           ...formData,
-                          price: rawValue ? Number(rawValue) : 0,
+                          price: rawValue,
                         });
                       }}
                       placeholder="Nhập chi phí"
@@ -702,7 +702,7 @@ export default function AdminWorkshopsPage() {
                           value,
                       })
                     }
-                    placeholder="Nhập mô tả workshop..."
+                    
                   />
                 </div>
 

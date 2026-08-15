@@ -176,7 +176,11 @@ export default function StaffWorkshopsPage() {
                   {filtered.map((item) => (
                     <tr key={item.id} className="border-t border-[#eef2f7]">
                       <td className="px-4 py-4 font-medium text-foreground">{item.title}</td>
-                      <td className="px-4 py-4 text-[#6f7b8b]">{new Date(item.event_date).toLocaleString('vi-VN')}</td>
+                      <td className="px-4 py-4 text-[#6f7b8b]">
+  {item.event_date
+    ? new Date(item.event_date).toLocaleString('vi-VN')
+    : 'Chưa có'}
+</td>
                       <td className="px-4 py-4 text-[#6f7b8b]">{item.available_slots} / {item.max_slots}</td>
                       <td className="px-4 py-4"><div className="flex justify-end gap-2"><button onClick={() => startEdit(item)} className="rounded-full border border-[#e8edf3] p-2 text-foreground"><Edit3 className="h-4 w-4" /></button><button onClick={() => handleDelete(item.id)} className="rounded-full border border-red-200 bg-red-50 p-2 text-red-700"><Trash2 className="h-4 w-4" /></button></div></td>
                     </tr>

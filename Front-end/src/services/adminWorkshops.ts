@@ -43,7 +43,11 @@ export type AdminWorkshopItem = {
 
   image_url?: string;
   images?: string[];
-
+event_date?: string;
+max_slots?: number;
+available_slots?: number;
+remaining_slots?: number;
+booked_slots?: number;
   created_at?: string;
 };
 
