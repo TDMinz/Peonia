@@ -19,39 +19,52 @@ function formatPrice(value?: number) {
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
   const navigate = useNavigate();
-  const [products, setProducts] = useState<ProductDto[]>([]);
-  const [, setCategories] = useState<CategoryDto[]>([]);
-  const [loading, setLoading] = useState(true);
+ const [product, setProduct] =
+  useState<ProductDto | null>(null);
+
+const [loading, setLoading] =
+  useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] =
     useState('');
 
 
   useEffect(() => {
-    let mounted = true;
-    Promise.all([api.products(), api.categories({ is_active: true })])
-      .then(([productData, categoryData]) => {
-        if (!mounted) return;
-        setProducts(productData.products || []);
-        setCategories(categoryData.categories || []);
-      })
-      .catch(() => {
-        if (mounted) {
-          setProducts([]);
-          setCategories([]);
-        }
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  let mounted = true;
+
+  setLoading(true);
+
+  api.productBySlug(slug)
+    .then((data) => {
+      if (!mounted) return;
+
+      setProduct(
+        data.product || null
+      );
+    })
+    .catch((error) => {
+      console.error(
+        'LOAD PRODUCT DETAIL ERROR:',
+        error
+      );
+
+      if (mounted) {
+        setProduct(null);
+      }
+    })
+    .finally(() => {
+      if (mounted) {
+        setLoading(false);
+      }
+    });
+
+  return () => {
+    mounted = false;
+  };
+}, [slug]);
 
 
-  const normalizedSlug = decodeURIComponent(slug).trim().toLowerCase();
-  const product = useMemo(() => products.find((item) => String(item.slug || '').trim().toLowerCase() === normalizedSlug), [products, normalizedSlug]);
+
 
   const images = useMemo<string[]>(() => {
     if (!product) return [];
@@ -75,16 +88,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
     return [product.categoryId, ...(product.category_ids || [])].filter(Boolean).map(String);
   }, [product]);
 
-  const similarProducts = useMemo(() => {
-    if (!product) return [];
-    return products
-      .filter((item) => item.id !== product.id)
-      .filter((item) => {
-        const ids = [item.categoryId, ...(item.category_ids || [])].filter(Boolean).map(String);
-        return ids.some((id) => categoryIds.includes(id));
-      })
-      .slice(0, 8);
-  }, [products, product, categoryIds]);
+ const similarProducts: ProductDto[] = [];
 
   const price = formatPrice(product?.sale_price ?? product?.price);
   const originalPrice = product?.sale_price && product?.price && product.sale_price < product.price ? formatPrice(product.price) : '';
@@ -132,10 +136,10 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
       <Header cartCount={0} />
       <main className="bg-[#fbf7f1] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <div className="mx-auto max-w-7xl">
-        <div className="mb-4">
-          <button
-  onClick={() => navigate(-1)}
-  className="
+          <div className="mb-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="
     inline-flex
     items-center
     gap-2
@@ -155,11 +159,11 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
     hover:bg-emerald-950
     hover:text-white
   "
->
-  <ArrowLeft size={18} />
-  Quay lại
-</button>
-        </div>
+            >
+              <ArrowLeft size={18} />
+              Quay lại
+            </button>
+          </div>
 
           <div className="overflow-hidden rounded-[2.5rem] border border-[#e8edf3] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
             <div className="grid lg:grid-cols-2">

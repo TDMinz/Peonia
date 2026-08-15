@@ -1,6 +1,7 @@
 const Category = require('../models/category.model');
 const Product = require('../models/product.model');
 const ProductCategory = require('../models/productCategory.model');
+const ProductVariant = require('../models/productVariant.model');
 
 function toCategoryResponse(category) {
   return {
@@ -27,22 +28,29 @@ function pickImage(product) {
 }
 
 function toProductResponse(product) {
-  
   return {
     id: product._id,
     name: product.name,
     slug: product.slug,
+
     categoryId: product.categoryId,
     category_ids: product.category_ids || [],
-    
+
+    // QUAN TRỌNG
+    description: product.description || '',
+
     price: product.price,
     sale_price: product.sale_price,
-    
+
     image_url: pickImage(product),
+
+    images: product.images || [],
+
     is_featured: product.is_featured,
     is_best_seller: product.is_best_seller,
     is_active: product.is_active,
     is_addon: product.is_addon,
+
     created_at: product.created_at,
   };
 }

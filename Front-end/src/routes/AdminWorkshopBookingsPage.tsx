@@ -1,510 +1,657 @@
-import { CheckCircle2, RefreshCw, Search, Trash2, XCircle } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import AdminLayout from '../components/AdminLayout';
-import { adminBookingsApi, type AdminBookingItem } from '../services/adminBookings';
-import ConfirmDialog from '../components/ConfirmDialog';
-import useSelection from '../hook/useSelection';
 
-export default function AdminWorkshopBookingsPage() {
-  const [items, setItems] = useState<AdminBookingItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const [selected, setSelected] = useState<AdminBookingItem | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [deleteCode, setDeleteCode] = useState('');
+// import { useEffect, useMemo, useState } from 'react';
+// import {
+//   Plus,
+//   Pencil,
+//   Trash2,
+//   UploadCloud,
+//   X,
+// } from 'lucide-react';
 
-const {
-  selected: selectedBookings,
-  toggle: toggleBooking,
-  toggleAll,
-  clear,
-  isSelected,
-} = useSelection<string>();
-  
+// import AdminLayout from '../components/AdminLayout';
+// import RichTextEditor from '../components/RichTextEditor';
 
-const [showDeleteDialog, setShowDeleteDialog] =
-  useState(false);
+// import {
+//   api,
+//   type WorkshopDto,
+// } from '../services/api';
 
-const [deleting, setDeleting] =
-  useState(false);
+// const emptyWorkshopForm = {
+//   title: '',
+//   price: '',
 
-  async function loadData() {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await adminBookingsApi.list();
-      setItems(data.bookings || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không tải được booking');
-      setItems([]);
-    } finally {
-      setLoading(false);
-    }
-  }
+//   age_range: 'Mọi lứa tuổi',
+//   difficulty: 1,
+//   duration: '60 phút',
 
-  useEffect(() => { loadData(); }, []);
-  useEffect(() => {
-    if (!message) return;
-  
-    const timer = setTimeout(() => {
-      setMessage('');
-    }, 5000);
-  
-    return () => clearTimeout(timer);
-  }, [message]);
-  
-  useEffect(() => {
-    if (!error) return;
-  
-    const timer = setTimeout(() => {
-      setError('');
-    }, 5000);
-  
-    return () => clearTimeout(timer);
-  }, [error]);
+//   short_description: '',
+//   description: '',
 
-  const filtered = useMemo(() => {
-    const keyword = search.trim().toLowerCase();
-    if (!keyword) return items;
-    return items.filter((item) => [item.booking_code, item.customer_name, item.customer_phone, item.status, item.payment_status, item.workshop?.title].some((field) => String(field || '').toLowerCase().includes(keyword)));
-  }, [items, search]);
+//   image_url: '',
+//   images: [] as string[],
+// };
 
-  async function handleAction(code: string, payload: { status?: string; payment_status?: string }) {
-    try {
-      await adminBookingsApi.updateStatus(code, payload);
-      setMessage(payload.status === 'confirmed' ? 'Đã xác nhận booking.' : 'Đã từ chối booking.');
-      await loadData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Cập nhật booking thất bại');
-    }
-  }
+// export default function AdminWorkshopsPage() {
+//   const [workshops, setWorkshops] = useState<
+//     WorkshopDto[]
+//   >([]);
 
-  function handleDelete(code: string) {
-    setDeleteCode(code);
-    setShowDeleteDialog(true);
-  }
+//   const [loading, setLoading] = useState(true);
 
-  async function confirmDelete() {
-    try {
-      setDeleting(true);
-  
-      await adminBookingsApi.remove(deleteCode);
-  
-      setMessage('Xóa booking thành công.');
-  
-      await loadData();
-  
-      if (
-        selected?.booking_code === deleteCode
-      ) {
-        setSelected(null);
-      }
-  
-      setShowDeleteDialog(false);
-  
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Xóa booking thất bại'
-      );
-    } finally {
-      setDeleting(false);
-    }
-  }
-  async function confirmDeleteSelected() {
-    try {
-  
-      setDeleting(true);
-  
-      await Promise.all(
-  
-        selectedBookings.map((code) =>
-          adminBookingsApi.remove(code)
-        )
-  
-      );
-  
-      clear();
-  
-      await loadData();
-  
-      setMessage(
-        `Đã xóa ${selectedBookings.length} booking.`
-      );
-  
-      setShowDeleteDialog(false);
-  
-    } catch (err) {
-  
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Xóa thất bại'
-      );
-  
-    } finally {
-  
-      setDeleting(false);
-  
-    }
-  }
-  
+//   const [openModal, setOpenModal] =
+//     useState(false);
 
-  async function handleReviewBill(
-    code: string,
-    action: 'approve' | 'reject'
-  ) {
-    try {
-      await adminBookingsApi.reviewBill(
-        code,
-        action
-      );
-  
-      setMessage(
-        action === 'approve'
-          ? 'Đã duyệt bill.'
-          : 'Đã từ chối bill.'
-      );
-  
-      await loadData();
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Duyệt bill thất bại'
-      );
-    }
-  }
-  
-  
+//   const [editingWorkshop, setEditingWorkshop] =
+//     useState<WorkshopDto | null>(null);
 
-  return (
-    <AdminLayout title="Quản lý booking / bill" subtitle="Duyệt booking, duyệt bill, cập nhật trạng thái và xoá booking">
-      <div className="rounded-[2rem] border border-[#e8edf3] bg-white p-6 shadow-[0_10px_25px_rgba(15,23,42,0.04)]">
-        <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-[#8f9bb3]">Booking</p>
-            <h2 className="mt-2 font-serif text-3xl font-light text-foreground">Tất cả booking</h2>
-          </div>
-          <div className="flex gap-3">
-            <div className="flex items-center gap-2 rounded-full border border-[#e8edf3] bg-[#f6f7fb] px-4 py-2">
-              <Search className="h-4 w-4 text-[#8f9bb3]" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} className="bg-transparent text-sm outline-none" placeholder="Tìm kiếm..." />
-            </div>
-            <button type="button" onClick={loadData} className="rounded-full border border-[#e8edf3] bg-[#f6f7fb] p-3 text-foreground">
-              <RefreshCw className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+//   const [formData, setFormData] = useState(
+//     emptyWorkshopForm
+//   );
 
-        {message ? <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{message}</div> : null}
-        {error ? <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
-        {selectedBookings.length > 0 && (
-  <div className="mb-5 flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
+//   const [saving, setSaving] = useState(false);
 
-    <div>
-      <p className="font-medium text-red-700">
-        Đã chọn {selectedBookings.length} booking
-      </p>
+//   const [uploadingImages, setUploadingImages] =
+//     useState(false);
 
-      <p className="text-xs text-red-500">
-        Bạn có thể xóa nhiều booking cùng lúc.
-      </p>
-    </div>
+//   const loadWorkshops = async () => {
+//     try {
+//       setLoading(true);
 
-    <button
-      onClick={() => setShowDeleteDialog(true)}
-      className="rounded-full bg-red-600 px-5 py-3 text-white transition hover:bg-red-700"
-    >
-      Xóa đã chọn
-    </button>
+//       const data = await api.workshops();
 
-  </div>
-)}
-        {loading ? (
-          <div className="rounded-2xl border border-[#e8edf3] bg-[#f6f7fb] p-6 text-sm text-[#6f7b8b]">Đang tải...</div>
-        ) : (
-          <div className="overflow-hidden rounded-[1.5rem] border border-[#e8edf3]">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-[#f6f7fb] text-[#8f9bb3]">
-              <tr>
+//       setWorkshops(data.workshops || []);
+//     } catch {
+//       setWorkshops([]);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-<th className="w-14 px-4 py-3">
+//   useEffect(() => {
+//     loadWorkshops();
+//   }, []);
 
-  <input
-    type="checkbox"
-    checked={
-      filtered.length > 0 &&
-      selectedBookings.length === filtered.length
-    }
-    onChange={() =>
-      toggleAll(
-        filtered.map(
-          item => item.booking_code
-        )
-      )
-    }
-    className="h-4 w-4 accent-emerald-700"
-  />
+//   const openCreateModal = () => {
+//     setEditingWorkshop(null);
+//     setFormData(emptyWorkshopForm);
+//     setOpenModal(true);
+//   };
 
-</th>
+//   const openEditModal = (workshop: WorkshopDto) => {
+//     setEditingWorkshop(workshop);
 
-<th className="px-4 py-3">
-  Workshop
-</th>
-                  <th className="px-4 py-3">Khách hàng</th>
-                  <th className="px-4 py-3">SĐT</th>
-                  <th className="px-4 py-3">Bill</th>
-                  <th className="px-4 py-3">Trạng thái</th>
-                  <th className="px-4 py-3 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((item) => (
-                  <tr
-                  key={item.id}
-                  className={`
-                    border-t
-                    border-[#eef2f7]
-                    align-top
-                    transition
-                    hover:bg-[#faf9f7]
-                    ${
-                      isSelected(item.booking_code)
-                        ? 'bg-emerald-50'
-                        : ''
-                    }
-                  `}
-                >
-                  <td className="px-4 py-4">
+//     setFormData({
+//       title: workshop.title || '',
+//       price: String(workshop.price || ''),
 
-<input
-  type="checkbox"
-  checked={isSelected(item.booking_code)}
-  onChange={() =>
-    toggleBooking(item.booking_code)
-  }
-  className="h-4 w-4 accent-emerald-700"
-/>
+//       age_range:
+//         workshop.age_range || 'Mọi lứa tuổi',
 
-</td>
-                    <td className="px-4 py-4 text-[#6f7b8b]">
-                      <div className="font-medium text-foreground">{item.workshop?.title || '—'}</div>
-                      <div className="text-xs text-[#9aa4b2]">{item.workshop?.event_date ? new Date(item.workshop.event_date).toLocaleString('vi-VN') : ''}</div>
-                    </td>
-                    <td className="px-4 py-4 text-[#6f7b8b]">
-                      <div>{item.customer_name}</div>
-                    </td>
-                    <td className="px-4 py-4 text-[#6f7b8b]">
-                      <div className="font-medium text-foreground">{item.customer_phone}</div>
-                    </td>
-                    <td className="px-4 py-4">
-  {item.bill_url ? (
-    <div className="space-y-2">
-     <img
-  src={item.bill_url}
-  alt="Bill"
-  onClick={() => setPreviewImage(item.bill_url!)}
-  className="h-24 w-24 cursor-pointer rounded-xl border border-[#e8edf3] object-cover transition hover:scale-105"
-/>
+//       difficulty: workshop.difficulty || 1,
 
-      <div
-        className={`inline-flex rounded-full px-3 py-1 text-xs ${
-          item.bill_status === 'approved'
-            ? 'bg-emerald-50 text-emerald-700'
-            : item.bill_status === 'rejected'
-            ? 'bg-red-50 text-red-700'
-            : 'bg-blue-50 text-blue-700'
-        }`}
-      >
-        {item.bill_status}
-      </div>
-    </div>
-  ) : (
-    <span className="text-xs text-gray-500">
-      Chưa gửi bill
-    </span>
-  )}
-</td>
-<td className="px-4 py-4">
-  <div
-    className={`inline-flex rounded-full px-3 py-1 text-xs ${
-      item.status === 'confirmed'
-        ? 'bg-emerald-50 text-emerald-700'
-        : item.status === 'cancelled'
-        ? 'bg-red-50 text-red-700'
-        : 'bg-gray-100 text-gray-600'
-    }`}
-  >
-    {item.status}
-  </div>
-</td>
-<td className="px-4 py-4">
-  <div className="flex flex-wrap justify-end gap-2">
+//       duration: workshop.duration || '60 phút',
 
-    {item.bill_status === 'uploaded' && (
-      <>
-        <button
-          onClick={() =>
-            handleReviewBill(
-              item.booking_code,
-              'approve'
-            )
-          }
-          className="rounded-full border border-emerald-200 bg-emerald-50 p-2 text-emerald-700"
-          title="Duyệt bill"
-        >
-          <CheckCircle2 className="h-4 w-4" />
-        </button>
+//       short_description:
+//         workshop.short_description || '',
 
-        <button
-          onClick={() =>
-            handleReviewBill(
-              item.booking_code,
-              'reject'
-            )
-          }
-          className="rounded-full border border-red-200 bg-red-50 p-2 text-red-700"
-          title="Từ chối bill"
-        >
-          <XCircle className="h-4 w-4" />
-        </button>
-      </>
-    )}
+//       description: workshop.description || '',
 
-    <button
-      onClick={() =>
-        handleDelete(item.booking_code)
-      }
-      className="rounded-full border border-red-200 bg-red-50 p-2 text-red-700"
-      title="Xoá"
-    >
-      <Trash2 className="h-4 w-4" />
-    </button>
-  </div>
-</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+//       image_url: workshop.image_url || '',
 
-      {selected ? (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 px-4 py-8 backdrop-blur-sm" onClick={() => setSelected(null)}>
-          <div className="w-full max-w-4xl overflow-hidden rounded-[2rem] border border-[#e8edf3] bg-white shadow-[0_30px_100px_rgba(0,0,0,0.2)]" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between border-b border-[#eef2f7] px-6 py-5">
-              <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-[#8f9bb3]">Chi tiết booking</p>
-                <h3 className="mt-2 font-serif text-3xl font-light text-foreground">{selected.booking_code}</h3>
-              </div>
-              <button onClick={() => setSelected(null)} className="rounded-full p-2 text-[#8f9bb3] transition hover:bg-[#f6f7fb] hover:text-foreground">
-                <XCircle className="h-5 w-5" />
-              </button>
-            </div>
+//       images: workshop.images || [],
+//     });
 
-            <div className="grid gap-6 p-6 lg:grid-cols-[1fr_0.9fr]">
-              <div className="space-y-4">
-                <InfoCard title="Khách hàng" content={`${selected.customer_name} | ${selected.customer_phone}`} />
-                <InfoCard title="Workshop" content={`${selected.workshop?.title || '—'} | ${selected.workshop?.event_date ? new Date(selected.workshop.event_date).toLocaleString('vi-VN') : ''}`} />
-                <InfoCard title="Số chỗ" content={String(selected.seats_booked)} />
-                <InfoCard title="Ghi chú" content={selected.bill_url ? 'Có bill đã upload' : 'Chưa có bill'} />
-              </div>
+//     setOpenModal(true);
+//   };
 
-              <div className="space-y-4 rounded-[1.5rem] bg-[#f6f7fb] p-5">
-                <div className="rounded-2xl border border-[#e8edf3] bg-white p-4 text-sm text-[#6f7b8b]">
-                  <div className="flex justify-between"><span>Tổng tiền</span><span className="font-medium text-foreground">{selected.total_price}</span></div>
-                  <div className="mt-2 flex justify-between"><span>Đã cọc</span><span className="font-medium text-foreground">{selected.deposit_amount}</span></div>
-                  <div className="mt-2 flex justify-between"><span>Đã trả</span><span className="font-medium text-foreground">{selected.paid_amount}</span></div>
-                  <div className="mt-2 flex justify-between"><span>Còn lại</span><span className="font-medium text-foreground">{selected.remaining_amount}</span></div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <button onClick={() => handleAction(selected.booking_code, { status: 'confirmed' })} className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">Xác nhận</button>
-                  <button onClick={() => handleAction(selected.booking_code, { status: 'cancelled' })} className="rounded-full border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">Huỷ</button>
-                  <button onClick={() => handleReviewBill(selected.booking_code, 'approve')} className="rounded-full border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">Duyệt bill</button>
-                  <button onClick={() => handleReviewBill(selected.booking_code, 'reject')} className="rounded-full border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">Từ chối bill</button>
-                </div>
-                <button onClick={() => handleDelete(selected.booking_code)} className="w-full rounded-full border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">Xoá booking</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-      {previewImage && (
-  <div
-    className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 p-4"
-    onClick={() => setPreviewImage(null)}
-  >
-    <div
-      className="relative max-h-[90vh] max-w-[90vw]"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={() => setPreviewImage(null)}
-        className="absolute -right-4 -top-4 z-10 rounded-full bg-white p-2 shadow"
-      >
-        <XCircle className="h-6 w-6 text-red-500" />
-      </button>
+//   const handleImagesUpload = async (
+//     files: FileList | null
+//   ) => {
+//     if (!files || files.length === 0) return;
 
-        <img
-          src={previewImage}
-          alt="Bill Preview"
-          className="mt-5 max-h-96 w-full rounded-2xl object-contain"
-        />
-    </div>
-  </div>
-)}
-<ConfirmDialog
-  open={showDeleteDialog}
-  type="delete"
-  title="Xóa booking"
+//     if (
+//       formData.images.length + files.length >
+//       4
+//     ) {
+//       alert('Chỉ được tối đa 4 ảnh');
+//       return;
+//     }
 
-  description={
-    selectedBookings.length
-      ? `Bạn có chắc muốn xóa ${selectedBookings.length} booking đã chọn?`
-      : 'Bạn có chắc chắn muốn xóa booking này?'
-  }
+//     setUploadingImages(true);
 
-  confirmText="Xóa"
+//     try {
+//       const uploadedUrls: string[] = [];
 
-  cancelText="Hủy"
+//       for (const file of Array.from(files)) {
+//         const result = await api.uploadImage(file);
 
-  loading={deleting}
+//         uploadedUrls.push(result.url);
+//       }
 
-  onClose={() =>
-    setShowDeleteDialog(false)
-  }
+//       setFormData((prev) => ({
+//         ...prev,
+//         image_url:
+//           prev.image_url ||
+//           uploadedUrls[0] ||
+//           '',
 
-  onConfirm={() => {
+//         images: [
+//           ...prev.images,
+//           ...uploadedUrls,
+//         ],
+//       }));
+//     } catch {
+//       alert('Upload ảnh thất bại');
+//     } finally {
+//       setUploadingImages(false);
+//     }
+//   };
 
-    if (selectedBookings.length > 0) {
+//   const removeImage = (index: number) => {
+//     setFormData((prev) => {
+//       const newImages = prev.images.filter(
+//         (_, i) => i !== index
+//       );
 
-      confirmDeleteSelected();
+//       return {
+//         ...prev,
+//         images: newImages,
+//         image_url: newImages[0] || '',
+//       };
+//     });
+//   };
 
-    } else {
+//   const handleSubmit = async (
+//     e: React.FormEvent
+//   ) => {
+//     e.preventDefault();
 
-      confirmDelete();
+//     if (!formData.title.trim()) {
+//       alert('Vui lòng nhập tên workshop');
+//       return;
+//     }
 
-    }
+//     try {
+//       setSaving(true);
 
-  }}
-/>
-    </AdminLayout>
-  );
-}
+//       const payload = {
+//         title: formData.title.trim(),
 
+//         price: Number(formData.price) || 0,
 
-function InfoCard({ title, content }: { title: string; content: string }) {
-  return (
-    <div className="rounded-[1.25rem] border border-[#e8edf3] bg-[#f6f7fb] p-4">
-      <p className="text-xs uppercase tracking-[0.28em] text-[#8f9bb3]">{title}</p>
-      <p className="mt-2 text-sm leading-7 text-foreground">{content}</p>
-    </div>
-  );
-}
+//         age_range: formData.age_range,
 
+//         difficulty: formData.difficulty,
 
+//         duration: formData.duration,
+
+//         short_description:
+//           formData.short_description,
+
+//         description: formData.description,
+
+//         image_url:
+//           formData.image_url ||
+//           formData.images[0] ||
+//           '',
+
+//         images: formData.images,
+//       };
+
+//       if (editingWorkshop) {
+//         await api.updateWorkshop(
+//           editingWorkshop.id,
+//           payload
+//         );
+//       } else {
+//         await api.createWorkshop(payload);
+//       }
+
+//       setOpenModal(false);
+
+//       await loadWorkshops();
+//     } catch {
+//       alert('Không thể lưu workshop');
+//     } finally {
+//       setSaving(false);
+//     }
+//   };
+
+//   const handleDelete = async (
+//     workshop: WorkshopDto
+//   ) => {
+//     if (
+//       !window.confirm(
+//         `Xóa workshop "${workshop.title}"?`
+//       )
+//     ) {
+//       return;
+//     }
+
+//     try {
+//       await api.deleteWorkshop(workshop.id);
+
+//       await loadWorkshops();
+//     } catch {
+//       alert('Xóa workshop thất bại');
+//     }
+//   };
+
+//   const sortedWorkshops = useMemo(
+//     () =>
+//       [...workshops].sort(
+//         (a, b) =>
+//           new Date(
+//             b.created_at || 0
+//           ).getTime() -
+//           new Date(
+//             a.created_at || 0
+//           ).getTime()
+//       ),
+//     [workshops]
+//   );
+
+//   return (
+//     <AdminLayout
+//       title="Quản lý Workshop"
+//       description="Tạo và cập nhật workshop sáng tạo hoa."
+//     >
+//       <div className="space-y-6">
+//         <div className="flex items-center justify-between">
+//           <div>
+//             <h2 className="text-xl font-semibold text-slate-800">
+//               Danh sách workshop
+//             </h2>
+
+//             <p className="text-sm text-slate-500">
+//               {sortedWorkshops.length} workshop
+//             </p>
+//           </div>
+
+//           <button
+//             onClick={openCreateModal}
+//             className="inline-flex items-center gap-2 rounded-2xl bg-[#C49A6C] px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-[#b38657]"
+//           >
+//             <Plus className="h-4 w-4" />
+//             Thêm workshop
+//           </button>
+//         </div>
+
+//         <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+//           <div className="overflow-x-auto">
+//             <table className="min-w-full divide-y divide-slate-200">
+//               <thead className="bg-slate-50 text-left text-sm font-semibold text-slate-600">
+//                 <tr>
+//                   <th className="px-6 py-4">
+//                     Workshop
+//                   </th>
+
+//                   <th className="px-6 py-4">
+//                     Chi phí
+//                   </th>
+
+//                   <th className="px-6 py-4">
+//                     Độ tuổi
+//                   </th>
+
+//                   <th className="px-6 py-4">
+//                     Độ khó
+//                   </th>
+
+//                   <th className="px-6 py-4">
+//                     Thời gian
+//                   </th>
+
+//                   <th className="px-6 py-4 text-right">
+//                     Thao tác
+//                   </th>
+//                 </tr>
+//               </thead>
+
+//               <tbody className="divide-y divide-slate-100 text-sm text-slate-600">
+//                 {loading ? (
+//                   <tr>
+//                     <td
+//                       colSpan={6}
+//                       className="px-6 py-10 text-center text-slate-500"
+//                     >
+//                       Đang tải workshop...
+//                     </td>
+//                   </tr>
+//                 ) : sortedWorkshops.length === 0 ? (
+//                   <tr>
+//                     <td
+//                       colSpan={6}
+//                       className="px-6 py-10 text-center text-slate-500"
+//                     >
+//                       Chưa có workshop nào.
+//                     </td>
+//                   </tr>
+//                 ) : (
+//                   sortedWorkshops.map(
+//                     (workshop) => (
+//                       <tr
+//                         key={workshop.id}
+//                         className="hover:bg-slate-50"
+//                       >
+//                         <td className="px-6 py-4 font-medium text-slate-800">
+//                           {workshop.title}
+//                         </td>
+
+//                         <td className="px-6 py-4">
+//                           {workshop.price.toLocaleString(
+//                             'vi-VN'
+//                           )}
+//                           đ
+//                         </td>
+
+//                         <td className="px-6 py-4">
+//                           {workshop.age_range ||
+//                             'Mọi lứa tuổi'}
+//                         </td>
+
+//                         <td className="px-6 py-4 text-[#C49A6C]">
+//                           {'★'.repeat(
+//                             workshop.difficulty ||
+//                               1
+//                           )}
+//                         </td>
+
+//                         <td className="px-6 py-4">
+//                           {workshop.duration ||
+//                             '60 phút'}
+//                         </td>
+
+//                         <td className="px-6 py-4">
+//                           <div className="flex items-center justify-end gap-2">
+//                             <button
+//                               onClick={() =>
+//                                 openEditModal(
+//                                   workshop
+//                                 )
+//                               }
+//                               className="rounded-full border border-slate-200 p-2 text-slate-500 transition hover:border-[#C49A6C] hover:text-[#C49A6C]"
+//                               title="Chỉnh sửa"
+//                             >
+//                               <Pencil className="h-4 w-4" />
+//                             </button>
+
+//                             <button
+//                               onClick={() =>
+//                                 handleDelete(
+//                                   workshop
+//                                 )
+//                               }
+//                               className="rounded-full border border-slate-200 p-2 text-slate-500 transition hover:border-red-200 hover:text-red-500"
+//                               title="Xóa workshop"
+//                             >
+//                               <Trash2 className="h-4 w-4" />
+//                             </button>
+//                           </div>
+//                         </td>
+//                       </tr>
+//                     )
+//                   )
+//                 )}
+//               </tbody>
+//             </table>
+//           </div>
+//         </div>
+//       </div>
+
+//       {openModal && (
+//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+//           <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
+//             <div className="mb-6 flex items-center justify-between">
+//               <h3 className="text-xl font-semibold text-slate-800">
+//                 {editingWorkshop
+//                   ? 'Cập nhật workshop'
+//                   : 'Tạo workshop mới'}
+//               </h3>
+
+//               <button
+//                 onClick={() =>
+//                   setOpenModal(false)
+//                 }
+//                 className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+//               >
+//                 <X className="h-5 w-5" />
+//               </button>
+//             </div>
+
+//             <form
+//               onSubmit={handleSubmit}
+//               className="space-y-6"
+//             >
+//               <div className="grid gap-5 md:grid-cols-2">
+//                 <div className="space-y-2 md:col-span-2">
+//                   <label className="text-sm font-medium text-slate-700">
+//                     Tên workshop
+//                   </label>
+
+//                   <input
+//                     value={formData.title}
+//                     onChange={(e) =>
+//                       setFormData({
+//                         ...formData,
+//                         title:
+//                           e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-2xl border border-slate-200 px-4 py-3"
+//                     placeholder="Nhập tên workshop"
+//                   />
+//                 </div>
+
+//                 <div className="space-y-2">
+//                   <label className="text-sm font-medium text-slate-700">
+//                     Chi phí
+//                   </label>
+
+//                   <input
+//                     type="number"
+//                     value={formData.price}
+//                     onChange={(e) =>
+//                       setFormData({
+//                         ...formData,
+//                         price:
+//                           e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-2xl border border-slate-200 px-4 py-3"
+//                     placeholder="VD: 235000"
+//                   />
+//                 </div>
+
+//                 <div className="space-y-2">
+//                   <label className="text-sm font-medium text-slate-700">
+//                     Độ tuổi
+//                   </label>
+
+//                   <input
+//                     value={formData.age_range}
+//                     onChange={(e) =>
+//                       setFormData({
+//                         ...formData,
+//                         age_range:
+//                           e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-2xl border border-slate-200 px-4 py-3"
+//                     placeholder="VD: 7+"
+//                   />
+//                 </div>
+
+//                 <div className="space-y-2">
+//                   <label className="text-sm font-medium text-slate-700">
+//                     Độ khó
+//                   </label>
+
+//                   <select
+//                     value={formData.difficulty}
+//                     onChange={(e) =>
+//                       setFormData({
+//                         ...formData,
+//                         difficulty:
+//                           Number(
+//                             e.target.value
+//                           ),
+//                       })
+//                     }
+//                     className="w-full rounded-2xl border border-slate-200 px-4 py-3"
+//                   >
+//                     <option value={1}>
+//                       ★☆☆☆☆
+//                     </option>
+//                     <option value={2}>
+//                       ★★☆☆☆
+//                     </option>
+//                     <option value={3}>
+//                       ★★★☆☆
+//                     </option>
+//                     <option value={4}>
+//                       ★★★★☆
+//                     </option>
+//                     <option value={5}>
+//                       ★★★★★
+//                     </option>
+//                   </select>
+//                 </div>
+
+//                 <div className="space-y-2">
+//                   <label className="text-sm font-medium text-slate-700">
+//                     Thời gian
+//                   </label>
+
+//                   <input
+//                     value={formData.duration}
+//                     onChange={(e) =>
+//                       setFormData({
+//                         ...formData,
+//                         duration:
+//                           e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-2xl border border-slate-200 px-4 py-3"
+//                     placeholder="VD: 60 phút"
+//                   />
+//                 </div>
+
+              
+
+//                 <div className="space-y-2 md:col-span-2">
+//                   <label className="text-sm font-medium text-slate-700">
+//                     Mô tả chi tiết
+//                   </label>
+
+//                   <RichTextEditor
+//                     value={formData.short_description}
+//                     onChange={(value) =>
+//                       setFormData({
+//                         ...formData,
+//                         description:
+//                           value,
+//                       })
+//                     }
+//                     placeholder="Nhập mô tả workshop..."
+//                   />
+//                 </div>
+
+//                 <div className="space-y-3 md:col-span-2">
+//                   <label className="text-sm font-medium text-slate-700">
+//                     Hình ảnh workshop (tối đa 4
+//                     ảnh)
+//                   </label>
+
+//                   <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center hover:border-[#C49A6C]">
+//                     <UploadCloud className="mb-3 h-8 w-8 text-[#C49A6C]" />
+
+//                     <span className="text-sm font-medium text-slate-700">
+//                       {uploadingImages
+//                         ? 'Đang upload ảnh...'
+//                         : 'Chọn tối đa 4 ảnh'}
+//                     </span>
+
+//                     <input
+//                       type="file"
+//                       accept="image/*"
+//                       multiple
+//                       className="hidden"
+//                       onChange={(e) =>
+//                         handleImagesUpload(
+//                           e.target.files
+//                         )
+//                       }
+//                     />
+//                   </label>
+
+//                   {formData.images.length >
+//                     0 && (
+//                     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+//                       {formData.images.map(
+//                         (image, index) => (
+//                           <div
+//                             key={index}
+//                             className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white"
+//                           >
+//                             <img
+//                               src={image}
+//                               alt={`Workshop ${index + 1}`}
+//                               className="h-28 w-full object-cover"
+//                             />
+
+//                             <button
+//                               type="button"
+//                               onClick={() =>
+//                                 removeImage(
+//                                   index
+//                                 )
+//                               }
+//                               className="absolute right-2 top-2 rounded-full bg-black/70 p-1 text-white hover:bg-red-500"
+//                             >
+//                               <X className="h-4 w-4" />
+//                             </button>
+
+//                             {index === 0 && (
+//                               <span className="absolute left-2 top-2 rounded-full bg-[#C49A6C] px-2 py-1 text-[10px] font-semibold text-white">
+//                                 Ảnh chính
+//                               </span>
+//                             )}
+//                           </div>
+//                         )
+//                       )}
+//                     </div>
+//                   )}
+//                 </div>
+//               </div>
+
+//               <div className="flex justify-end gap-3 border-t border-slate-100 pt-6">
+//                 <button
+//                   type="button"
+//                   onClick={() =>
+//                     setOpenModal(false)
+//                   }
+//                   className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+//                 >
+//                   Hủy
+//                 </button>
+
+//                 <button
+//                   type="submit"
+//                   disabled={saving}
+//                   className="rounded-2xl bg-[#C49A6C] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#b38657] disabled:cursor-not-allowed disabled:opacity-60"
+//                 >
+//                   {saving
+//                     ? 'Đang lưu...'
+//                     : editingWorkshop
+//                     ? 'Cập nhật workshop'
+//                     : 'Tạo workshop'}
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//     </AdminLayout>
+//   );
+// }

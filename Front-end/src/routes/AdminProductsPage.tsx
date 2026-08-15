@@ -560,8 +560,8 @@ setShowResultDialog(true);
         {categories
           .filter(
             (c) =>
-              c.slug !== "hoa-qua-tang" &&
-              c.slug !== "hoa-trang-tri"
+              c.slug !== "hoa-sap-qua-tang" &&
+              c.slug !== "hoa-gia-hoa-lua"
           )
           .map((category) => (
 

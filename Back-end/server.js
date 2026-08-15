@@ -23,6 +23,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL
 ];
 
+
 app.use(
   cors({
     origin(origin, callback) {
@@ -47,15 +48,19 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api', catalogRoutes);
+
 app.use('/api/products', productRoutes);
+
 app.use('/api/workshops', workshopRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
-//app.use('/api/address', addressRoutes);
+
 app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+
+// catalog để sau các route cụ thể
+app.use('/api', catalogRoutes);
 
 
 app.use((err, req, res, next) => {

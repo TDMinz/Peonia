@@ -18,8 +18,9 @@ import PrivacyPolicyPage from './routes/PrivacyPolicy';
 import OrderWarrantyPage from './routes/OrderWarrantyPolicyPage';
 import ShippingPolicyPage from './routes/ShippingPolicyPage';
 import PaymentPolicyPage from './routes/PaymentPolicyPage';
+import WorkshopDetailPage from './routes/WorkshopDetailPage';
 
-type Route = 'home' | 'about' | 'privacy-policy' | 'order-warranty' | 'shipping-policy' | 'payment-policy' | 'gift-bouquets' | 'workshop' | 'khoa-hoc' | 'cart' | 'checkout' | 'category' | 'admin' | 'staff' | 'auth-login' | 'auth-register' | 'auth-forgot' | 'order-history' | 'change-password' | 'product-detail';
+type Route = 'home' | 'about' | 'privacy-policy' |'workshop-detail'| 'order-warranty' | 'shipping-policy' | 'payment-policy' | 'gift-bouquets' | 'workshop' | 'khoa-hoc' | 'cart' | 'checkout' | 'category' | 'admin' | 'staff' | 'auth-login' | 'auth-register' | 'auth-forgot' | 'order-history' | 'change-password' | 'product-detail';
 
 function getStoredUser() {
   const raw = localStorage.getItem('peonia_user');
@@ -35,7 +36,7 @@ function getRouteFromLocation(): Route {
   const path = window.location.pathname;
   if (path === '/hoa-sap-qua-tang/hoa-bo') return 'gift-bouquets';
   if (path.startsWith('/hoa-sap-qua-tang/') || path.startsWith('/hoa-gia-hoa-lua/')) return 'category';
-  
+  if (path.startsWith('/workshop/')) return 'workshop-detail';
   if (path === '/workshop') return 'workshop';
   if (path === '/khoa-hoc') return 'khoa-hoc';
   if (path === '/gioi-thieu') return 'about';
@@ -128,6 +129,11 @@ export default function App() {
       {route === 'order-warranty' && <OrderWarrantyPage />}
       {route === 'shipping-policy' && <ShippingPolicyPage />}
       {route === 'payment-policy' && <PaymentPolicyPage />}
+      {route === 'workshop-detail' && (
+  <WorkshopDetailPage
+    id={window.location.pathname.split('/')[2] || ''}
+  />
+)}
 
     </>
   );

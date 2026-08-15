@@ -74,12 +74,19 @@ function toWorkshopResponse(workshop) {
   return {
     id: workshop._id,
     title: workshop.title,
-    description: workshop.description,
-    event_date: workshop.event_date,
-    max_slots: workshop.max_slots,
-    available_slots: workshop.available_slots,
+
     price: workshop.price,
-    image_url: workshop.image_url,
+
+    age_range: workshop.age_range || '',
+    difficulty: workshop.difficulty || 1,
+    duration: workshop.duration || '',
+
+    short_description: workshop.short_description || '',
+    description: workshop.description || '',
+
+    image_url: workshop.image_url || '',
+    images: workshop.images || [],
+
     created_at: workshop.created_at,
   };
 }
@@ -480,14 +487,491 @@ async function updateVariant(req, res) { /* unchanged */
 async function deleteVariant(req, res) { /* unchanged */
   try { const variant = await ProductVariant.findByIdAndDelete(req.params.id); if (!variant) return res.status(404).json({ message: 'Không tìm thấy biến thể.' }); return res.json({ message: 'Xóa biến thể thành công.' }); } catch (error) { return res.status(500).json({ message: 'Lỗi xóa biến thể.', error: error.message }); }
 }
-async function createWorkshop(req, res) { /* unchanged */
-  try { const { title, description, event_date, max_slots, available_slots, price } = req.body; if (!title || !event_date || !max_slots || typeof price === 'undefined') { return res.status(400).json({ message: 'Thiếu thông tin workshop bắt buộc.' }); } if (Number(max_slots) < 1 || Number(price) < 0) return res.status(400).json({ message: 'Dữ liệu workshop không hợp lệ.' }); const image_url = req.file ? await uploadImageFromBuffer(req.file, 'peonia/workshops') : req.body.image_url; const workshop = await Workshop.create({ title, description, event_date, max_slots, available_slots: available_slots ?? max_slots, price, image_url }); return res.status(201).json({ message: 'Tạo workshop thành công.', workshop: toWorkshopResponse(workshop) }); } catch (error) { return res.status(500).json({ message: 'Lỗi tạo workshop.', error: error.message }); }
+async function createWorkshop(req, res) {
+  const startTime = Date.now();
+
+  try {
+    console.log('\n========================================');
+    console.log('===== CREATE WORKSHOP START =====');
+    console.log('========================================');
+
+    // =====================================
+    // 1. KIỂM TRA FILE NHẬN ĐƯỢC
+    // =====================================
+
+    console.log(
+      'FILES KEYS:',
+      Object.keys(req.files || {})
+    );
+
+    console.log(
+      'BODY:',
+      {
+        title: req.body.title,
+        price: req.body.price,
+        age_range: req.body.age_range,
+        difficulty: req.body.difficulty,
+        duration: req.body.duration,
+      }
+    );
+
+    // Kiểm tra dung lượng từng ảnh
+    const fileInfo = [];
+
+    for (let i = 0; i < 4; i++) {
+      const file =
+        req.files?.[`image_${i}`]?.[0];
+
+      if (file) {
+        fileInfo.push({
+          field: `image_${i}`,
+          filename: file.originalname,
+          sizeBytes: file.size,
+          sizeMB: (
+            file.size /
+            1024 /
+            1024
+          ).toFixed(2),
+          mimetype: file.mimetype,
+        });
+      }
+    }
+
+    console.log(
+      'FILE INFO:',
+      fileInfo
+    );
+
+    console.log(
+      'THỜI GIAN SAU KHI NHẬN REQUEST:',
+      Date.now() - startTime,
+      'ms'
+    );
+
+    // =====================================
+    // 2. LẤY DỮ LIỆU FORM
+    // =====================================
+
+    const {
+      title,
+      description = '',
+      short_description = '',
+      price,
+      age_range = '',
+      difficulty = 1,
+      duration = '',
+    } = req.body;
+
+    // =====================================
+    // 3. VALIDATE
+    // =====================================
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({
+        message:
+          'Vui lòng nhập tên workshop.',
+      });
+    }
+
+    if (
+      price === undefined ||
+      Number.isNaN(Number(price)) ||
+      Number(price) < 0
+    ) {
+      return res.status(400).json({
+        message:
+          'Giá workshop không hợp lệ.',
+      });
+    }
+
+    const normalizedDifficulty =
+      Math.min(
+        5,
+        Math.max(
+          1,
+          Number(difficulty) || 1
+        )
+      );
+
+    console.log(
+      'VALIDATE XONG:',
+      Date.now() - startTime,
+      'ms'
+    );
+
+    // =====================================
+    // 4. UPLOAD ẢNH SONG SONG
+    // =====================================
+
+    console.log(
+      '===== BẮT ĐẦU UPLOAD CLOUDINARY ====='
+    );
+
+    const uploadStart =
+      Date.now();
+
+    const uploadTasks = [];
+
+    for (let i = 0; i < 4; i++) {
+      const file =
+        req.files?.[`image_${i}`]?.[0];
+
+      if (file) {
+        console.log(
+          `UPLOAD image_${i}:`,
+          file.originalname,
+          (
+            file.size /
+            1024 /
+            1024
+          ).toFixed(2),
+          'MB'
+        );
+
+        uploadTasks.push(
+          uploadImageFromBuffer(
+            file,
+            'peonia/workshops'
+          ).then((url) => {
+            console.log(
+              `UPLOAD image_${i} XONG`
+            );
+
+            return {
+              index: i,
+              url,
+            };
+          })
+        );
+      }
+    }
+
+    console.log(
+      'SỐ LƯỢNG ẢNH UPLOAD:',
+      uploadTasks.length
+    );
+
+    const uploadedResults =
+      await Promise.all(
+        uploadTasks
+      );
+
+    const uploadTime =
+      Date.now() - uploadStart;
+
+    console.log(
+      '===== UPLOAD CLOUDINARY XONG ====='
+    );
+
+    console.log(
+      'THỜI GIAN UPLOAD:',
+      uploadTime,
+      'ms',
+      `(${(
+        uploadTime / 1000
+      ).toFixed(2)} giây)`
+    );
+
+    // =====================================
+    // 5. SẮP XẾP ẢNH ĐÚNG THỨ TỰ
+    // =====================================
+
+    const images = [];
+
+    uploadedResults.forEach(
+      ({ index, url }) => {
+        images[index] = url;
+      }
+    );
+
+    console.log(
+      'UPLOADED IMAGES:',
+      images
+    );
+
+    console.log(
+      'SAU UPLOAD:',
+      Date.now() - startTime,
+      'ms'
+    );
+
+    // =====================================
+    // 6. IMAGE URL
+    // =====================================
+
+    const image_url =
+      images[0] || '';
+
+    // =====================================
+    // 7. LƯU MONGODB
+    // =====================================
+
+    console.log(
+      '===== BẮT ĐẦU MONGODB CREATE ====='
+    );
+
+    const mongoStart =
+      Date.now();
+
+    const workshop =
+      await Workshop.create({
+        title:
+          title.trim(),
+
+        description,
+
+        short_description:
+          String(
+            short_description || ''
+          ),
+
+        price:
+          Number(price),
+
+        image_url,
+
+        images,
+
+        age_range,
+
+        difficulty:
+          normalizedDifficulty,
+
+        duration,
+      });
+
+    const mongoTime =
+      Date.now() - mongoStart;
+
+    console.log(
+      '===== MONGODB CREATE XONG ====='
+    );
+
+    console.log(
+      'THỜI GIAN MONGODB:',
+      mongoTime,
+      'ms',
+      `(${(
+        mongoTime / 1000
+      ).toFixed(2)} giây)`
+    );
+
+    // =====================================
+    // 8. RESPONSE
+    // =====================================
+
+    const totalTime =
+      Date.now() - startTime;
+
+    console.log(
+      '========================================'
+    );
+
+    console.log(
+      '===== CREATE WORKSHOP SUCCESS ====='
+    );
+
+    console.log(
+      'TỔNG THỜI GIAN:',
+      totalTime,
+      'ms',
+      `(${(
+        totalTime / 1000
+      ).toFixed(2)} giây)`
+    );
+
+    console.log(
+      '========================================\n'
+    );
+
+    return res.status(201).json({
+      message:
+        'Tạo workshop thành công.',
+
+      workshop:
+        toWorkshopResponse(
+          workshop
+        ),
+    });
+
+  } catch (error) {
+
+    const totalTime =
+      Date.now() - startTime;
+
+    console.error(
+      '========================================'
+    );
+
+    console.error(
+      '===== CREATE WORKSHOP ERROR ====='
+    );
+
+    console.error(
+      'THỜI GIAN ĐÃ CHẠY:',
+      totalTime,
+      'ms'
+    );
+
+    console.error(
+      'ERROR:',
+      error
+    );
+
+    console.error(
+      '========================================'
+    );
+
+    return res.status(500).json({
+      message:
+        'Lỗi tạo workshop.',
+
+      error:
+        error.message,
+    });
+  }
 }
 async function getWorkshopsAdmin(req, res) { /* unchanged */
-  try { const { search = '', status = 'all', page = 1, limit = 20 } = req.query; const query = {}; if (search) query.$or = [{ title: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }]; if (status === 'available') query.available_slots = { $gt: 0 }; if (status === 'full') query.available_slots = 0; const pageNum = Math.max(Number(page) || 1, 1); const limitNum = Math.max(Number(limit) || 20, 1); const [items, total] = await Promise.all([paginate(Workshop.find(query).sort({ event_date: 1 }), pageNum, limitNum), Workshop.countDocuments(query)]); return res.json({ data: items.map(toWorkshopResponse), pagination: { page: pageNum, limit: limitNum, total, total_pages: Math.ceil(total / limitNum) } }); } catch (error) { return res.status(500).json({ message: 'Lỗi lấy workshop.', error: error.message }); }
+  try { const { search = '', status = 'all', page = 1, limit = 20 } = req.query; const query = {}; if (search) query.$or = [{ title: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }]; 
+   const pageNum = Math.max(Number(page) || 1, 1); 
+   const limitNum = Math.max(Number(limit) || 20, 1); 
+   const [items, total] = await Promise.all([paginate(Workshop.find(query).sort({ event_date: 1 }), pageNum, limitNum), Workshop.countDocuments(query)]); 
+   return res.json({ data: items.map(toWorkshopResponse), pagination: { page: pageNum, limit: limitNum, total, total_pages: Math.ceil(total / limitNum) } }); } catch (error) { return res.status(500).json({ message: 'Lỗi lấy workshop.', error: error.message }); }
 }
-async function updateWorkshop(req, res) { /* unchanged */
-  try { if (req.body.max_slots !== undefined && Number(req.body.max_slots) < 1) return res.status(400).json({ message: 'max_slots không hợp lệ.' }); if (req.body.price !== undefined && Number(req.body.price) < 0) return res.status(400).json({ message: 'Price không hợp lệ.' }); const { image_url, ...payload } = req.body; if (req.file) payload.image_url = await uploadImageFromBuffer(req.file, 'peonia/workshops'); else if (typeof image_url !== 'undefined') payload.image_url = image_url; const workshop = await Workshop.findByIdAndUpdate(req.params.id, payload, { new: true }); if (!workshop) return res.status(404).json({ message: 'Không tìm thấy workshop.' }); return res.json({ message: 'Cập nhật workshop thành công.', workshop: toWorkshopResponse(workshop) }); } catch (error) { return res.status(500).json({ message: 'Lỗi cập nhật workshop.', error: error.message }); }
+async function updateWorkshop(req, res) {
+  try {
+    const workshop =
+      await Workshop.findById(
+        req.params.id
+      );
+
+    if (!workshop) {
+      return res.status(404).json({
+        message:
+          'Không tìm thấy workshop.',
+      });
+    }
+
+    const {
+      title,
+      description,
+      short_description,
+      price,
+      age_range,
+      difficulty,
+      duration,
+    } = req.body;
+
+    if (title !== undefined) {
+      workshop.title =
+        String(title).trim();
+    }
+
+    if (description !== undefined) {
+      workshop.description =
+        description;
+    }
+
+    if (
+      short_description !== undefined
+    ) {
+      workshop.short_description =
+         String(short_description);
+    }
+
+    if (price !== undefined) {
+      const numericPrice =
+        Number(price);
+
+      if (
+        Number.isNaN(numericPrice) ||
+        numericPrice < 0
+      ) {
+        return res.status(400).json({
+          message:
+            'Giá workshop không hợp lệ.',
+        });
+      }
+
+      workshop.price =
+        numericPrice;
+    }
+
+    if (age_range !== undefined) {
+      workshop.age_range =
+        age_range;
+    }
+
+    if (difficulty !== undefined) {
+      workshop.difficulty =
+        Math.min(
+          5,
+          Math.max(
+            1,
+            Number(difficulty) || 1
+          )
+        );
+    }
+
+    if (duration !== undefined) {
+      workshop.duration =
+        duration;
+    }
+
+    // =====================================
+    // UPLOAD ẢNH MỚI
+    // =====================================
+
+    const images = [
+      ...(workshop.images || []),
+    ];
+
+    for (let i = 0; i < 4; i++) {
+      const file =
+        req.files?.[`image_${i}`]?.[0];
+
+      if (file) {
+        const uploadedUrl =
+          await uploadImageFromBuffer(
+            file,
+            'peonia/workshops'
+          );
+
+        images[i] = uploadedUrl;
+      }
+    }
+
+    workshop.images =
+      images
+        .filter(Boolean)
+        .slice(0, 4);
+
+    workshop.image_url =
+      workshop.images[0] || '';
+
+    await workshop.save();
+
+    return res.json({
+      message:
+        'Cập nhật workshop thành công.',
+
+      workshop:
+        toWorkshopResponse(workshop),
+    });
+
+  } catch (error) {
+    console.error(
+      'UPDATE WORKSHOP ERROR:',
+      error
+    );
+
+    return res.status(500).json({
+      message:
+        'Lỗi cập nhật workshop.',
+
+      error: error.message,
+    });
+  }
 }
 async function deleteWorkshop(req, res) { /* unchanged */
   try { const workshop = await Workshop.findByIdAndDelete(req.params.id); if (!workshop) return res.status(404).json({ message: 'Không tìm thấy workshop.' }); return res.json({ message: 'Xóa workshop thành công.' }); } catch (error) { return res.status(500).json({ message: 'Lỗi xóa workshop.', error: error.message }); }

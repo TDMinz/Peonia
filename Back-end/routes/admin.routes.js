@@ -23,8 +23,27 @@ router.patch('/variants/:id', adminController.updateVariant);
 router.delete('/variants/:id', adminController.deleteVariant);
 
 router.get('/workshops', adminController.getWorkshopsAdmin);
-router.post('/workshops', upload.single('image'), adminController.createWorkshop);
-router.patch('/workshops/:id', upload.single('image'), adminController.updateWorkshop);
+router.post(
+  '/workshops',
+  upload.fields([
+    { name: 'image_0', maxCount: 1 },
+    { name: 'image_1', maxCount: 1 },
+    { name: 'image_2', maxCount: 1 },
+    { name: 'image_3', maxCount: 1 },
+  ]),
+  adminController.createWorkshop
+);
+
+router.patch(
+  '/workshops/:id',
+  upload.fields([
+    { name: 'image_0', maxCount: 1 },
+    { name: 'image_1', maxCount: 1 },
+    { name: 'image_2', maxCount: 1 },
+    { name: 'image_3', maxCount: 1 },
+  ]),
+  adminController.updateWorkshop
+);
 router.delete('/workshops/:id', adminController.deleteWorkshop);
 
 router.get('/users', adminController.getUsersAdmin);
