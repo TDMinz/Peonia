@@ -714,7 +714,7 @@ export function HomePage() {
                   new Event('peonia-open-contact-panel')
                 )
               }
-              className="mt-12 rounded-full bg-[#063c33] px-10 py-4 text-base font-medium text-white transition-all hover:scale-105 hover:bg-[#0b4f43]"
+              className="cursor-pointer mt-12 rounded-full bg-[#063c33] px-10 py-4 text-base font-medium text-white transition-all hover:scale-105 hover:bg-[#0b4f43]"
             >
               💌 Liên Hệ Ngay
             </button>

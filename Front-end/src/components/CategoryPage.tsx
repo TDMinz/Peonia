@@ -33,7 +33,7 @@ export default function CategoryPage({
   const [showSort, setShowSort] = useState(false);
   const [sortBy, setSortBy] = useState('newest');
   const parentSlug =
-  window.location.pathname.split("/")[1];
+    window.location.pathname.split("/")[1];
 
   const sidebarCategories = categories.map((item) => ({
     id: item.id,
@@ -41,8 +41,8 @@ export default function CategoryPage({
     slug: item.slug,
     parentSlug,
   }));
-  
- 
+
+
   const sortedProducts = useMemo(() => {
     const list = [...products];
 
@@ -100,22 +100,22 @@ export default function CategoryPage({
 
           <div className="grid items-start gap-8 lg:grid-cols-[280px_1fr] xl:grid-cols-[320px_1fr]">
             {/* Sidebar */}
-            <aside>
-            <CategorySidebar
-  categories={sidebarCategories}
-  activeSlug={window.location.pathname.split('/').pop()}
-/>
+            <aside className="sticky top-24 self-start">
+              <CategorySidebar
+                categories={sidebarCategories}
+                activeSlug={window.location.pathname.split('/').pop()}
+              />
             </aside>
 
             {/* Content */}
             <div>
-              <div className="mb-8 flex items-center justify-end">
+              <div className="mb-8 flex items-center justify-start">
 
-                <div className="relative ml-auto">
+                <div className="relative z-40">
                   <button
                     type="button"
                     onClick={() => setShowSort((v) => !v)}
-                    className="
+                    className="cursor-pointer
                                       flex items-center gap-2
                                       rounded-full
                                       border border-[#e8edf3]
@@ -136,7 +136,7 @@ export default function CategoryPage({
                       newest: 'Mới nhất',
                       'price-asc': 'Giá thấp đến cao',
                       'price-desc': 'Giá cao đến thấp',
-                      'best-seller': 'Bán chạy nhất',
+                      
                     }[sortBy]}
 
                     <svg
@@ -155,7 +155,8 @@ export default function CategoryPage({
 
                   {showSort && (
                     <div
-                                            className="
+                      className="
+                      
                               absolute
                               right-0
                               top-full
@@ -182,10 +183,7 @@ export default function CategoryPage({
                           value: 'price-desc',
                           label: 'Giá cao đến thấp',
                         },
-                        {
-                          value: 'best-seller',
-                          label: 'Bán chạy nhất',
-                        },
+                        
                       ].map((option) => (
                         <button
                           key={option.value}
@@ -194,18 +192,19 @@ export default function CategoryPage({
                             setSortBy(option.value);
                             setShowSort(false);
                           }}
-                                          className={`
+                          className={`
+                            cursor-pointer
                             flex w-full items-center justify-between
                             px-5 py-3
                             text-left text-sm
                             transition
                             hover:bg-[#f8fafc]
                             ${sortBy === option.value
-                                              ? 'bg-[#f6f7fb] font-medium text-emerald-900'
-                                              : ''
-                                            }
+                              ? 'bg-[#f6f7fb] font-medium text-emerald-900'
+                              : ''
+                            }
                           `}
-                                        >
+                        >
                           {option.label}
 
                           {sortBy === option.value && (
@@ -239,7 +238,7 @@ export default function CategoryPage({
                   ))}
                 </div>
               )}
-              </div>
+            </div>
           </div>
         </div>
       </section>

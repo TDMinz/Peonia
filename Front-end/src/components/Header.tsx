@@ -1,4 +1,6 @@
-import { Search, UserRound, Flower2, Flower, Gift, CakeSlice, PartyPopper, GraduationCap, Sparkles, Trees, Landmark, ChevronDown, LogOut, Lock, History } from 'lucide-react';
+import { Search, UserRound, Flower2, Flower, Gift, CakeSlice, PartyPopper, GraduationCap, Sparkles, Trees, Landmark, ChevronDown, LogOut, Lock, History,
+  PanelsTopLeft,
+  Heart,Building2,} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { api, type CategoryDto } from '../services/api';
 import { getCartItems } from '../services/cart';
@@ -28,6 +30,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   scenery: Trees,
   hall: Landmark,
   mini: Flower,
+  trees: Trees,
+  panels: PanelsTopLeft,
+  heart: Heart,
+  building: Building2,
+  
 };
 const navigate = (path: string) => {
   window.history.pushState({}, '', path);
@@ -126,9 +133,10 @@ export default function Header({ cartCount }: HeaderProps) {
       { id: '7', name: 'Bình Hoa Lụa - Hoa Giả Để Bàn', slug: 'binh-hoa-lua-hoa-gia-de-ban', icon: 'orchid' },
       { id: '8', name: 'Bình Hoa Lụa Trang Trí Kệ - Tủ', slug: 'binh-hoa-lua-trang-tri-ke-tu', icon: 'scenery' },
       { id: '9', name: 'Bình Hoa Quầy Lễ Tân Văn Phòng', slug: 'binh-hoa-quay-le-tan-van-phong', icon: 'hall' },
-      { id: '10', name: 'Bình Hoa Lụa Đại Sảnh - Khách Sạn', slug: 'binh-hoa-lua-dai-sanh-khach-san', icon: 'mini' },
-      { id: '11', name: 'Tiểu Cảnh - Decor Không Gian', slug: 'tieu-canh-decor-khong-gian', icon: 'mini' },
-      { id: '12', name: 'Backdrop Hoa - Decor Sự Kiện', slug: 'backdrop-hoa-decor-su-kien', icon: 'mini' },
+      { id: '10', name: 'Bình Hoa Lụa Đại Sảnh - Khách Sạn', slug: 'binh-hoa-lua-dai-sanh-khach-san', icon: 'building' },
+      { id: '11', name: 'Tiểu Cảnh - Decor Không Gian', slug: 'tieu-canh-decor-khong-gian', icon: 'trees' },
+      { id: '12', name: 'Backdrop Hoa - Decor Sự Kiện', slug: 'backdrop-hoa-decor-su-kien', icon: 'panels' },
+      { id: '13', name: 'Hoa Cưới', slug: 'hoa-cuoi', icon: 'heart' },
     ],
   };
 
@@ -188,7 +196,7 @@ export default function Header({ cartCount }: HeaderProps) {
                           : item.href
                       )
                     }
-                    className="whitespace-nowrap text-sm uppercase tracking-wide text-foreground transition-colors hover:text-primary"
+                    className="cursor-pointer whitespace-nowrap text-sm uppercase tracking-wide text-foreground transition-colors hover:text-primary"
                   >
                     {item.name}
                   </button>
@@ -211,7 +219,7 @@ export default function Header({ cartCount }: HeaderProps) {
                                 navigate(`/${slug}/${subItem.slug}`);
                                 setOpenMenu(null);
                               }}
-                              className="group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-foreground transition-colors hover:bg-white"
+                              className="cursor-pointer group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-foreground transition-colors hover:bg-white"
                             >
                               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f3ece3] text-[#1c1c1c] transition-colors group-hover:bg-[#e8dccf]">
                                 <Icon className="h-5 w-5" />

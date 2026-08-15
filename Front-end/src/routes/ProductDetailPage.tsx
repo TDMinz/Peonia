@@ -1,5 +1,5 @@
 import { ArrowLeft, CheckCircle2, Minus, Plus, ShoppingCart, Phone, MessageCircle } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import {
 } from "react-photo-view";
 
 import "react-photo-view/dist/react-photo-view.css";
+import { flyToCart } from "../utils/flyToCart";
 
 function formatPrice(value?: number) {
   if (typeof value !== 'number') return 'Liên hệ';
@@ -19,49 +20,49 @@ function formatPrice(value?: number) {
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
   const navigate = useNavigate();
- const [product, setProduct] =
-  useState<ProductDto | null>(null);
+  const [product, setProduct] =
+    useState<ProductDto | null>(null);
 
-const [loading, setLoading] =
-  useState(true);
+  const [loading, setLoading] =
+    useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] =
     useState('');
-
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-  let mounted = true;
+    let mounted = true;
 
-  setLoading(true);
+    setLoading(true);
 
-  api.productBySlug(slug)
-    .then((data) => {
-      if (!mounted) return;
+    api.productBySlug(slug)
+      .then((data) => {
+        if (!mounted) return;
 
-      setProduct(
-        data.product || null
-      );
-    })
-    .catch((error) => {
-      console.error(
-        'LOAD PRODUCT DETAIL ERROR:',
-        error
-      );
+        setProduct(
+          data.product || null
+        );
+      })
+      .catch((error) => {
+        console.error(
+          'LOAD PRODUCT DETAIL ERROR:',
+          error
+        );
 
-      if (mounted) {
-        setProduct(null);
-      }
-    })
-    .finally(() => {
-      if (mounted) {
-        setLoading(false);
-      }
-    });
+        if (mounted) {
+          setProduct(null);
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setLoading(false);
+        }
+      });
 
-  return () => {
-    mounted = false;
-  };
-}, [slug]);
+    return () => {
+      mounted = false;
+    };
+  }, [slug]);
 
 
 
@@ -88,7 +89,7 @@ const [loading, setLoading] =
     return [product.categoryId, ...(product.category_ids || [])].filter(Boolean).map(String);
   }, [product]);
 
- const similarProducts: ProductDto[] = [];
+  const similarProducts: ProductDto[] = [];
 
   const price = formatPrice(product?.sale_price ?? product?.price);
   const originalPrice = product?.sale_price && product?.price && product.sale_price < product.price ? formatPrice(product.price) : '';
@@ -140,6 +141,7 @@ const [loading, setLoading] =
             <button
               onClick={() => navigate(-1)}
               className="
+              cursor-pointer
     inline-flex
     items-center
     gap-2
@@ -182,6 +184,7 @@ const [loading, setLoading] =
                       }
                     >
                       <img
+                        ref={imageRef}
                         src={
                           selectedImage ||
                           images[0] ||
@@ -243,6 +246,7 @@ const [loading, setLoading] =
           `}
                         >
                           <img
+
                             src={src}
                             alt={`${product.name} ${index + 1
                               }`}
@@ -274,29 +278,41 @@ const [loading, setLoading] =
                   </div>
 
                   <div className="mt-5 space-y-3">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        addToCart(
-                          {
-                            id: String(product.id),
-                            product_id: String(product.id),
-                            name: product.name,
-                            price,
-                            image:
-                              selectedImage ||
-                              images[0] ||
-                              product.image_url ||
-                              '',
-                          },
-                          quantity
-                        )
-                      }
-                      className="w-full rounded-full bg-emerald-950 px-5 py-4 text-sm font-medium text-white transition hover:bg-emerald-900"
-                    >
-                      <ShoppingCart className="mr-2 inline h-4 w-4" />
-                      Thêm vào giỏ
-                    </button>
+                     <button
+    type="button"
+    onClick={() => {
+      const productImage =
+        selectedImage ||
+        images[0] ||
+        product.image_url ||
+        '';
+
+      // Thêm sản phẩm vào giỏ
+      addToCart(
+        {
+          id: String(product.id),
+          product_id: String(product.id),
+          name: product.name,
+          price,
+          image: productImage,
+        },
+        quantity
+      );
+
+      // Hiệu ứng bay vào giỏ hàng
+      if (imageRef.current) {
+        const cart = document.getElementById("cart-icon");
+
+        if (cart) {
+          flyToCart(imageRef.current, cart);
+        }
+      }
+    }}
+    className="cursor-pointer w-full rounded-full bg-[#C49A6C] px-5 py-4 text-sm font-medium text-white transition hover:bg-[#b38657]"
+  >
+    <ShoppingCart className="mr-2 inline h-4 w-4" />
+    Thêm vào giỏ
+  </button>
 
                     <div className="grid grid-cols-2 gap-3">
                       <a

@@ -70,7 +70,7 @@ export default function WorkshopPage() {
               {/* Nút trái */}
               <button
                 onClick={scrollPrev}
-                className="absolute left-1 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:scale-110 hover:bg-[#C49A6C] hover:text-white"
+                className="cursor-pointer absolute left-1 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:scale-110 hover:bg-[#C49A6C] hover:text-white"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -92,7 +92,7 @@ export default function WorkshopPage() {
               {/* Nút phải */}
               <button
                 onClick={scrollNext}
-                className="absolute right-1 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:scale-110 hover:bg-[#C49A6C] hover:text-white"
+                className="cursor-pointer absolute right-1 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg transition hover:scale-110 hover:bg-[#C49A6C] hover:text-white"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>

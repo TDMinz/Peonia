@@ -71,7 +71,7 @@ export default function WorkshopDetailPage({ id }: { id: string }) {
           <div className="mb-4">
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 rounded-full border border-[#d8e1ea] bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:-translate-x-1 hover:border-[#C49A6C] hover:bg-[#C49A6C] hover:text-white"
+              className=" cursor-pointer inline-flex items-center gap-2 rounded-full border border-[#d8e1ea] bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:-translate-x-1 hover:border-[#C49A6C] hover:bg-[#C49A6C] hover:text-white"
             >
               <ArrowLeft size={18} />
               Quay lại

@@ -126,4 +126,13 @@ export const categoryCatalog: Record<string, CategoryCatalogItem> = {
     bannerImage: 'https://images.unsplash.com/photo-1526045478516-99145907023c?w=1600&h=700&fit=crop',
     categoryIds: ['686b00000000000000000014'],
   },
+  'hoa-cuoi': {
+    slug: 'hoa-cuoi',
+    categoryLabel: 'Hoa Giả - Hoa Lụa',
+    title: 'Hoa Cưới',
+    breadcrumbRoot: 'Hoa Giả - Hoa Lụa',
+    description: 'Thiết kế cho đại sảnh khách sạn, tạo điểm nhấn sang trọng và ấn tượng.',
+    bannerImage: 'https://images.unsplash.com/photo-1526045478516-99145907023c?w=1600&h=700&fit=crop',
+    categoryIds: ['686b00000000000000000015'],
+  },
 };

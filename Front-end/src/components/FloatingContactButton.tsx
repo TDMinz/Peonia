@@ -48,10 +48,10 @@ function ExpandableSocialButton({
   bgClass: string;
   label: string;
   links: {
-  label: string;
-  
-  href: string;
-}[];
+    label: string;
+
+    href: string;
+  }[];
 }) {
   return (
     <div className="relative overflow-visible">
@@ -59,7 +59,7 @@ function ExpandableSocialButton({
       {/* Nút chính */}
       <button
         onClick={toggle}
-        className="group flex w-full items-center gap-3 rounded-2xl px-3 py-2 transition hover:bg-[#fbf7f1]"
+        className="cursor-pointer group flex w-full items-center gap-3 rounded-2xl px-3 py-2 transition hover:bg-[#fbf7f1]"
       >
         <span
           className={`flex h-11 w-11 items-center justify-center rounded-full text-white shadow-sm ${bgClass}`}
@@ -74,21 +74,21 @@ function ExpandableSocialButton({
 
       {/* Icon con */}
       {/* Icon con */}
-<div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 overflow-visible">
-  {links.map((item, index) => (
-    <div
-      key={item.href}
-      className="absolute right-0 group/child flex items-center pr-2"
-      style={{
-        top: `${index * -52}px`,
-        transitionDelay: open ? `${index * 70}ms` : "0ms",
-      }}
-    >
-      <a
-        href={item.href}
-        target="_blank"
-        rel="noreferrer"
-        className={`
+      <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 overflow-visible">
+        {links.map((item, index) => (
+          <div
+            key={item.href}
+            className="absolute right-0 group/child flex items-center pr-2"
+            style={{
+              top: `${index * -52}px`,
+              transitionDelay: open ? `${index * 70}ms` : "0ms",
+            }}
+          >
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noreferrer"
+              className={`
           flex
           h-10
           w-10
@@ -103,20 +103,19 @@ function ExpandableSocialButton({
           transition-all
           duration-300
           hover:scale-110
-          ${
-            open
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-50 pointer-events-none"
-          }
+          ${open
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-50 pointer-events-none"
+                }
         `}
-      >
-        {icon}
-      </a>
+            >
+              {icon}
+            </a>
 
-      {/* Tooltip */}
-      {open && (
-  <div
-    className="
+            {/* Tooltip */}
+            {open && (
+              <div
+                className="
       pointer-events-none
       absolute
       right-12
@@ -136,14 +135,14 @@ function ExpandableSocialButton({
       group-hover/child:opacity-100
       group-hover/child:translate-x-0
     "
-  >
-    {item.label}
-  </div>
-)}
-      
-    </div>
-  ))}
-</div>
+              >
+                {item.label}
+              </div>
+            )}
+
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -152,19 +151,19 @@ function ExpandableSocialButton({
 const contacts: ContactItem[] = [
   { label: 'Zalo', href: 'https://zalo.me/0352363833', icon: MessageCircleMore, bgClass: 'bg-[#0068ff]' },
   { label: 'Facebook', href: 'https://www.facebook.com/PeoniaWorkshop', icon: FacebookMark, bgClass: 'bg-[#1877f2]' },
-  { label: 'Điện thoại', href: 'tel:0352363833', icon: Phone, bgClass: 'bg-emerald-950'},
+  { label: 'Điện thoại', href: 'tel:0352363833', icon: Phone, bgClass: 'bg-emerald-950' },
   { label: 'Instagram', href: 'https://www.instagram.com/peoniastudio.hn?igsh=cjEwaWM0eXpvNXIy&utm_source=qr', icon: InstagramMark, bgClass: 'bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@peonia.workshop?_r=1&_t=ZS-97Cf2um7Qiw', icon: TiktokMark, bgClass: 'bg-[#111111]' },
 ];
 const instagramLinks = [
   {
     label: "Peonia Dercor",
-    
+
     href: "https://www.instagram.com/peoniadecor.hanoi?igsh=NXVndnFhZHp1NHJs&utm_source=qr",
   },
   {
     label: "Peonia Workshop",
-    
+
     href: "https://www.instagram.com/peoniastudio.hn?igsh=cjEwaWM0eXpvNXIy&utm_source=qr",
   },
 ];
@@ -172,12 +171,12 @@ const instagramLinks = [
 const tiktokLinks = [
   {
     label: "Peonia Dercor",
-    
+
     href: "https://www.tiktok.com/@peoniadecor?_r=1&_t=ZS-98cnC0sdceO",
   },
   {
     label: "Peonia Workshop",
-    
+
     href: "https://www.tiktok.com/@peonia.workshop?_r=1&_t=ZS-98eU2FSnmIU",
   },
 ];
@@ -187,7 +186,7 @@ export default function FloatingContactButton() {
   const [showTop, setShowTop] = useState(false);
   const [phonePopupOpen, setPhonePopupOpen] = useState(false);
   const [instagramOpen, setInstagramOpen] = useState(false);
-const [tiktokOpen, setTiktokOpen] = useState(false);
+  const [tiktokOpen, setTiktokOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 240);
@@ -209,7 +208,7 @@ const [tiktokOpen, setTiktokOpen] = useState(false);
         className={`origin-bottom-right transition-all duration-200 ${open ? 'pointer-events-auto translate-y-0 opacity-100 scale-100' : 'pointer-events-none translate-y-2 opacity-0 scale-95'}`}
       >
         <div
-  className="
+          className="
     mb-2
     overflow-visible
     rounded-[1.4rem]
@@ -220,7 +219,7 @@ const [tiktokOpen, setTiktokOpen] = useState(false);
     shadow-[0_20px_60px_rgba(0,0,0,0.18)]
     backdrop-blur-xl
   "
->
+        >
           <div className="mb-3 flex items-center justify-between gap-4 border-b border-[#eee4d8] pb-3">
             <div>
               <p className="text-[10px] uppercase tracking-[0.4em] text-[#8f877d]">Peonia</p>
@@ -232,7 +231,7 @@ const [tiktokOpen, setTiktokOpen] = useState(false);
               className="rounded-full p-2 text-[#8f877d] transition hover:bg-[#fbf7f1] hover:text-foreground"
               aria-label="Đóng liên hệ"
             >
-              <X className="h-4 w-4" />
+              <X className="cursor-pointer h-4 w-4" />
             </button>
           </div>
 
@@ -241,38 +240,38 @@ const [tiktokOpen, setTiktokOpen] = useState(false);
               const Icon = item.icon;
               const isPhone = item.label === 'Điện thoại';
               if (item.label === "Instagram") {
-  return (
-    <ExpandableSocialButton
-      key={item.label}
-      open={instagramOpen}
-      toggle={() => {
-        setInstagramOpen(!instagramOpen);
-        setTiktokOpen(false);
-      }}
-      icon={<InstagramMark className="h-5 w-5" />}
-      bgClass={item.bgClass}
-      label={item.label}
-      links={instagramLinks}
-    />
-  );
-}
+                return (
+                  <ExpandableSocialButton
+                    key={item.label}
+                    open={instagramOpen}
+                    toggle={() => {
+                      setInstagramOpen(!instagramOpen);
+                      setTiktokOpen(false);
+                    }}
+                    icon={<InstagramMark className="h-5 w-5" />}
+                    bgClass={item.bgClass}
+                    label={item.label}
+                    links={instagramLinks}
+                  />
+                );
+              }
 
-if (item.label === "TikTok") {
-  return (
-    <ExpandableSocialButton
-      key={item.label}
-      open={tiktokOpen}
-      toggle={() => {
-        setTiktokOpen(!tiktokOpen);
-        setInstagramOpen(false);
-      }}
-      icon={<TiktokMark className="h-5 w-5" />}
-      bgClass={item.bgClass}
-      label={item.label}
-      links={tiktokLinks}
-    />
-  );
-}
+              if (item.label === "TikTok") {
+                return (
+                  <ExpandableSocialButton
+                    key={item.label}
+                    open={tiktokOpen}
+                    toggle={() => {
+                      setTiktokOpen(!tiktokOpen);
+                      setInstagramOpen(false);
+                    }}
+                    icon={<TiktokMark className="h-5 w-5" />}
+                    bgClass={item.bgClass}
+                    label={item.label}
+                    links={tiktokLinks}
+                  />
+                );
+              }
               return isPhone ? (
                 <button
                   key={item.label}
@@ -352,12 +351,12 @@ if (item.label === "TikTok") {
       ) : null}
 
       <div className="flex flex-col items-end gap-2">
-        
 
-<button
-  type="button"
-  onClick={() => setOpen((prev) => !prev)}
-  className="
+
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          className="
     flex
     h-14
     w-14
@@ -373,18 +372,18 @@ if (item.label === "TikTok") {
     hover:scale-110
     hover:bg-[#D2A878]
   "
->
-  {open ? (
-    <X className="h-6 w-6" />
-  ) : (
-    <Flower className="h-6 w-6" strokeWidth={1.8} />
-  )}
-</button>
-{showTop ? (
+        >
+          {open ? (
+            <X className="cursor-pointer h-6 w-6" />
+          ) : (
+            <Flower className="cursor-pointer h-6 w-6" strokeWidth={1.8} />
+          )}
+        </button>
+        {showTop ? (
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-foreground shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:scale-105"
+            className="cursor-pointer flex h-12 w-12 items-center justify-center rounded-full bg-white text-foreground shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:scale-105"
             aria-label="Lên đầu trang"
           >
             <ChevronUp className="h-5 w-5" />
