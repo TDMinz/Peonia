@@ -154,8 +154,8 @@ export default function Header({ cartCount }: HeaderProps) {
   },
   {
     id: 'course-3',
-    name: 'Khóa học lụa sáp cơ bản',
-    slug: 'hoa-lua-sap-co-ban',
+    name: 'Khóa học hoa lụa cơ bản',
+    slug: 'hoa-lua-co-ban',
     icon: 'bouquet',
   },
   {

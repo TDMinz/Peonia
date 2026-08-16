@@ -26,7 +26,9 @@ import PaymentPolicyPage from './routes/PaymentPolicyPage';
 
 import WorkshopDetailPage from './routes/WorkshopDetailPage';
 import CourseDetailPage from './routes/CourseDetailPage';
-import CourseHoaSapNangCaoPage from "./routes/CourseHoaSapNangCaoPage";
+import CourseHoaSapNangCaoPage from "./routes/CourseHoaSapNangCaoPage"; 
+import CourseHoaLuaCoBanPage from './routes/CourseHoaLuaCoBanPage';
+import CourseHoaLuaNangCaoPage from './routes/CourseHoaLuaNangCaoPage';
 
 
 type Route =
@@ -40,7 +42,10 @@ type Route =
   | 'gift-bouquets'
   | 'workshop'
   | 'khoa-hoc'
-  | 'course-hoa-sap-nang-cao'
+| 'course-hoa-lua-co-ban'
+| 'course-hoa-lua-nang-cao'
+| 'course-hoa-sap-co-ban'
+| 'course-hoa-sap-nang-cao'
   | 'cart'
   | 'checkout'
   | 'category'
@@ -147,12 +152,24 @@ function getRouteFromLocation(): Route {
    KHÓA HỌC
 ========================= */
 
+/* =========================
+   KHÓA HỌC
+========================= */
+
+if (path === '/khoa-hoc/hoa-sap-co-ban') {
+  return 'course-hoa-sap-co-ban';
+}
+
 if (path === '/khoa-hoc/hoa-sap-nang-cao') {
   return 'course-hoa-sap-nang-cao';
 }
 
-if (path.startsWith('/khoa-hoc/')) {
-  return 'khoa-hoc';
+if (path === '/khoa-hoc/hoa-lua-co-ban') {
+  return 'course-hoa-lua-co-ban';
+}
+
+if (path === '/khoa-hoc/hoa-lua-nang-cao') {
+  return 'course-hoa-lua-nang-cao';
 }
 
 if (path === '/khoa-hoc') {
@@ -495,13 +512,20 @@ export default function App() {
           KHÓA HỌC
       ================================================= */}
 
-      {route === 'khoa-hoc' && (
-        <CourseDetailPage
-        
-        />
-      )}
-      {route === 'course-hoa-sap-nang-cao' && (
+      {route === 'course-hoa-sap-co-ban' && (
+  <CourseDetailPage />
+)}
+
+{route === 'course-hoa-sap-nang-cao' && (
   <CourseHoaSapNangCaoPage />
+)}
+
+{route === 'course-hoa-lua-co-ban' && (
+  <CourseHoaLuaCoBanPage />
+)}
+
+{route === 'course-hoa-lua-nang-cao' && (
+  <CourseHoaLuaNangCaoPage />
 )}
 
 
