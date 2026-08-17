@@ -90,7 +90,7 @@ export default function CourseHoaLuaNangCaoPage() {
                     <span className="font-bold">
                       Khung giờ:
                     </span>{" "}
-                    Sáng 9h30 - 11h30 | Chiều 13h30 - 15h30
+                    Sáng 9h - 11h30 | Chiều 13h30 - 17h30
                   </div>
                 </div>
               </div>
@@ -330,7 +330,7 @@ export default function CourseHoaLuaNangCaoPage() {
                 type="button"
                 onClick={() => {
                   window.open(
-                    "https://zalo.me/XXXXXXXXXX",
+                    "https://zalo.me/0352363833",
                     "_blank",
                     "noopener,noreferrer"
                   );
