@@ -216,7 +216,7 @@ export default function CourseHoaLuaNangCaoPage() {
                   {/* MAIN IMAGE */}
 
                   <SampleImage
-                    src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786856564/peonia/products/blemtw7oe6ytpgkrd1pp.jpg"
+                    src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786972097/1786960993130_7750340579882786894_7750340579882786894_8ab866f7db95c6b982a71dc70565dde3_aw4uxz.jpg"
                     alt="Mẫu hoa lụa chuyên sâu 1"
                     className="aspect-[4/3]"
                   />
@@ -226,27 +226,27 @@ export default function CourseHoaLuaNangCaoPage() {
                   <div className="grid flex-1 grid-cols-2 gap-2">
 
                     <SampleImage
-                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786899804/1786881011096_7750340579882786894_7750340579882786894_7391e92f4ac13541c7f2de03fd38480b_aosyi8.jpg"
+                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786972102/1786960993148_7750340579882786894_7750340579882786894_1efd0ed483de83f533a31b2a70fdf6d3_n4olj6.jpg"
                       alt="Mẫu hoa lụa chuyên sâu 2"
                     />
 
                     <SampleImage
-                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786899809/1786881011092_7750340579882786894_7750340579882786894_67cea03d6405d77793e1be4765b72a37_ichb6l.jpg"
+                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786972107/1786960997563_7750340579882786894_7750340579882786894_d70d9e4544680b5a2e715d2268b9c341_cpvh1o.jpg"
                       alt="Mẫu hoa lụa chuyên sâu 3"
                     />
 
                     <SampleImage
-                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786899644/1786881015971_7750340579882786894_7750340579882786894_fe455dc5fad0c953ef224c94c41b596b_tkx9pc.jpg"
+                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786972115/1786960993140_7750340579882786894_7750340579882786894_95d2f3b463da039b0fde0eb25ead4c83_pnysmx.jpg"
                       alt="Mẫu hoa lụa chuyên sâu 4"
                     />
 
                     <SampleImage
-                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786899949/1786881011071_7750340579882786894_7750340579882786894_9cc4aadb791b2a463336654e5ad30167_xg2wvf.jpg"
+                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786972111/1786960993136_7750340579882786894_7750340579882786894_bab46e5a00e866790749510a78f3729e_roqlly.jpg"
                       alt="Mẫu hoa lụa chuyên sâu 5"
                     />
 
                     <SampleImage
-                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786899815/1786881011088_7750340579882786894_7750340579882786894_14a321f09b4f6015776cbf168aaaeb92_zypjk0.jpg"
+                      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786972620/19846219-648c-4e6e-9561-69517f079089_qpgawi.png"
                       alt="Mẫu hoa lụa chuyên sâu 6"
                     />
 

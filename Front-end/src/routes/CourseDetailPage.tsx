@@ -478,23 +478,30 @@ export default function CourseDetailPage() {
 
             {/* TOOLS IMAGE */}
 
-            <div className="flex justify-center">
-
-
-
-              <img
-
-                src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1782638939/peonia/products/rbvrht8mlmbcdgqkevto.jpg"
-
-                alt="Dụng cụ khóa học"
-
-                className="max-h-52 w-full object-contain"
-
-              />
-
-
-
-            </div>
+          <div className="flex justify-center w-full">
+  <div
+    className="
+      w-full max-w-2xl
+      rounded-[32px]
+      border border-[#e8dccb]
+      bg-white
+      p-4
+      shadow-[0_4px_15px_rgba(92,61,32,0.12)]
+    "
+  >
+    <img
+      src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1782638939/peonia/products/rbvrht8mlmbcdgqkevto.jpg"
+      alt="Dụng cụ khóa học"
+      className="
+        w-full
+        h-[340px]
+        rounded-[24px]
+        object-cover
+        block
+      "
+    />
+  </div>
+</div>
 
 
 
@@ -752,7 +759,7 @@ export default function CourseDetailPage() {
       type="button"
       onClick={() => {
         window.open(
-          "https://zalo.me/XXXXXXXXXX",
+          "https://zalo.me/0352363833",
           "_blank",
           "noopener,noreferrer"
         );

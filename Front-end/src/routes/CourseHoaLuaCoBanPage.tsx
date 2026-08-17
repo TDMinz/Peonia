@@ -362,7 +362,7 @@ export default function CourseHoaLuaCoBanPage() {
                 type="button"
                 onClick={() => {
                   window.open(
-                    "https://zalo.me/XXXXXXXXXX",
+                    "https://zalo.me/0352363833",
                     "_blank",
                     "noopener,noreferrer"
                   );
