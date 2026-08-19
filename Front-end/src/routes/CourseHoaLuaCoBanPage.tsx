@@ -313,7 +313,7 @@ export default function CourseHoaLuaCoBanPage() {
                   />
 
                   <SampleImage
-                    src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786879337/1786875886801_7750340579882786894_7750340579882786894_03f20853f13d36d9e24d5f0bc7c7e003_g9xbpa.jpg"
+                    src="https://res.cloudinary.com/di4qsw8gl/image/upload/v1786973133/b2ee0c46-39f3-4471-b3b6-2412f1b694df_v3m3dw.png"
                     alt="Mẫu hoa lụa 2"
                   />
 

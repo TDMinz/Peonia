@@ -16,25 +16,50 @@ export default function WorkshopPage() {
     dragFree: false,
     containScroll: 'trimSnaps',
   });
+  let workshopsCache: WorkshopDto[] | null = null;
+let workshopsCacheTime = 0;
+
+const WORKSHOP_CACHE_TIME = 5 * 60 * 1000;  
 
   useEffect(() => {
-    let alive = true;
+  let alive = true;
 
-    api.workshops()
-      .then((data) => {
-        if (alive) setWorkshops(data.workshops || []);
-      })
-      .catch(() => {
-        if (alive) setWorkshops([]);
-      })
-      .finally(() => {
-        if (alive) setLoading(false);
-      });
+  // Có cache còn hạn → dùng ngay
+  if (
+    workshopsCache &&
+    Date.now() - workshopsCacheTime < WORKSHOP_CACHE_TIME
+  ) {
+    setWorkshops(workshopsCache);
+    setLoading(false);
+    return;
+  }
 
-    return () => {
-      alive = false;
-    };
-  }, []);
+  api.workshops()
+    .then((data) => {
+      if (!alive) return;
+
+      const result = data.workshops || [];
+
+      workshopsCache = result;
+      workshopsCacheTime = Date.now();
+
+      setWorkshops(result);
+    })
+    .catch(() => {
+      if (alive) {
+        setWorkshops([]);
+      }
+    })
+    .finally(() => {
+      if (alive) {
+        setLoading(false);
+      }
+    });
+
+  return () => {
+    alive = false;
+  };
+}, []);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
