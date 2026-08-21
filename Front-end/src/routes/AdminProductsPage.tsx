@@ -37,15 +37,15 @@ export default function AdminProductsPage() {
   const [search, setSearch] =
     useState("");
 
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
-    
-    const [showResultDialog, setShowResultDialog] =
-      useState(false);
-    
-    const [resultType, setResultType] = useState<
-      "success" | "warning"
-    >("success");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const [showResultDialog, setShowResultDialog] =
+    useState(false);
+
+  const [resultType, setResultType] = useState<
+    "success" | "warning"
+  >("success");
 
   const [showProductDialog, setShowProductDialog] =
     useState(false);
@@ -87,24 +87,17 @@ export default function AdminProductsPage() {
   const [deleting, setDeleting] =
     useState(false);
 
-  async function loadData() {
-    setLoading(true);
+  async function loadProducts(showLoading = true) {
+    if (showLoading) {
+      setLoading(true);
+    }
+
     setError("");
 
     try {
-      const [
-        productData,
-        categoryData,
-      ] = await Promise.all([
-        adminProductsApi.list(),
-        adminProductsApi.categories(),
-      ]);
+      const productData = await adminProductsApi.list();
 
       setItems(productData.data || []);
-
-      setCategories(
-        categoryData.data || []
-      );
     } catch (err) {
       setError(
         err instanceof Error
@@ -113,7 +106,38 @@ export default function AdminProductsPage() {
       );
 
       setItems([]);
+    } finally {
+      if (showLoading) {
+        setLoading(false);
+      }
+    }
+  }
+
+  async function loadCategories() {
+    try {
+      const categoryData =
+        await adminProductsApi.categories();
+
+      setCategories(categoryData.data || []);
+    } catch (err) {
+      console.error(
+        "Không tải được danh mục:",
+        err
+      );
+
       setCategories([]);
+    }
+  }
+
+  async function loadData() {
+    setLoading(true);
+    setError("");
+
+    try {
+      await Promise.all([
+        loadProducts(false),
+        loadCategories(),
+      ]);
     } finally {
       setLoading(false);
     }
@@ -263,57 +287,60 @@ export default function AdminProductsPage() {
     ]);
   }
 
-  async function handleSubmit(
-    formData: FormData
-  ) {
-    setSaving(true);
-    setMessage("");
-    setError("");
+  async function handleSubmit(formData: FormData) {
+  setSaving(true);
+  setMessage("");
+  setError("");
 
-    try {
-      if (editingProduct) {
-        await adminProductsApi.update(
-          editingProduct.id,
-          formData
-        );
+  try {
+    if (editingProduct) {
+      await adminProductsApi.update(
+        editingProduct.id,
+        formData
+      );
 
-        
+      setMessage(
+        "Cập nhật sản phẩm thành công."
+      );
+    } else {
+      await adminProductsApi.create(formData);
 
-setResultType("success");
-setShowResultDialog(true);
-      } else {
-        await adminProductsApi.create(
-          formData
-        );
-
-        
-
-        setResultType("success");
-        setShowResultDialog(true);
-      }
-
-      await loadData();
-
-      closeDialog();
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    } catch (err) {
-      const msg =
-  err instanceof Error
-    ? err.message
-    : "Lưu sản phẩm thất bại";
-
-setError(msg);
-
-setResultType("warning");
-setShowResultDialog(true);
-    } finally {
-      setSaving(false);
+      setMessage(
+        "Tạo sản phẩm thành công."
+      );
     }
+
+    // Hiện thành công NGAY sau khi API chính hoàn tất
+    setResultType("success");
+    setShowResultDialog(true);
+
+    // Đóng form ngay
+    closeDialog();
+
+    // Reload danh sách ở background
+    // Không chặn UI
+    void loadProducts(false);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
+  } catch (err) {
+    const msg =
+      err instanceof Error
+        ? err.message
+        : "Lưu sản phẩm thất bại";
+
+    setError(msg);
+
+    setResultType("warning");
+    setShowResultDialog(true);
+
+  } finally {
+    setSaving(false);
   }
+}
 
 
   function openDeleteDialog(
@@ -348,7 +375,7 @@ setShowResultDialog(true);
           "Xóa sản phẩm thành công."
         );
         setResultType("success");
-setShowResultDialog(true);
+        setShowResultDialog(true);
       } else {
         await Promise.all(
           selectedIds.map((id) =>
@@ -369,14 +396,14 @@ setShowResultDialog(true);
       closeDeleteDialog();
     } catch (err) {
       const msg =
-  err instanceof Error
-    ? err.message
-    : "Xóa sản phẩm thất bại";
+        err instanceof Error
+          ? err.message
+          : "Xóa sản phẩm thất bại";
 
-setError(msg);
+      setError(msg);
 
-setResultType("warning");
-setShowResultDialog(true);
+      setResultType("warning");
+      setShowResultDialog(true);
     } finally {
       setDeleting(false);
     }
@@ -474,17 +501,17 @@ setShowResultDialog(true);
           )}
           <div className="mb-6 mt-4 flex flex-wrap gap-4">
 
-{/* ================= DANH MỤC ================= */}
+            {/* ================= DANH MỤC ================= */}
 
-<div className="relative">
+            <div className="relative">
 
-  <button
-    type="button"
-    onClick={() => {
-      setShowCategoryFilter((prev) => !prev);
-      setShowTypeFilter(false);
-    }}
-    className="
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCategoryFilter((prev) => !prev);
+                  setShowTypeFilter(false);
+                }}
+                className="
       flex
       min-w-[230px]
       items-center
@@ -500,32 +527,31 @@ setShowResultDialog(true);
       transition
       hover:border-emerald-300
     "
-  >
-    <span>
-      Danh mục:&nbsp;
+              >
+                <span>
+                  Danh mục:&nbsp;
 
-      <span className="font-medium">
-        {categoryFilter
-          ? categories.find(
-              (c) => c.id === categoryFilter
-            )?.name
-          : "Tất cả"}
-      </span>
-    </span>
+                  <span className="font-medium">
+                    {categoryFilter
+                      ? categories.find(
+                        (c) => c.id === categoryFilter
+                      )?.name
+                      : "Tất cả"}
+                  </span>
+                </span>
 
-    <ChevronDown
-      className={`h-4 w-4 transition ${
-        showCategoryFilter
-          ? "rotate-180"
-          : ""
-      }`}
-    />
-  </button>
+                <ChevronDown
+                  className={`h-4 w-4 transition ${showCategoryFilter
+                      ? "rotate-180"
+                      : ""
+                    }`}
+                />
+              </button>
 
-  {showCategoryFilter && (
+              {showCategoryFilter && (
 
-    <div
-      className="
+                <div
+                  className="
         absolute
         left-0
         top-[calc(100%+12px)]
@@ -538,74 +564,72 @@ setShowResultDialog(true);
         p-4
         shadow-xl
       "
-    >
+                >
 
-      <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
 
-        <button
-          type="button"
-          onClick={() => {
-            setCategoryFilter("");
-            setShowCategoryFilter(false);
-          }}
-          className={`rounded-full px-4 py-2 text-sm ${
-            categoryFilter === ""
-              ? "bg-emerald-950 text-white"
-              : "bg-[#f6f7fb]"
-          }`}
-        >
-          Tất cả
-        </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategoryFilter("");
+                        setShowCategoryFilter(false);
+                      }}
+                      className={`rounded-full px-4 py-2 text-sm ${categoryFilter === ""
+                          ? "bg-emerald-950 text-white"
+                          : "bg-[#f6f7fb]"
+                        }`}
+                    >
+                      Tất cả
+                    </button>
 
-        {categories
-          .filter(
-            (c) =>
-              c.slug !== "hoa-sap-qua-tang" &&
-              c.slug !== "hoa-gia-hoa-lua"
-          )
-          .map((category) => (
+                    {categories
+                      .filter(
+                        (c) =>
+                          c.slug !== "hoa-sap-qua-tang" &&
+                          c.slug !== "hoa-gia-hoa-lua"
+                      )
+                      .map((category) => (
 
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => {
-                setCategoryFilter(
-                  category.id
-                );
+                        <button
+                          key={category.id}
+                          type="button"
+                          onClick={() => {
+                            setCategoryFilter(
+                              category.id
+                            );
 
-                setShowCategoryFilter(false);
-              }}
-              className={`rounded-full px-4 py-2 text-sm ${
-                categoryFilter ===
-                category.id
-                  ? "bg-emerald-950 text-white"
-                  : "bg-[#f6f7fb]"
-              }`}
-            >
-              {category.name}
-            </button>
+                            setShowCategoryFilter(false);
+                          }}
+                          className={`rounded-full px-4 py-2 text-sm ${categoryFilter ===
+                              category.id
+                              ? "bg-emerald-950 text-white"
+                              : "bg-[#f6f7fb]"
+                            }`}
+                        >
+                          {category.name}
+                        </button>
 
-          ))}
+                      ))}
 
-      </div>
+                  </div>
 
-    </div>
+                </div>
 
-  )}
+              )}
 
-</div>
+            </div>
 
-{/* ================= PHÂN LOẠI ================= */}
+            {/* ================= PHÂN LOẠI ================= */}
 
-<div className="relative">
+            <div className="relative">
 
-  <button
-    type="button"
-    onClick={() => {
-      setShowTypeFilter((prev) => !prev);
-      setShowCategoryFilter(false);
-    }}
-    className="
+              <button
+                type="button"
+                onClick={() => {
+                  setShowTypeFilter((prev) => !prev);
+                  setShowCategoryFilter(false);
+                }}
+                className="
       flex
       min-w-[230px]
       items-center
@@ -621,36 +645,35 @@ setShowResultDialog(true);
       transition
       hover:border-emerald-300
     "
-  >
-    <span>
-      Phân loại:&nbsp;
+              >
+                <span>
+                  Phân loại:&nbsp;
 
-      <span className="font-medium">
+                  <span className="font-medium">
 
-        {{
-          all: "Tất cả",
-          featured: "⭐ Nổi bật",
-          bestSeller: "🔥 Bán chạy",
-          both: "⭐🔥 Nổi bật & bán chạy",
-          normal: "Thông thường",
-        }[typeFilter]}
+                    {{
+                      all: "Tất cả",
+                      featured: "⭐ Nổi bật",
+                      bestSeller: "🔥 Bán chạy",
+                      both: "⭐🔥 Nổi bật & bán chạy",
+                      normal: "Thông thường",
+                    }[typeFilter]}
 
-      </span>
-    </span>
+                  </span>
+                </span>
 
-    <ChevronDown
-      className={`h-4 w-4 transition ${
-        showTypeFilter
-          ? "rotate-180"
-          : ""
-      }`}
-    />
-  </button>
+                <ChevronDown
+                  className={`h-4 w-4 transition ${showTypeFilter
+                      ? "rotate-180"
+                      : ""
+                    }`}
+                />
+              </button>
 
-  {showTypeFilter && (
+              {showTypeFilter && (
 
-    <div
-      className="
+                <div
+                  className="
         absolute
         left-0
         top-[calc(100%+12px)]
@@ -663,66 +686,65 @@ setShowResultDialog(true);
         p-3
         shadow-xl
       "
-    >
+                >
 
-      {[
-        {
-          value: "all",
-          label: "Tất cả",
-        },
-        {
-          value: "featured",
-          label: "⭐ Nổi bật",
-        },
-        {
-          value: "bestSeller",
-          label: "🔥 Bán chạy",
-        },
-        {
-          value: "both",
-          label:
-            "⭐🔥 Nổi bật & bán chạy",
-        },
-        {
-          value: "normal",
-          label: "Thông thường",
-        },
-      ].map((option) => (
+                  {[
+                    {
+                      value: "all",
+                      label: "Tất cả",
+                    },
+                    {
+                      value: "featured",
+                      label: "⭐ Nổi bật",
+                    },
+                    {
+                      value: "bestSeller",
+                      label: "🔥 Bán chạy",
+                    },
+                    {
+                      value: "both",
+                      label:
+                        "⭐🔥 Nổi bật & bán chạy",
+                    },
+                    {
+                      value: "normal",
+                      label: "Thông thường",
+                    },
+                  ].map((option) => (
 
-        <button
-          key={option.value}
-          type="button"
-          onClick={() => {
-            setTypeFilter(
-              option.value as
-                | "all"
-                | "featured"
-                | "bestSeller"
-                | "both"
-                | "normal"
-            );
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => {
+                        setTypeFilter(
+                          option.value as
+                          | "all"
+                          | "featured"
+                          | "bestSeller"
+                          | "both"
+                          | "normal"
+                        );
 
-            setShowTypeFilter(false);
-          }}
-          className={`mb-2 block w-full rounded-xl px-4 py-3 text-left transition ${
-            typeFilter === option.value
-              ? "bg-emerald-950 text-white"
-              : "hover:bg-[#f6f7fb]"
-          }`}
-        >
-          {option.label}
-        </button>
+                        setShowTypeFilter(false);
+                      }}
+                      className={`mb-2 block w-full rounded-xl px-4 py-3 text-left transition ${typeFilter === option.value
+                          ? "bg-emerald-950 text-white"
+                          : "hover:bg-[#f6f7fb]"
+                        }`}
+                    >
+                      {option.label}
+                    </button>
 
-      ))}
+                  ))}
 
-    </div>
+                </div>
 
-  )}
+              )}
 
-</div>
+            </div>
 
-</div>
-          
+          </div>
+
           {loading ? (
             <div className="rounded-2xl border border-[#e8edf3] bg-[#f6f7fb] p-6 text-sm text-[#6f7b8b]">Đang tải...</div>
           ) : (
@@ -917,22 +939,22 @@ setShowResultDialog(true);
         cancelText="Hủy"
       />
       <ConfirmDialog
-  open={showResultDialog}
-  type={resultType}
-  title={
-    resultType === "success"
-      ? "Thành công"
-      : "Có lỗi xảy ra"
-  }
-  description={
-    resultType === "success"
-      ? message
-      : error
-  }
-  confirmText="Đóng"
-  onClose={() => setShowResultDialog(false)}
-  onConfirm={() => setShowResultDialog(false)}
-/>
+        open={showResultDialog}
+        type={resultType}
+        title={
+          resultType === "success"
+            ? "Thành công"
+            : "Có lỗi xảy ra"
+        }
+        description={
+          resultType === "success"
+            ? message
+            : error
+        }
+        confirmText="Đóng"
+        onClose={() => setShowResultDialog(false)}
+        onConfirm={() => setShowResultDialog(false)}
+      />
     </AdminLayout>
   );
 }

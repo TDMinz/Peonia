@@ -17,6 +17,104 @@ const emptyForm = {
     is_featured: false,
     is_best_seller: false,
 };
+async function compressImage(
+  file: File,
+  maxWidth = 1600,
+  quality = 0.82
+): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    const objectUrl =
+      URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxWidth) {
+        const ratio =
+          maxWidth / width;
+
+        width = maxWidth;
+        height = Math.round(
+          height * ratio
+        );
+      }
+
+      const canvas =
+        document.createElement("canvas");
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx =
+        canvas.getContext("2d");
+
+      if (!ctx) {
+        reject(
+          new Error(
+            "Không thể xử lý ảnh"
+          )
+        );
+        return;
+      }
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        width,
+        height
+      );
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(
+              new Error(
+                "Không thể nén ảnh"
+              )
+            );
+            return;
+          }
+
+          const compressedFile =
+            new File(
+              [blob],
+              file.name.replace(
+                /\.[^/.]+$/,
+                ".jpg"
+              ),
+              {
+                type: "image/jpeg",
+                lastModified:
+                  Date.now(),
+              }
+            );
+
+          resolve(compressedFile);
+        },
+        "image/jpeg",
+        quality
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      reject(
+        new Error(
+          "Không thể đọc ảnh"
+        )
+      );
+    };
+
+    img.src = objectUrl;
+  });
+}
 type ProductForm = {
     name: string;
     slug: string;
@@ -208,32 +306,72 @@ export default function ProductDialog({
     }
 
     async function handleSubmit(
-        e: React.FormEvent<HTMLFormElement>
-    ) {
-        e.preventDefault();
+  e: React.FormEvent<HTMLFormElement>
+) {
+  e.preventDefault();
 
-        const formData = new FormData();
+  const formData = new FormData();
 
-        Object.entries(form).forEach(([key, value]) => {
-            formData.append(key, String(value));
-        });
+  Object.entries(form).forEach(
+    ([key, value]) => {
+      formData.append(
+        key,
+        String(value)
+      );
+    }
+  );
+
+  formData.append(
+    "categoryId",
+    selectedCategoryIds[0] || ""
+  );
+
+  try {
+    // Nén tối đa 4 ảnh song song
+    const imagePromises =
+      imageFiles.map(
+        async (file, index) => {
+          if (!file) return null;
+
+          const compressed =
+            await compressImage(
+              file,
+              1600,
+              0.82
+            );
+
+          return {
+            index,
+            file: compressed,
+          };
+        }
+      );
+
+    const compressedImages =
+      await Promise.all(
+        imagePromises
+      );
+
+    compressedImages.forEach(
+      (item) => {
+        if (!item) return;
 
         formData.append(
-            "categoryId",
-            selectedCategoryIds[0] || ""
+          `image_${item.index}`,
+          item.file
         );
+      }
+    );
 
-        imageFiles.forEach((file, index) => {
-            if (file) {
-                formData.append(
-                    `image_${index}`,
-                    file
-                );
-            }
-        });
+    await onSubmit(formData);
 
-        await onSubmit(formData);
-    }
+  } catch (error) {
+    console.error(
+      "Lỗi xử lý ảnh:",
+      error
+    );
+  }
+}
 
     function resetDialog() {
         setForm(emptyForm);
@@ -537,8 +675,8 @@ export default function ProductDialog({
                             {categories
                                 .filter(
                                     (c) =>
-                                        c.slug !== "hoa-qua-tang" &&
-                                        c.slug !== "hoa-trang-tri"
+                                        c.slug !== "hoa-sap-qua-tang" &&
+                                        c.slug !== "hoa-gia-hoa-lua"
                                 )
                                 .map((category) => (
                                     <button

@@ -1,6 +1,9 @@
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { useState } from "react";
+
 
 export default function Footer() {
+  const [facebookOpen, setFacebookOpen] = useState(false);
   return (
     <footer className="mt-20 border-t border-[#e7dccf] bg-[#f8f3ed]">
       <div className="mx-auto max-w-7xl px-6 py-16">
@@ -127,28 +130,135 @@ export default function Footer() {
             </ul>
 
             {/* Facebook */}
-            <div className="mt-5 ">
-              <a
-                href="https://www.facebook.com/share/14niD6onL78/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noreferrer"
-                className="
-                  inline-flex
-                  items-center
-                  rounded-xl
-                  border
-                  border-[#e7dccf]
-                  bg-white
-                  px-4
-                  py-3
-                  text-[#6f6258]
-                  transition
-                  hover:border-[#C49A6C]
-                "
-              >
-                Theo dõi Facebook
-              </a>
-            </div>
+              <div className="relative mt-5">
+  <button
+    type="button"
+    onClick={() => setFacebookOpen((prev) => !prev)}
+    className="
+      inline-flex
+      items-center
+      rounded-xl
+      border
+      border-[#e7dccf]
+      bg-white
+      px-4
+      py-3
+      text-[#6f6258]
+      transition
+      hover:border-[#C49A6C]
+      hover:bg-[#fbf7f1]
+      cursor-pointer
+    "
+  >
+    Theo dõi Facebook
+  </button>
+
+  {facebookOpen && (
+    <div
+      className="
+        absolute
+        left-0
+        top-full
+        z-50
+        mt-3
+        w-64
+        overflow-hidden
+        rounded-2xl
+        border
+        border-[#e7dccf]
+        bg-white
+        p-2
+        shadow-[0_15px_40px_rgba(0,0,0,0.12)]
+      "
+    >
+      {/* Facebook 1 */}
+      <a
+        href="LINK_FACEBOOK_1"
+        target="_blank"
+        rel="noreferrer"
+        className="
+          group
+          flex
+          items-center
+          gap-3
+          rounded-xl
+          px-3
+          py-3
+          transition
+          hover:bg-[#f8f3ed]
+        "
+      >
+        <div
+          className="
+            flex
+            h-10
+            w-10
+            shrink-0
+            items-center
+            justify-center
+            rounded-full
+            bg-[#1877F2]
+            text-lg
+            font-bold
+            text-white
+          "
+        >
+          f
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-[#3f3832]">
+            Peonia Studio
+          </p>
+
+          
+        </div>
+      </a>
+
+      {/* Facebook 2 */}
+      <a
+        href="LINK_FACEBOOK_2"
+        target="_blank"
+        rel="noreferrer"
+        className="
+          group
+          flex
+          items-center
+          gap-3
+          rounded-xl
+          px-3
+          py-3
+          transition
+          hover:bg-[#f8f3ed]
+        "
+      >
+        <div
+          className="
+            flex
+            h-10
+            w-10
+            shrink-0
+            items-center
+            justify-center
+            rounded-full
+            bg-[#1877F2]
+            text-lg
+            font-bold
+            text-white
+          "
+        >
+          f
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-[#3f3832]">
+            Peonia Workshops
+          </p>
+        </div>
+      </a>
+    </div>
+  )}
+</div>
           </div>
 
         </div>

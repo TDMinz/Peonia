@@ -252,13 +252,17 @@ async function createProduct(req, res) {
       categoryId,
     } = req.body;
 
+    // =========================
+    // 1. VALIDATE
+    // =========================
+
     if (!name || !slug) {
       return res.status(400).json({
         message: 'Thiếu name hoặc slug.',
       });
     }
 
-    // Chuẩn hóa slug tiếng Việt -> slug URL
+    // Chuẩn hóa slug
     const normalizedSlug = slugify(slug);
 
     if (!validateSlug(normalizedSlug)) {
@@ -267,9 +271,15 @@ async function createProduct(req, res) {
       });
     }
 
+    // =========================
+    // 2. CHECK SLUG
+    // =========================
+
     const existed = await Product.findOne({
       slug: normalizedSlug,
-    });
+    })
+      .select('_id')
+      .lean();
 
     if (existed) {
       return res.status(409).json({
@@ -277,42 +287,74 @@ async function createProduct(req, res) {
       });
     }
 
-    const images = [];
+    // =========================
+    // 3. LẤY FILE
+    // =========================
 
-    // Upload tối đa 4 ảnh
+    const files = [];
+
     for (let i = 0; i < 4; i++) {
       const file =
         req.files?.[`image_${i}`]?.[0];
 
       if (file) {
+        files.push({
+          index: i,
+          file,
+        });
+      }
+    }
+
+    // =========================
+    // 4. UPLOAD ẢNH SONG SONG
+    // =========================
+
+    const uploadedImages = await Promise.all(
+      files.map(async ({ index, file }) => {
         const uploadedUrl =
           await uploadImageFromBuffer(
             file,
             'peonia/products'
           );
 
-        images[i] = uploadedUrl;
+        return {
+          index,
+          url: uploadedUrl,
+        };
+      })
+    );
+
+    // Giữ đúng thứ tự image_0 → image_3
+    const images = [];
+
+    uploadedImages.forEach(
+      ({ index, url }) => {
+        images[index] = url;
       }
-    }
+    );
+
+    // =========================
+    // 5. TẠO PRODUCT
+    // =========================
 
     const product = await Product.create({
       name,
       slug: normalizedSlug,
-      description,
+      description: description || '',
 
       is_addon:
         String(is_addon) === 'true',
-        is_featured:
-    String(is_featured) === 'true',
 
-  is_best_seller:
-    String(is_best_seller) === 'true',
+      is_featured:
+        String(is_featured) === 'true',
+
+      is_best_seller:
+        String(is_best_seller) === 'true',
 
       price: Number(price || 0),
 
-      sale_price: Number(
-        sale_price || 0
-      ),
+      sale_price:
+        Number(sale_price || 0),
 
       categoryId:
         categoryId || null,
@@ -323,17 +365,20 @@ async function createProduct(req, res) {
         images[0] || '',
     });
 
+    // =========================
+    // 6. RESPONSE
+    // =========================
+
     return res.status(201).json({
-      message:
-        'Tạo sản phẩm thành công.',
-      product: toProductResponse(
-        product
-      ),
+      message: 'Tạo sản phẩm thành công.',
+      product: toProductResponse(product),
     });
+
   } catch (error) {
     console.error(
       'CREATE PRODUCT ERROR'
     );
+
     console.error(error);
 
     return res.status(500).json({
