@@ -155,6 +155,17 @@ const contacts: ContactItem[] = [
   { label: 'Instagram', href: 'https://www.instagram.com/peoniastudio.hn?igsh=cjEwaWM0eXpvNXIy&utm_source=qr', icon: InstagramMark, bgClass: 'bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@peonia.workshop?_r=1&_t=ZS-97Cf2um7Qiw', icon: TiktokMark, bgClass: 'bg-[#111111]' },
 ];
+const facebookLinks = [
+  {
+    label: "Peonia Dercor",
+    href: "https://www.facebook.com/PeoniaDecor",
+  },
+  {
+    label: "Peonia Workshop",
+    href: "https://www.facebook.com/PeoniaWorkshop",
+  },
+];
+
 const instagramLinks = [
   {
     label: "Peonia Dercor",
@@ -185,6 +196,7 @@ export default function FloatingContactButton() {
   const [open, setOpen] = useState(false);
   const [showTop, setShowTop] = useState(false);
   const [phonePopupOpen, setPhonePopupOpen] = useState(false);
+  const [facebookOpen, setFacebookOpen] = useState(false);
   const [instagramOpen, setInstagramOpen] = useState(false);
   const [tiktokOpen, setTiktokOpen] = useState(false);
 
@@ -239,6 +251,24 @@ export default function FloatingContactButton() {
             {contacts.map((item) => {
               const Icon = item.icon;
               const isPhone = item.label === 'Điện thoại';
+              if (item.label === "Facebook") {
+                return (
+                  <ExpandableSocialButton
+                    key={item.label}
+                    open={facebookOpen}
+                    toggle={() => {
+                      setFacebookOpen(!facebookOpen);
+                      setInstagramOpen(false);
+                      setTiktokOpen(false);
+                    }}
+                    icon={<FacebookMark className="h-5 w-5" />}
+                    bgClass={item.bgClass}
+                    label={item.label}
+                    links={facebookLinks}
+                  />
+                );
+              }
+
               if (item.label === "Instagram") {
                 return (
                   <ExpandableSocialButton
@@ -246,6 +276,7 @@ export default function FloatingContactButton() {
                     open={instagramOpen}
                     toggle={() => {
                       setInstagramOpen(!instagramOpen);
+                      setFacebookOpen(false);
                       setTiktokOpen(false);
                     }}
                     icon={<InstagramMark className="h-5 w-5" />}
@@ -263,6 +294,7 @@ export default function FloatingContactButton() {
                     open={tiktokOpen}
                     toggle={() => {
                       setTiktokOpen(!tiktokOpen);
+                      setFacebookOpen(false);
                       setInstagramOpen(false);
                     }}
                     icon={<TiktokMark className="h-5 w-5" />}

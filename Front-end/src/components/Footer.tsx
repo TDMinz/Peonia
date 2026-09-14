@@ -173,7 +173,7 @@ export default function Footer() {
     >
       {/* Facebook 1 */}
       <a
-        href="LINK_FACEBOOK_1"
+        href="https://www.facebook.com/PeoniaDecor"
         target="_blank"
         rel="noreferrer"
         className="
@@ -217,7 +217,7 @@ export default function Footer() {
 
       {/* Facebook 2 */}
       <a
-        href="LINK_FACEBOOK_2"
+        href="https://www.facebook.com/PeoniaWorkshop"
         target="_blank"
         rel="noreferrer"
         className="
