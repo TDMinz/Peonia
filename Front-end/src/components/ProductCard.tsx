@@ -21,7 +21,7 @@ export default function ProductCard({ id, slug, name, price, image, originalPric
 
   return (
     <div className="group" data-product-id={id}>
-      <div className="relative mb-4 aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-muted">
+      <div className="relative mb-2 sm:mb-4 aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-muted">
         <img
   ref={imageRef}
   src={
@@ -92,11 +92,11 @@ export default function ProductCard({ id, slug, name, price, image, originalPric
         </div>
       </div>
 
-      <div className="space-y-2">
-        <h3 className="text-lg font-light leading-snug text-foreground line-clamp-2">{name}</h3>
+      <div className="space-y-1.5 sm:space-y-2">
+        <h3 className="text-[13px] sm:text-lg font-light leading-snug text-foreground line-clamp-2">{name}</h3>
         <div className="flex items-center gap-2">
-          <p className={priceClass}>{price}</p>
-          {originalPrice && <p className="text-sm text-muted-foreground line-through">{originalPrice}</p>}
+          <p className={`${priceClass} text-xs sm:text-base`}>{price}</p>
+          {originalPrice && <p className="text-[10px] sm:text-sm text-muted-foreground line-through">{originalPrice}</p>}
         </div>
       </div>
     </div>

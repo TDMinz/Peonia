@@ -222,7 +222,7 @@ export default function CategoryPage({
                   Chưa có sản phẩm trong danh mục này.
                 </div>
               ) : (
-                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
                   {sortedProducts.map((product) => (
                     <ProductCard
                       key={product.id}

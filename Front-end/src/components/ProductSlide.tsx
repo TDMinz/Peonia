@@ -19,16 +19,16 @@ export default function ProductSlider({ products, mapToCard }: ProductSliderProp
 
   return (
     <div className="relative w-full px-6 lg:px-10">
-      <button onClick={scrollPrev} className="absolute left-[40px] top-1/2 z-[999] -translate-y-1/2 text-[#C49A6C] transition-all duration-200 hover:scale-125 hover:text-[#B88A5A]">
+      <button onClick={scrollPrev} className="absolute left-[40px] top-1/2 z-[999] hidden -translate-y-1/2 md:block text-[#C49A6C] transition-all duration-200 hover:scale-125 hover:text-[#B88A5A]">
         <ChevronLeft className="h-8 w-8" strokeWidth={1.5} />
       </button>
 
       <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-8">
+        <div className="grid grid-cols-2 gap-3 md:flex md:gap-8">
           {products.map((product) => {
             const card = mapToCard(product);
             return (
-              <div key={card.id} className="min-w-[330px] flex-shrink-0">
+              <div key={card.id} className="min-w-0 md:min-w-[330px] md:flex-shrink-0">
                 <ProductCard {...card} />
               </div>
             );
@@ -36,7 +36,7 @@ export default function ProductSlider({ products, mapToCard }: ProductSliderProp
         </div>
       </div>
 
-      <button onClick={scrollNext} className="absolute right-[60px] top-1/2 z-[999] -translate-y-1/2 text-[#C49A6C] transition-all duration-200 hover:scale-125 hover:text-[#B88A5A]">
+      <button onClick={scrollNext} className="absolute right-[60px] top-1/2 z-[999] hidden -translate-y-1/2 md:block text-[#C49A6C] transition-all duration-200 hover:scale-125 hover:text-[#B88A5A]">
         <ChevronRight className="h-8 w-8" strokeWidth={1.5} />
       </button>
     </div>

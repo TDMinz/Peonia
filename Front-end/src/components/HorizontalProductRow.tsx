@@ -63,10 +63,10 @@ export default function HorizontalProductRow({ title, subtitle, products }: { ti
         </div>
 
         <div className="relative">
-          <div ref={scrollerRef} className="hide-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2 [-webkit-overflow-scrolling:touch] cursor-grab active:cursor-grabbing">
+          <div ref={scrollerRef} className="hide-scrollbar grid grid-cols-2 gap-3 pb-2 md:flex md:snap-x md:snap-mandatory md:gap-5 md:overflow-x-auto md:scroll-smooth md:[-webkit-overflow-scrolling:touch] md:cursor-grab md:active:cursor-grabbing">
             {cards.map((card, index) => (
-              <motion.div key={card.id} className="shrink-0 snap-start" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: Math.min(index * 0.05, 0.3) }}>
-                <div className="w-[78vw] sm:w-[42vw] md:w-[calc((100%-1.5rem*1)/2)] lg:w-[calc((100%-1.5rem*3)/4)]">
+              <motion.div key={card.id} className="min-w-0 md:shrink-0 md:snap-start" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: Math.min(index * 0.05, 0.3) }}>
+                <div className="w-full md:w-[calc((100%-1.5rem*1)/2)] lg:w-[calc((100%-1.5rem*3)/4)]">
                   <ProductCard {...card} />
                 </div>
               </motion.div>

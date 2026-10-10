@@ -129,3 +129,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Peonia mobile responsive additions */
+@media (max-width: 767px) {
+  html, body, #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  img, video, iframe {
+    max-width: 100%;
+  }
+
+  input, textarea, select, button {
+    max-width: 100%;
+  }
+}
